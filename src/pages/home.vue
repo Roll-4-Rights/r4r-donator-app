@@ -1,0 +1,415 @@
+<template>
+  <!-- Main layout container with comfortable outer edge padding -->
+  <v-container class="py-10 px-6" max-width="1400">
+         
+    <!-- Welcome Block Box -->
+    <v-card 
+      class="mb-10 rounded-2xl border-0 elevation-hover position-relative overflow-visible" 
+      style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+      elevation="0"
+    >
+      <v-card-text class="pa-6 pa-md-10 position-relative z-index-content">
+        <div class="d-flex align-start flex-column text-left">
+          <div class="d-flex align-center gap-2 mb-2 text-medium-emphasis font-weight-bold text-subtitle-2">
+            <v-icon icon="mdi-calendar-blank" size="18" class="mr-1"></v-icon>
+            <span>7/28/2026</span>
+          </div>
+          <h1 class="text-h4 text-sm-h3 text-md-h2 font-weight-black text-black mb-4 leading-none">
+            Hail and well met, {{ userName }}!
+          </h1>
+          <p class="text-body-1 text-medium-emphasis leading-relaxed max-w-3xl">
+            Thanks for supporting the auction! Here you will be able to submit your donations, as well as view information and contact the team. Please start by reading the Auction Information in the navigation pane.
+          </p>
+        </div>
+      </v-card-text>
+
+      <!-- THE CORNER PEEKING DRAGON -->
+      <img 
+        src="@/assets/dragon.png" 
+        alt="Peeking Dragon" 
+        class="corner-dragon"
+      />
+
+      <img 
+        src="@/assets/grass.png" 
+        alt="Grass Cover" 
+        class="foreground-cover"
+      />
+    </v-card>
+
+    <!-- Main Content Layout Row Split -->
+    <v-row class="justify-space-between mx-0">
+             
+      <!-- Announcements Component Column (Left Side) -->
+      <v-col cols="12" md="7" class="pa-0 pe-md-6 mb-8 mb-md-0">
+        <div class="d-flex align-center mb-5 pl-2">
+          <h2 class="text-h5 font-weight-black text-black">Announcements</h2>
+        </div>
+
+        <v-expansion-panels variant="accordion" class="rounded-xl">
+          <v-expansion-panel
+            v-for="item in announcements"
+            :key="item.id"
+            class="mb-4 rounded-xl border-0 overflow-hidden elevation-hover"
+            style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+            elevation="0"
+          >
+            <v-expansion-panel-title class="py-6 px-8">
+              <div style="display: block !important; width: 100% !important; text-align: left !important;">
+                <div class="text-subtitle-2 font-weight-bold text-medium-emphasis mb-1" style="display: block !important;">
+                  {{ item.date }}
+                </div>
+                <div class="text-body-1 font-weight-black text-black" style="display: block !important;">
+                  {{ item.title }}
+                </div>
+              </div>
+            </v-expansion-panel-title>
+                        
+            <v-expansion-panel-text class="pa-6">
+              <div class="text-body-2 text-medium-emphasis leading-relaxed">
+                {{ item.content }}
+              </div>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+
+      <!-- Recent Messages Component Column (Right Side) -->
+      <v-col cols="12" md="5" lg="4" class="pa-0 ps-md-10">
+        <div class="d-flex align-center mb-8 pl-2">
+          <h2 class="text-h5 font-weight-black text-black">Recent Messages</h2>
+        </div>
+
+        <!-- Master Floating Container -->
+        <v-card 
+          class="rounded-2xl border-0 elevation-hover"
+          style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+          elevation="0"
+        >
+          <v-card-text class="pa-6 pa-md-8 d-flex flex-column">
+            <!-- Full Inbox Button -->
+            <v-btn 
+              to="/messages"
+              size="small"
+              color="#0B4F6C"
+              variant="flat"
+              class="text-none font-weight-bold rounded-lg mb-8 w-100 py-2 d-flex align-center justify-center text-white"
+            >
+              <v-icon icon="mdi-arrow-top-right" size="16" class="mr-1"></v-icon>
+              See All Messages
+            </v-btn>
+
+            <!-- Dynamic Message View Section -->
+            <div v-if="latestMessage" class="d-flex flex-column">
+              <div class="d-flex flex-column align-start mb-4">
+                <span class="text-subtitle-2 font-weight-bold text-medium-emphasis mb-2">
+                  {{ latestMessage.date }}
+                </span>
+                              
+                <h3 class="text-body-1 font-weight-black text-black mb-2">
+                  {{ latestMessage.subject }}
+                </h3>
+                              
+                <p class="text-body-2 text-medium-emphasis leading-relaxed mb-6">
+                  {{ latestMessage.preview }}
+                </p>
+
+                <v-chip size="x-small" color="grey-darken-2" variant="flat" class="font-weight-bold px-3 py-2 text-white">
+                  Answered
+                </v-chip>
+              </div>
+            </div>
+
+            <!-- Empty fallback layout view box -->
+            <div v-else class="text-center py-6 text-medium-emphasis">
+              <p class="text-body-2">Your inbox is completely clear!</p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+<!-- START CALENDAR HTML -->
+<v-row class="mt-8">
+  <v-col cols="12" md="10" class="mx-auto">
+    <v-card class="rounded-2xl border-0 overflow-hidden pb-6" style="box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.05) !important; background-color: #FFFFFF;">
+      
+      <div class="px-8 pt-8 pb-4 bg-white">
+        <h2 class="text-h4 font-weight-black text-grey-darken-4 tracking-tight" style="font-family: 'Inter', sans-serif; font-size: 2rem !important;">
+          Important Dates
+        </h2>
+        <p class="text-body-2 text-medium-emphasis mt-1 mb-0">
+          deadlines and other events
+        </p>
+      </div>
+
+      <div class="d-flex align-center justify-space-between mx-8 my-2 px-4 py-2 border rounded-xl bg-grey-lighten-5" style="border-color: #EEEEEE !important;">
+        <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="$refs.calendarRef.prev()" class="text-grey-darken-2"></v-btn>
+        <span class="text-subtitle-1 font-weight-bold text-grey-darken-3" style="font-family: 'Inter', sans-serif; letter-spacing: -0.01em;">
+          {{ currentMonthTitle }}
+        </span>
+        <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="$refs.calendarRef.next()" class="text-grey-darken-2"></v-btn>
+      </div>
+
+      <v-card-text class="px-6 pt-4 pb-8 bg-white">
+        <v-calendar 
+          ref="calendarRef"
+          v-model="calendarValue"
+          :events="publicCalendar"
+          view-mode="month"
+          class="custom-calendar-theme"
+          @click:event="handleEventClick"
+        >
+          <template #event="{ event }">
+            <div class="w-100 px-1 py-05">
+              <div 
+                class="custom-event-pill px-3 py-1 text-white font-weight-bold d-flex align-center justify-space-between"
+                @click.stop="handleEventClick({ event })"
+              >
+                <span class="text-truncate text-caption tracking-wide pr-1">{{ event.title }}</span>
+                <v-icon icon="mdi-circle" size="6" class="text-white opacity-60 flex-shrink-0"></v-icon>
+              </div>
+            </div>
+          </template>
+        </v-calendar>
+      </v-card-text>
+
+    </v-card>
+  </v-col>
+
+  <!-- FIXED POPUP DIALOG WINDOW -->
+  <v-dialog v-model="detailsDialog" max-width="450px">
+    <v-card v-if="selectedEvent" class="rounded-xl pa-4 shadow-xl">
+      <!-- 1. Header Title -->
+      <v-card-title class="text-h5 font-weight-bold border-b pb-3">
+        {{ selectedEvent.title }}
+      </v-card-title>
+      
+      <v-card-text class="pt-5 text-body-1">
+        <!-- 2. Clean Time Display (Explicitly tracking individual Start and End Days) -->
+        <div class="d-flex align-start text-subtitle-2 font-weight-bold text-medium-emphasis mb-5">
+          <v-icon icon="mdi-clock-outline" size="18" class="mr-2 mt-05 text-grey-darken-1"></v-icon>
+          <div class="d-flex flex-column" style="gap: 6px;">
+            <!-- Start Point -->
+            <div>
+              <span class="text-grey-darken-1 font-weight-medium">Starts:</span> 
+              {{ new Date(selectedEvent.start).toLocaleDateString([], { dateStyle: 'medium' }) }} 
+              • {{ new Date(selectedEvent.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+            </div>
+            <!-- End Point (Shows the distinct closing day cleanly) -->
+            <div>
+              <span class="text-grey-darken-1 font-weight-medium">Ends:</span> 
+              {{ new Date(selectedEvent.end).toLocaleDateString([], { dateStyle: 'medium' }) }} 
+              • {{ new Date(selectedEvent.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Details Label & Description Text Box -->
+        <div class="text-subtitle-2 text-grey-darken-2 mb-1 font-weight-bold">Details</div>
+        <p class="text-high-emphasis font-weight-medium bg-grey-lighten-4 pa-4 rounded-xl border border-faint" style="line-height: 1.5;">
+          {{ selectedEvent.description }}
+        </p>
+      </v-card-text>
+      
+      <v-card-actions class="justify-end">
+        <v-btn color="primary" variant="text" class="font-weight-bold" @click="detailsDialog = false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</v-row>
+<!--END CALENDAR HTML-->
+
+  </v-container>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { apiService } from '@/services/api'
+
+const userName = ref('praeterusdice')
+
+// Messages block
+const announcements = ref([
+  {
+    id: 1,
+    title: 'Hey! I have something to say!',
+    date: '7/21/2026',
+    content: 'This is the detailed information body text belonging to your announcement item container.'
+  },
+  {
+    id: 2,
+    title: 'Daily Update: <3',
+    date: '7/1/2026',
+    content: 'Thank you for following along with our daily updates panel progress reports.'
+  },
+  {
+    id: 3,
+    title: 'announcement!',
+    date: '7/21/2026',
+    content: 'Another placeholder example entry details section description block text block.'
+  }
+])
+
+const messages = ref([
+  {
+    id: 101,
+    sender: 'System Admin',
+    subject: 'question',
+    date: '7/21/2026, 12:00 AM',
+    preview: 'testingtesting'
+  }
+])
+
+const latestMessage = computed(() => {
+  return messages.value.length > 0 ? messages.value[0] : null
+})
+
+// Calendar API
+const publicCalendar = ref([])
+const calendarValue = ref([new Date()]) 
+const calendarRef = ref(null)          
+
+const detailsDialog = ref(false)
+const selectedEvent = ref(null)
+
+const currentMonthTitle = computed(() => {
+  if (!calendarValue.value) return ''
+  
+  const targetDate = Array.isArray(calendarValue.value) 
+    ? calendarValue.value[0] 
+    : calendarValue.value
+    
+  if (!targetDate) return ''
+  const date = new Date(targetDate)
+  return date.toLocaleString('default', { month: 'long', year: 'numeric' })
+})
+
+const fetchCalendarData = async () => {
+  try {
+    const rawEvents = await apiService.fetchCalendar() 
+    publicCalendar.value = (rawEvents || []).map(row => ({
+      title: row['Title'],       
+      start: new Date(row['Start Date']), 
+      end: new Date(row['End Date']),
+      description: row['Description'] || 'No additional details provided.' 
+    }))
+  } catch (error) {
+    console.error('Failed to sync calendar:', error)
+  }
+}
+
+const handleEventClick = ({ event }) => {
+  selectedEvent.value = event
+  detailsDialog.value = true
+}
+
+onMounted(() => {
+  fetchCalendarData()
+})
+</script>
+
+<style scoped>
+.max-w-3xl {
+  max-width: 48rem;
+}
+
+/* Micro-interaction lift animation class for your cards and expansion panels */
+.elevation-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Prevents massive title text line-height gaps overlapping other text items */
+.leading-none {
+  line-height: 1.15 !important;
+}
+
+.z-index-content {
+  z-index: 2;
+}
+
+/* Update your parent v-card class to force a strict 3D depth system */
+.elevation-hover {
+  transform-style: preserve-3d;
+}
+
+/* --- DESKTOP RULES (Screen widths 1200px and up) --- */
+@media (min-width: 1200px) {
+  .corner-dragon {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    width: 180px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    backface-visibility: hidden; 
+    transform: translate(0, 20px) scale(0.85); 
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease-out;
+  }
+
+  .foreground-cover {
+    position: absolute;
+    top: 45px;
+    right: 30px;
+    width: 180px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .v-card:hover .corner-dragon {
+    opacity: 1;
+    transform: translate(45px, -65px) scale(1) rotate(-12deg);
+  }
+}
+
+@media (max-width: 1199px) {
+  .corner-dragon,
+  .foreground-cover {
+    display: none !important;
+  }
+}
+
+/* BEGIN CALENDAR CSS */
+.custom-calendar-theme {
+  min-height: 650px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+:deep(.custom-calendar-theme .v-calendar-month__week),
+:deep(.custom-calendar-theme .v-calendar-month__weeks__week) {
+  min-height: 110px !important;
+  height: 110px !important;
+}
+
+:deep(.custom-calendar-theme .v-calendar-month__header),
+:deep(.custom-calendar-theme .v-calendar-weekly__head) {
+  border-bottom: 2px solid #EAEAEA !important;
+  background-color: #FAFAFA !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.custom-event-pill {
+  background: linear-gradient(135deg, #0B4F6C 0%, #083B52 100%) !important;
+  border-radius: 6px !important;
+  height: 28px !important;
+  box-shadow: 0px 2px 6px rgba(11, 79, 108, 0.12) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  width: 100% !important;
+  display: flex !important;
+  align-center: true;
+}
+
+.custom-event-pill span {
+  font-size: 0.8rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  display: inline-block;
+}
+</style>
+

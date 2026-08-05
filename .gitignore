@@ -1,0 +1,29 @@
+# Node
+node_modules/
+npm-debug.log*
+dist/
+.output/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Vue/Vite
+.vite/
+*.local
+
+# Lock files (optional)
+package-lock.json

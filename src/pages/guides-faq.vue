@@ -1,0 +1,164 @@
+<template>
+  <!-- Main container matching your design layout guidelines -->
+  <v-container class="py-10 px-6" max-width="1200">
+    
+    <!-- Section 1: Dynamic Welcome Step Grid Overview -->
+    <div class="mb-4 pl-2 text-left">
+      <span class="text-subtitle-2 font-weight-bold text-medium-emphasis uppercase tracking-wider">Features</span>
+      <h1 class="text-h3 font-weight-black text-black mt-1 mb-8">Welcome!</h1>
+    </div>
+
+    <v-row class="mb-12">
+      <!-- Step 1 Card -->
+      <v-col cols="12" md="4" class="d-flex">
+        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+          <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
+          <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
+            <!-- Styled Icon Step Indicator Badge -->
+            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
+              <v-icon icon="mdi-check" size="18"></v-icon>
+            </v-avatar>
+            <h2 class="text-h6 font-weight-black text-black mb-2">Step 1</h2>
+            <p class="text-body-2 text-medium-emphasis leading-relaxed">
+              Complete your Donator Information form. This form only needs to be submitted once. If there are any issues after you submit, reach out to an Admin via Messages.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <!-- Step 2 Card -->
+      <v-col cols="12" md="4" class="d-flex">
+        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+          <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
+          <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
+            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
+              <v-icon icon="mdi-check" size="18"></v-icon>
+            </v-avatar>
+            <h2 class="text-h6 font-weight-black text-black mb-2">Step 2</h2>
+            <p class="text-body-2 text-medium-emphasis leading-relaxed mb-4">
+              Donate an item! Click the "Donate an Item" page in the navigation pane to the left!
+            </p>
+            <p class="text-body-2 text-medium-emphasis font-weight-bold mt-auto">
+              For each item you'll submit a new form.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <!-- Step 3 Card -->
+      <v-col cols="12" md="4" class="d-flex">
+        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+          <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
+          <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
+            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
+              <v-icon icon="mdi-check" size="18"></v-icon>
+            </v-avatar>
+            <h2 class="text-h6 font-weight-black text-black mb-2">Step 3</h2>
+            <p class="text-body-2 text-medium-emphasis leading-relaxed">
+              Keep an eye on this portal for any announcements or information regarding your donation. Check the FAQ for any answers you may need. If you still have questions, send us a message through the Messages page.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Deep Accent Separator Line -->
+    <v-divider class="mb-12 border-divider opacity-50"></v-divider>
+
+    <!-- Section 2: Non-Dropdown FAQ Grid Block -->
+    <div class="text-center mb-8">
+      <h2 class="text-h4 font-weight-black text-black mb-2">FAQ and Guides</h2>
+    </div>
+
+    <!-- Toggleable Navigation Tabs -->
+    <div class="d-flex justify-center mb-8">
+      <v-tabs v-model="activeTab" color="#0B4F6C" align-tabs="center" class="border-b-0">
+        <v-tab value="instructions" class="text-none font-weight-bold px-6">Instructions</v-tab>
+        <v-tab value="general" class="text-none font-weight-bold px-6">General</v-tab>
+      </v-tabs>
+    </div>
+
+    <!-- Flattened Non-Dropdown Dynamic Loop Matrix -->
+    <v-window v-model="activeTab">
+      
+      <!-- INSTRUCTIONS TAB CONTENT VIEW -->
+      <v-window-item value="instructions">
+        <v-row>
+          <v-col cols="12" v-for="(item, i) in instructionFaqs" :key="i" class="pb-4">
+            <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+              <!-- FIXED: Wrapped FAQ item text inside v-card-text with desktop responsive padding scale -->
+              <v-card-text class="pa-6 pa-md-8 text-left">
+                <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
+                  {{ item.question }}
+                </h3>
+                <p class="text-body-2 text-medium-emphasis leading-relaxed">
+                  {{ item.answer }}
+                </p>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-window-item>
+
+      <!-- GENERAL TAB CONTENT VIEW -->
+      <v-window-item value="general">
+        <v-row>
+          <v-col cols="12" v-for="(item, i) in generalFaqs" :key="i" class="pb-4">
+            <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+              <!-- FIXED: Wrapped FAQ item text inside v-card-text with desktop responsive padding scale -->
+              <v-card-text class="pa-6 pa-md-8 text-left">
+                <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
+                  {{ item.question }}
+                </h3>
+                <p class="text-body-2 text-medium-emphasis leading-relaxed">
+                  {{ item.answer }}
+                </p>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-window-item>
+
+    </v-window>
+
+  </v-container>
+</template>
+
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// Track active navigational filter states
+const activeTab = ref('instructions')
+
+// Category A: Local instructions dataset array list 
+const instructionFaqs = ref([
+  {
+    question: 'How do I donate an item?',
+    answer: 'Navigate directly over onto our structural item submission page container on the left hand menu bar. Fill out all relevant physical item dimension data metrics and attach image preview graphics safely before hitting submit.'
+  },
+  {
+    question: 'Can I edit a donation form detail after submission approval?',
+    answer: 'Once submitted, entries lock into place. To make structural shifts, please drop an announcement ticket or descriptive entry to our administrative coordinators via the dynamic Messages channel.'
+  }
+])
+
+// Category B: General operations dataset array list
+const generalFaqs = ref([
+  {
+    question: 'A question that keeps getting asked',
+    answer: 'This is an example representation of your static general question and answers block placeholder content detail entry text rows.'
+  },
+  {
+    question: 'Another common community question',
+    answer: 'The system renders layout details using completely open non-dropdown layouts so answers remain instantly scannable to viewers scrolling down screens.'
+  }
+])
+</script>
+
+<style scoped>
+/* Clear line matching up global color theme rules securely */
+.border-divider {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+</style>
