@@ -5,7 +5,7 @@
     <div class="page-head mb-8">
       <span class="eyebrow">Auction Donation Desk</span>
       <h1 class="page-title">Donate an Item</h1>
-      <p class="page-sub">Submit new items, track your donations, and manage winner shipping — all in one place.</p>
+      <p class="page-sub">Submit items, manage your donations, and view winner info.</p>
     </div>
 
     <!-- SUBMISSION GUIDELINES INFO DRAWER -->
@@ -13,7 +13,7 @@
       <v-expansion-panel elevation="0">
         <v-expansion-panel-title class="guidelines-title">Submission guidelines</v-expansion-panel-title>
         <v-expansion-panel-text class="guidelines-text">
-          Please fill out the form completely. Submissions can't be edited after they're sent unless marked “Needs Info.” If there's an issue after submitting, contact a team member.
+          some instructions here blah blah blah.
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -162,7 +162,7 @@
         <v-card variant="flat" class="ledger-card pa-8">
           <div class="mb-6">
             <h2 class="ledger-heading mb-1">Winner shipping</h2>
-            <p class="ledger-sub">Add a tracking number once an item has shipped.</p>
+            <p class="ledger-sub">Add a tracking number once you have shipped an item.</p>
           </div>
 
           <table class="ledger-table">
@@ -180,7 +180,7 @@
                 <td colspan="5" class="text-center py-8">Loading shipping data…</td>
               </tr>
               <tr v-else-if="acceptedDonations.length === 0">
-                <td colspan="5" class="text-center py-8 empty-text">No approved winners ready for shipping yet.</td>
+                <td colspan="5" class="text-center py-8 empty-text">No winners ready for shipping.</td>
               </tr>
               <tr v-else v-for="winner in acceptedDonations" :key="winner.Id">
                 <td class="item-name">{{ winner['Item Name'] }}</td>

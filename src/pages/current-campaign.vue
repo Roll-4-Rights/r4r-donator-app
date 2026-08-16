@@ -12,13 +12,13 @@
         <!-- Campaign Header -->
         <div class="text-left mb-8">
           <p class="text-caption font-weight-bold text-uppercase text-medium-emphasis mb-1" style="letter-spacing: 0.08em;">
-            Current Campaign
+            Current Campaign!
           </p>
           <h1 class="text-h4 font-weight-black text-black mb-2">
-            {{ campaign.name || 'Campaign name placeholder' }}
+            {{ campaign.name || 'Campaign name here' }}
           </h1>
           <p class="text-subtitle-1 text-medium-emphasis">
-            {{ campaign.tagline || 'One-line description of what this campaign is raising money for.' }}
+            {{ campaign.tagline || 'some info here.' }}
           </p>
         </div>
 
@@ -33,7 +33,7 @@
           <div>
             <p class="text-caption text-medium-emphasis mb-0">Benefiting</p>
             <p class="text-h6 font-weight-bold text-black mb-0">
-              {{ campaign.charityName || 'Charity name placeholder' }}
+              {{ campaign.charityName || 'some charity' }}
             </p>
             <a
               v-if="campaign.charityWebsite"
@@ -49,7 +49,7 @@
         </div>
 
         <p class="text-body-2 text-medium-emphasis mb-8">
-          {{ campaign.charityDescription || 'Placeholder: a sentence or two about the charity and why it was chosen for this campaign.' }}
+          {{ campaign.charityDescription || 'long info' }}
         </p>
 
         <v-divider class="mb-6 opacity-50"></v-divider>
@@ -92,7 +92,7 @@
             class="text-none font-weight-bold rounded-lg px-8 py-2 text-white"
             @click="handleViewAuctionItems"
           >
-            View Auction Items
+            Link to charity
           </v-btn>
         </div>
 

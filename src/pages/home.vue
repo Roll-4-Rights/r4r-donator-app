@@ -144,11 +144,11 @@
       </div>
 
       <div class="d-flex align-center justify-space-between mx-8 my-2 px-4 py-2 border rounded-xl bg-grey-lighten-5" style="border-color: #EEEEEE !important;">
-        <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="$refs.calendarRef.prev()" class="text-grey-darken-2"></v-btn>
+        <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="calendarRef.prev()" class="text-grey-darken-2"></v-btn>
         <span class="text-subtitle-1 font-weight-bold text-grey-darken-3" style="font-family: 'Inter', sans-serif; letter-spacing: -0.01em;">
           {{ currentMonthTitle }}
         </span>
-        <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="$refs.calendarRef.next()" class="text-grey-darken-2"></v-btn>
+        <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="calendarRef.next()" class="text-grey-darken-2"></v-btn>
       </div>
 
       <v-card-text class="px-6 pt-4 pb-8 bg-white">
@@ -158,7 +158,6 @@
           :events="publicCalendar"
           view-mode="month"
           class="custom-calendar-theme"
-          @click:event="handleEventClick"
         >
           <template #event="{ event }">
             <div class="w-100 px-1 py-05">
@@ -224,8 +223,17 @@
 </template>
 
 <script setup lang="ts">
+// filepath: c:\Users\gamer\Documents\Roll4Rights\r4r-donator-app\src\pages\home.vue
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
+
+// Define the real shape of a calendar event, instead of letting TS guess "never"
+interface CalendarEvent {
+  title: string
+  start: Date
+  end: Date
+  description: string
+}
 
 const userName = ref('praeterusdice')
 
@@ -235,19 +243,19 @@ const announcements = ref([
     id: 1,
     title: 'Hey! I have something to say!',
     date: '7/21/2026',
-    content: 'This is the detailed information body text belonging to your announcement item container.'
+    content: 'wassup.'
   },
   {
     id: 2,
     title: 'Daily Update: <3',
     date: '7/1/2026',
-    content: 'Thank you for following along with our daily updates panel progress reports.'
+    content: 'Thank you for reading this.'
   },
   {
     id: 3,
     title: 'announcement!',
     date: '7/21/2026',
-    content: 'Another placeholder example entry details section description block text block.'
+    content: 'Another placeholder example entry that I am writing weeeee.'
   }
 ])
 
@@ -265,42 +273,36 @@ const latestMessage = computed(() => {
   return messages.value.length > 0 ? messages.value[0] : null
 })
 
-// Calendar API
-const publicCalendar = ref([])
-const calendarValue = ref([new Date()]) 
-const calendarRef = ref(null)          
+// Calendar API — now explicitly typed
+const publicCalendar = ref<CalendarEvent[]>([])
+const calendarValue = ref<Date>(new Date())
+const calendarRef = ref<any>(null)
 
 const detailsDialog = ref(false)
-const selectedEvent = ref(null)
+const selectedEvent = ref<CalendarEvent | null>(null)
 
 const currentMonthTitle = computed(() => {
-  if (!calendarValue.value) return ''
-  
-  const targetDate = Array.isArray(calendarValue.value) 
-    ? calendarValue.value[0] 
-    : calendarValue.value
-    
-  if (!targetDate) return ''
-  const date = new Date(targetDate)
+  const date = calendarValue.value
+  if (!date) return ''
   return date.toLocaleString('default', { month: 'long', year: 'numeric' })
 })
 
 const fetchCalendarData = async () => {
   try {
-    const rawEvents = await apiService.fetchCalendar() 
-    publicCalendar.value = (rawEvents || []).map(row => ({
-      title: row['Title'],       
-      start: new Date(row['Start Date']), 
+    const rawEvents = await apiService.fetchCalendar()
+    publicCalendar.value = (rawEvents || []).map((row: any) => ({
+      title: row['Title'],
+      start: new Date(row['Start Date']),
       end: new Date(row['End Date']),
-      description: row['Description'] || 'No additional details provided.' 
+      description: row['Description'] || 'No additional details provided.'
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
   }
 }
 
-const handleEventClick = ({ event }) => {
-  selectedEvent.value = event
+const handleEventClick = (payload: { event: CalendarEvent }) => {
+  selectedEvent.value = payload.event
   detailsDialog.value = true
 }
 

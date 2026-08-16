@@ -29,7 +29,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Social media name*</div>
           <v-text-field
             v-model="form.socialName"
-            placeholder="e.g. @yourhandle on Twitter/Bluesky"
+            placeholder="e.g. @yourhandle"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -43,7 +43,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Description of your wares*</div>
           <v-textarea
             v-model="form.waresDescription"
-            placeholder="Tell us about the items you handcraft, create, or donate..."
+            placeholder="e.g. what you want in the description section of your item"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -59,7 +59,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Where are you located?*</div>
           <v-text-field
             v-model="form.location"
-            placeholder="e.g. California, USA or London, UK"
+            placeholder="be as detailed as you can without giving your full address"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -73,7 +73,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Website URL*</div>
           <v-text-field
             v-model="form.website"
-            placeholder="e.g. https://yourshop.com"
+            placeholder="e.g. https://yourshop.com, instagram link"
             variant="outlined"
             density="comfortable"
             class="mb-6"
@@ -111,7 +111,7 @@
           </div>
           <v-text-field
             v-model="form.winnerPaymentMethod"
-            placeholder="e.g. PayPal, Venmo, or Ko-fi link after auction closes"
+            placeholder="e.g. PayPal, Venmo, Ko-fi"
             variant="outlined"
             density="comfortable"
             class="mb-6"
@@ -214,7 +214,7 @@ import { ref, computed } from 'vue'
 const countrySearch = ref('')
 
 const form = ref({
-  userId: 'praeterusdice_99214', // 👈 Silent metadata login identity token
+  userId: 'praeterusdice_99214', // silent metadata login identity token
   socialName: '',
   waresDescription: '',
   location: '',
@@ -246,11 +246,7 @@ const handleSubmitDonatorInfo = () => {
   alert('Donator information package locked and ready for database transmission!')
 }
 
-// Full ISO 3166-1 list (249 entries): all UN member states + observer states
-// (Vatican City, Palestine) + dependent territories (Hong Kong, Greenland, etc.)
-// NOTE: Kosovo is intentionally NOT included — it has no official ISO 3166-1
-// code due to the ongoing recognition dispute. Add it manually below if you
-// want it as an extra 250th option.
+
 
 // Order doesn't matter in this raw list — add new entries anywhere and
 // they'll auto-sort into the right alphabetical spot below.
@@ -303,12 +299,9 @@ const countries = [
   'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe'
 ]
 
-// Fully alphabetized, no pinned entries. localeCompare handles accented
-// names correctly (Åland, Côte d'Ivoire, Curaçao, Réunion, Saint Barthélemy
-// all sort where you'd expect).
+
 const countriesList = computed(() => [...countries].sort((a, b) => a.localeCompare(b)))
 
-// Case-insensitive substring filter over the full country list
 const filteredCountries = computed(() => {
   const query = countrySearch.value.trim().toLowerCase()
   if (!query) return countriesList.value

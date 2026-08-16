@@ -21,9 +21,12 @@
         </div>
 
         <!-- READABILITY TEXT WITH HIGH CONTRAST DROP-SHADOW EFFECT SHADOW LAYER -->
-        <v-toolbar-title class="font-weight-bold position-relative z-index-top ml-4 brand-text-shadow">
-          R4R
-        </v-toolbar-title>
+        <router-link to="/" class="brand-link">
+          <v-toolbar-title class="font-weight-bold position-relative z-index-top ml-4 brand-text-shadow">
+            R4R
+          </v-toolbar-title>
+          <span v-if="isForumRoute" class="return-label">← Return to Portal</span>
+        </router-link>
         
         <!-- PERSISTENT RIGHT-ALIGN PROFILE MENU DROPDOWN -->
         <v-menu v-model="isMenuOpen" min-width="220px" rounded="xl" transition="scale-transition">
@@ -41,10 +44,10 @@
                 <v-img src="https://placehold.co"></v-img>
               </v-avatar>
               <div class="text-subtitle-2 font-weight-bold text-grey-darken-4">
-                Jane Smith
+                Ramey Fights
               </div>
               <div class="text-caption text-grey-darken-1 mb-2">
-                janesmith@example.com
+                praeterusdice@gmail.com
               </div>
               
               <v-divider class="my-2"></v-divider>
@@ -60,6 +63,7 @@
 
       <!-- Sidebar Container Box Panel Layer Wrapper -->
       <v-navigation-drawer
+        v-if="!isForumRoute"
         style="background-color: #103948 !important;"
         theme="dark"
         permanent
@@ -69,17 +73,8 @@
         <v-list style="background-color: transparent !important;" class="pa-2 custom-sidebar-list" active-color="secondary">
           <v-list-item to="/" exact prepend-icon="mdi-view-dashboard" title="Home"></v-list-item>
           
-          <!-- MESSAGES TAB: Automatically resets unread count badge to zero on page visit routing -->
-          <v-list-item to="/messages" prepend-icon="mdi-message" title="Messages">
-            <template v-slot:append v-if="unreadMessages > 0">
-              <v-badge
-                color="error"
-                :content="unreadMessages"
-                inline
-                class="custom-sidebar-badge"
-              ></v-badge>
-            </template>
-          </v-list-item>
+          
+          <v-list-item to="/forum" prepend-icon="mdi-forum" title="Chat"></v-list-item>
           
           <v-list-item to="/guides-faq" prepend-icon="mdi-help-circle-outline" title="Guides/FAQs"></v-list-item>
           <v-list-item to="/current-campaign" prepend-icon="mdi-sword-cross" title="Current Campaign"></v-list-item>
@@ -110,30 +105,27 @@
       </v-navigation-drawer>
 
       <!-- Core App Canvas View Layout Grid Section Wrapper Workspace Layer -->
-      <v-main>
-        <v-container fluid class="pa-8">
+      <v-main :class="{ 'app-main': isForumRoute }">
+        <div v-if="isForumRoute" class="forum-shell">
+          <RouterView />
+        </div>
+        <v-container v-else fluid class="pa-8">
           <RouterView />
         </v-container>
       </v-main>
     </v-layout>
-
-    <!-- Socket Connection Debug (Remove in production) -->
-    <div class="debug-panel">
-      <ConnectionState />
-      <ConnectionManager />
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
-import ConnectionState from './components/ConnectionState.vue'
-import ConnectionManager from './components/ConnectionManager.vue'
-import { socket, state } from '@/socket'
+import { socket } from '@/socket'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
+
+const isForumRoute = computed(() => route.path.startsWith('/forum'))
 
 const getUserId = () => {
   let userId = localStorage.getItem('donator_user_id');
@@ -149,31 +141,7 @@ const currentUser = ref({
   name: 'Jane Smith'
 })
 
-const unreadMessages = ref(0)
 const hasNewWinnerUpdates = ref(false)
-
-// FIX: Only increment unread if message is FOR THIS USER
-socket.on('receive-message', (data) => {
-  console.log('📨 Received message:', data)
-  console.log('🔍 Message userID:', data.userID || data.userId)
-  console.log('🔍 My userID:', currentUser.value.id)
-  
-  // Check if this message is for THIS user and from admin
-  const isForMe = (data.userID === currentUser.value.id || data.userId === currentUser.value.id)
-  const isFromAdmin = data.senderType === 'admin'
-  const notOnMessagesPage = route.path !== '/messages'
-  
-  if (isForMe && isFromAdmin && notOnMessagesPage) {
-    unreadMessages.value++
-    console.log('🔔 Incremented unread messages to:', unreadMessages.value)
-  } else {
-    console.log('⚠️ Not incrementing unread because:', {
-      isForMe,
-      isFromAdmin,
-      notOnMessagesPage
-    })
-  }
-})
 
 socket.on('item-status-updated', (data) => {
   console.log('📦 Item status updated:', data)
@@ -184,31 +152,12 @@ socket.on('item-status-updated', (data) => {
 })
 
 onMounted(() => {
-  console.log('🚀 App mounted, joining chat...')
-  console.log('👤 Current user:', currentUser.value)
-  
   socket.emit('join-chat', {
     userId: currentUser.value.id,
     username: currentUser.value.name,
     userType: 'user'
   })
-  
-  console.log('✅ Join-chat emitted with ID:', currentUser.value.id)
 })
-
-watch(
-  () => route.path,
-  (newPath) => {
-    if (newPath === '/messages') {
-      console.log('📭 Clearing unread messages')
-      unreadMessages.value = 0
-    }
-    if (newPath === '/donate-items') {
-      hasNewWinnerUpdates.value = false
-    }
-  },
-  { immediate: true }
-)
 
 const handleSignOut = () => {
   localStorage.removeItem('donator_user_id');
@@ -243,14 +192,6 @@ const handleSignOut = () => {
 :deep(.custom-sidebar-list .v-list-item--active) {
   background-color: rgba(255, 255, 255, 0.08) !important;
   font-weight: 600 !important;
-}
-
-/* CUSTOM BADGE LAYOUT OVERRIDES */
-:deep(.custom-sidebar-badge .v-badge__badge) {
-  font-size: 0.75rem !important;
-  height: 18px !important;
-  min-width: 18px !important;
-  padding: 0 4px !important;
 }
 
 /* LOGOUT BUTTON PLACEMENT SPLIT */
@@ -294,6 +235,17 @@ const handleSignOut = () => {
   z-index: 2;
 }
 
+/* FORUM FULL-HEIGHT SHELL: makes the chat panel truly fill available space,
+   with scrolling isolated inside ChannelChat's .messages, not the whole page */
+.app-main {
+  height: 100vh;
+}
+
+.forum-shell {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Debug Panel Styling */
 .debug-panel {
   position: fixed;
@@ -304,5 +256,28 @@ const handleSignOut = () => {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 1000;
+}
+
+.brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+}
+
+.return-label {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* Prevent Vuetify's default flex:1 1 auto on v-toolbar-title from pushing
+   the return-label away — keep "R4R" and the label tight together on the left */
+:deep(.brand-link .v-toolbar-title) {
+  flex: 0 0 auto !important;
 }
 </style>

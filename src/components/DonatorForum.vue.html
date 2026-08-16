@@ -1,0 +1,52 @@
+<template>
+  <div class="forum-container">
+    <div class="forum-threads">
+      <h2>Forum Discussions</h2>
+      <thread-list :threads="threads" @select="selectThread" />
+    </div>
+    
+    <div class="live-chat">
+      <h2>Live Chat</h2>
+      <chat-room :messages="messages" @send="sendMessage" />
+    </div>
+  </div>
+</template>
+
+<script>
+import io from 'socket.io-client'
+
+export default {
+  data() {
+    return {
+      socket: null,
+      threads: [],
+      messages: []
+    }
+  },
+  
+  mounted() {
+    // Connect to Socket.IO server
+    this.socket = io('YOUR_BACKEND_URL')
+    
+    this.socket.on('new-message', (message) => {
+      this.messages.push(message)
+    })
+    
+    this.loadForumThreads()
+  },
+  
+  methods: {
+    sendMessage(content) {
+      this.socket.emit('send-message', {
+        content,
+        user: this.currentUser,
+        timestamp: Date.now()
+      })
+    },
+    
+    async loadForumThreads() {
+      // Load forum threads from API
+    }
+  }
+}
+</script>
