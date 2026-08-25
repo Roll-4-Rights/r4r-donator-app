@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen" style="background-color: #F4F6F8 !important;">
-    <v-layout style="background-color: transparent !important;">
+    <RouterView v-if="isAuthPage" />
+
+    <v-layout v-else style="background-color: transparent !important;">
       
       <!-- HEADER BAR WITH DYNAMIC SCALING IMAGE AND SHADOW TEXT CONTRAST OVERLAY -->
       <v-app-bar color="primary" elevation="1" class="position-relative overflow-hidden">
@@ -44,10 +46,10 @@
                 <v-img src="https://placehold.co"></v-img>
               </v-avatar>
               <div class="text-subtitle-2 font-weight-bold text-grey-darken-4">
-                Ramey Fights
+                {{ authState.name || 'Donator' }}
               </div>
               <div class="text-caption text-grey-darken-1 mb-2">
-                praeterusdice@gmail.com
+                {{ authState.email }}
               </div>
               
               <v-divider class="my-2"></v-divider>
@@ -119,49 +121,40 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, RouterView } from 'vue-router'
+import { useRoute, useRouter, RouterView } from 'vue-router'
 import { socket } from '@/socket'
+import { authState, logout } from '@/services/authStore'
 
 const route = useRoute()
+const router = useRouter()
 const isMenuOpen = ref(false)
 
 const isForumRoute = computed(() => route.path.startsWith('/forum'))
-
-const getUserId = () => {
-  let userId = localStorage.getItem('donator_user_id');
-  if (!userId) {
-    userId = 'user_03l1q6br2'; // Or get from auth system
-    localStorage.setItem('donator_user_id', userId);
-  }
-  return userId;
-}
-
-const currentUser = ref({
-  id: getUserId(),
-  name: 'Jane Smith'
-})
+const isAuthPage = computed(() => route.path === '/login' || route.path === '/register')
 
 const hasNewWinnerUpdates = ref(false)
 
 socket.on('item-status-updated', (data) => {
   console.log('📦 Item status updated:', data)
-  
-  if (data.userId === currentUser.value.id) {
+
+  if (data.donatorId === authState.donator_id) {
     hasNewWinnerUpdates.value = true
   }
 })
 
 onMounted(() => {
-  socket.emit('join-chat', {
-    userId: currentUser.value.id,
-    username: currentUser.value.name,
-    userType: 'user'
-  })
+  if (authState.isLoggedIn) {
+    socket.emit('join-chat', {
+      userId: authState.email,
+      username: authState.name || authState.email,
+      userType: 'user'
+    })
+  }
 })
 
 const handleSignOut = () => {
-  localStorage.removeItem('donator_user_id');
-  console.log('Clearing local storage tokens and routing back to identity provider login...')
+  logout()
+  router.push('/login')
 }
 </script>
 

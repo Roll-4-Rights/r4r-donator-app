@@ -2,6 +2,39 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'; //  Flask middleware
 
 export const apiService = {
+  // ============= AUTH =============
+
+  async register({ name, email, password }) {
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Register failed: ${res.status}`);
+    return data; // { token, name, email }
+  },
+
+  async login({ email, password }) {
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Login failed: ${res.status}`);
+    return data; // { token, name, email }
+  },
+
+  async fetchCurrentDonator(token) {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Failed to fetch profile: ${res.status}`);
+    return data; // { donator_id, email }
+  },
+
   // ============= DONATIONS =============
   
   async fetchDonations() {

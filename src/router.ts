@@ -12,8 +12,13 @@ import ForumPinnedInformation from './pages/forum/pinned-information.vue'
 import ForumGeneralChat from './pages/forum/general-chat.vue'
 import ForumDonationTalk from './pages/forum/donation-talk.vue'
 import ForumDiceChat from './pages/forum/dice-chat.vue'
+import Login from './pages/login.vue'
+import Register from './pages/register.vue'
+import { authState, waitForAuthReady } from './services/authStore'
 
 const routes: Array<RouteRecordRaw> = [
+  { path: '/login', name: 'Login', component: Login, meta: { public: true } },
+  { path: '/register', name: 'Register', component: Register, meta: { public: true } },
   { path: '/', name: 'Home', component: Home },    
   { path: '/donator-information', name: 'DonatorInformation', component: DonatorInformation },
   { path: '/guides-faq', name: 'GuidesFaq', component: GuidesFaq },
@@ -38,6 +43,17 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to) => {
+  await waitForAuthReady()
+
+  if (!to.meta.public && !authState.isLoggedIn) {
+    return { path: '/login' }
+  }
+  if (to.meta.public && authState.isLoggedIn) {
+    return { path: '/' }
+  }
 })
 
 export default router
