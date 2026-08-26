@@ -172,6 +172,12 @@ export const apiService = {
     return res.json();
   },
 
+  async fetchAnnouncements() {
+    const res = await fetch(`${API_BASE_URL}/announcements`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch announcements: ${res.status}`);
+    return res.json();
+  },
+
   // ============= DONATOR FAQS =============
 
   async fetchDonatorFaqs() {

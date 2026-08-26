@@ -237,28 +237,26 @@ interface CalendarEvent {
 
 const userName = ref('praeterusdice')
 
-// Messages block
-const announcements = ref([
-  {
-    id: 1,
-    title: 'Hey! I have something to say!',
-    date: '7/21/2026',
-    content: 'wassup.'
-  },
-  {
-    id: 2,
-    title: 'Daily Update: <3',
-    date: '7/1/2026',
-    content: 'Thank you for reading this.'
-  },
-  {
-    id: 3,
-    title: 'announcement!',
-    date: '7/21/2026',
-    content: 'Another placeholder example entry that I am writing weeeee.'
-  }
-])
+// Announcements — populated from NocoDB on mount
+const announcements = ref<Array<{ id: number; title: string; date: string; content: string }>>([])
 
+const fetchAnnouncements = async () => {
+  try {
+    const rows = await apiService.fetchAnnouncements()
+    announcements.value = (rows || []).map((row: any) => ({
+      id: row.Id,
+      title: row['Title'],
+      date: row['Created At']
+        ? new Date(row['Created At']).toLocaleDateString()
+        : '',
+      content: row['Body']
+    }))
+  } catch (error) {
+    console.error('Failed to fetch announcements:', error)
+  }
+}
+
+// Messages block
 const messages = ref([
   {
     id: 101,
@@ -292,8 +290,8 @@ const fetchCalendarData = async () => {
     const rawEvents = await apiService.fetchCalendar()
     publicCalendar.value = (rawEvents || []).map((row: any) => ({
       title: row['Title'],
-      start: new Date(row['Start Date']),
-      end: new Date(row['End Date']),
+      start: new Date(row['Event Start Date']),
+      end: new Date(row['Event End Date']),
       description: row['Description'] || 'No additional details provided.'
     }))
   } catch (error) {
@@ -307,6 +305,7 @@ const handleEventClick = (payload: { event: CalendarEvent }) => {
 }
 
 onMounted(() => {
+  fetchAnnouncements()
   fetchCalendarData()
 })
 </script>
