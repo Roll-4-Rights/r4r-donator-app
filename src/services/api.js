@@ -170,5 +170,13 @@ export const apiService = {
     const res = await fetch(`${API_BASE_URL}/campaign-info`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch campaign info: ${res.status}`);
     return res.json();
+  },
+
+  // ============= DONATOR FAQS =============
+
+  async fetchDonatorFaqs() {
+    const res = await fetch(`${API_BASE_URL}/donator-faqs`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch donator FAQs: ${res.status}`);
+    return res.json();
   }
 };

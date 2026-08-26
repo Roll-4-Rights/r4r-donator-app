@@ -70,175 +70,115 @@
       <h2 class="text-h4 font-weight-black text-black mb-2">FAQ and Guides</h2>
     </div>
 
-    <!-- Toggleable Navigation Tabs -->
-    <div class="d-flex justify-center mb-8">
-      <v-tabs v-model="activeTab" color="#0B4F6C" align-tabs="center" class="border-b-0">
-        <v-tab value="instructions" class="text-none font-weight-bold px-6">topic A</v-tab>
-        <v-tab value="general" class="text-none font-weight-bold px-6">topic B</v-tab>
-        <v-tab value="donation" class="text-none font-weight-bold px-6">topic C</v-tab>
-      </v-tabs>
+    <div v-if="loading" class="text-center py-8">
+      <v-progress-circular indeterminate color="#0B4F6C" />
     </div>
 
-    <!-- Flattened Non-Dropdown Dynamic Loop Matrix -->
-    <v-window v-model="activeTab">
-      
-      <!-- INSTRUCTIONS TAB CONTENT VIEW -->
-      <v-window-item value="instructions">
-        <v-row>
-          <v-col cols="12" v-for="(item, i) in instructionFaqs" :key="i" class="pb-4">
-            <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
-              <!-- FIXED: Wrapped FAQ item text inside v-card-text with desktop responsive padding scale -->
-              <v-card-text class="pa-6 pa-md-8 text-left">
-                <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
-                  {{ item.question }}
-                </h3>
-                <p class="text-body-2 text-medium-emphasis leading-relaxed">
-                  {{ item.answer }}
-                </p>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-window-item>
+    <div v-else-if="error" class="text-center py-8">
+      <p class="text-body-1 text-medium-emphasis">Unable to load FAQs right now. Please try again later.</p>
+    </div>
 
-      <!-- GENERAL TAB CONTENT VIEW -->
-      <v-window-item value="general">
-        <v-row>
-          <v-col cols="12" v-for="(item, i) in generalFaqs" :key="i" class="pb-4">
-            <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
-              <!-- FIXED: Wrapped FAQ item text inside v-card-text with desktop responsive padding scale -->
-              <v-card-text class="pa-6 pa-md-8 text-left">
-                <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
-                  {{ item.question }}
-                </h3>
-                <p class="text-body-2 text-medium-emphasis leading-relaxed">
-                  {{ item.answer }}
-                </p>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-window-item>
+    <template v-else>
+      <!-- Toggleable Navigation Tabs -->
+      <div class="d-flex justify-center mb-8">
+        <v-tabs v-model="activeTab" color="#0B4F6C" align-tabs="center" class="border-b-0">
+          <v-tab
+            v-for="topic in topics"
+            :key="topic"
+            :value="topic"
+            class="text-none font-weight-bold px-6"
+          >
+            {{ topic }}
+          </v-tab>
+        </v-tabs>
+      </div>
 
-      
-      <!-- DONATION TAB CONTENT VIEW -->
-      <v-window-item value="donation">
-        <v-row>
-          <v-col cols="12" v-for="(item, i) in donationFaqs" :key="i" class="pb-4">
-            <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
-              <!-- FIXED: Wrapped FAQ item text inside v-card-text with desktop responsive padding scale -->
-              <v-card-text class="pa-6 pa-md-8 text-left">
-                <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
-                  {{ item.question }}
-                </h3>
-                <p class="text-body-2 text-medium-emphasis leading-relaxed">
-                  {{ item.answer }}
-                </p>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-window-item>
-
-    </v-window>
+      <!-- Flattened Non-Dropdown Dynamic Loop Matrix -->
+      <v-window v-model="activeTab">
+        <v-window-item v-for="topic in topics" :key="topic" :value="topic">
+          <v-row>
+            <v-col
+              cols="12"
+              v-for="item in faqsByTopic(topic)"
+              :key="item.Id"
+              class="pb-4"
+            >
+              <v-card
+                class="rounded-xl border-0"
+                style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;"
+                elevation="0"
+              >
+                <v-card-text class="pa-6 pa-md-8 text-left">
+                  <h3 class="text-subtitle-1 font-weight-black text-black mb-2">
+                    {{ item.Question }}
+                  </h3>
+                  <p class="text-body-2 text-medium-emphasis leading-relaxed">
+                    {{ item.Answer }}
+                  </p>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-window-item>
+      </v-window>
+    </template>
 
   </v-container>
 </template>
 
-
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { fetchDonatorFaqs } from '@/services/api'
 
-// Track active navigational filter states
-const activeTab = ref('instructions')
+interface FaqItem {
+  Id: number
+  Question: string
+  Answer: string
+  Topic: string
+  Order: number
+  Active: boolean
+}
 
-// Category A: Local instructions dataset array list 
-const instructionFaqs = ref([
-  {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
+const allFaqs = ref<FaqItem[]>([])
+const loading = ref(true)
+const error = ref(false)
+const activeTab = ref('')
+
+// Derive tab list from the data itself, in first-appearance order (after sorting by Order)
+const topics = computed(() => {
+  const seen = new Set<string>()
+  const result: string[] = []
+  for (const faq of allFaqs.value) {
+    if (faq.Active && !seen.has(faq.Topic)) {
+      seen.add(faq.Topic)
+      result.push(faq.Topic)
+    }
   }
-])
+  return result
+})
 
-// Category B: General operations dataset array list
-const generalFaqs = ref([
-  {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  }
-])
+function faqsByTopic(topic: string) {
+  return allFaqs.value
+    .filter((f) => f.Topic === topic && f.Active)
+    .sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0))
+}
 
-// Category C: General operations dataset array list
-const donationFaqs = ref([
-  {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
-  },
-    {
-    question: 'a Question asked a lot',
-    answer: 'an answer.'
-  },
-  {
-    question: 'another question?',
-    answer: 'another answer.'
+onMounted(async () => {
+  try {
+    const data = await fetchDonatorFaqs()
+    allFaqs.value = data
+    if (topics.value.length > 0) {
+      activeTab.value = topics.value[0]
+    }
+  } catch (e) {
+    error.value = true
+  } finally {
+    loading.value = false
   }
-])
+})
 </script>
 
 <style scoped>
-/* Clear line matching up global color theme rules securely */
 .border-divider {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
