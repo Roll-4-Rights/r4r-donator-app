@@ -161,8 +161,9 @@
         >
           <template #event="{ event }">
             <div class="w-100 px-1 py-05">
-              <div 
+              <div
                 class="custom-event-pill px-3 py-1 text-white font-weight-bold d-flex align-center justify-space-between"
+                :style="{ background: event.color }"
                 @click.stop="handleEventClick({ event })"
               >
                 <span class="text-truncate text-caption tracking-wide pr-1">{{ event.title }}</span>
@@ -233,6 +234,7 @@ interface CalendarEvent {
   start: Date
   end: Date
   description: string
+  color: string
 }
 
 const userName = ref('praeterusdice')
@@ -247,7 +249,10 @@ const fetchAnnouncements = async () => {
       id: row.Id,
       title: row['Title'],
       date: row['Created At']
-        ? new Date(row['Created At']).toLocaleString()
+        ? new Date(row['Created At']).toLocaleString([], {
+            dateStyle: 'short',
+            timeStyle: 'short'
+          })
         : '',
       content: row['Body']
     }))
@@ -292,7 +297,8 @@ const fetchCalendarData = async () => {
       title: row['Title'],
       start: new Date(row['Event Date Start']),
       end: new Date(row['Event Date End']),
-      description: row['Description'] || 'No additional details provided.'
+      description: row['Description'] || 'No additional details provided.',
+      color: row['Color'] || '#0B4F6C'
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
@@ -390,7 +396,6 @@ onMounted(() => {
 }
 
 .custom-event-pill {
-  background: linear-gradient(135deg, #0B4F6C 0%, #083B52 100%) !important;
   border-radius: 6px !important;
   height: 28px !important;
   box-shadow: 0px 2px 6px rgba(11, 79, 108, 0.12) !important;
