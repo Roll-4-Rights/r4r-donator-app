@@ -81,6 +81,13 @@
           ></v-progress-linear>
         </div>
 
+        <!-- Progress Tracker -->
+        <DragonProgressTracker
+          :total="progress.total"
+          :current-milestone="progress.currentMilestone"
+          :next-milestone="progress.nextMilestone"
+        />
+
         <v-divider class="mb-6 opacity-50"></v-divider>
 
         <!-- Call to Action -->
@@ -102,7 +109,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { apiService } from '@/services/api'
+import DragonProgressTracker from '@/components/DragonProgressTracker.vue'
 
 // TODO: replace this whole object with real campaign data — an API call,
 // a CMS fetch, a Firestore doc, whatever this project ends up using.
@@ -144,6 +153,36 @@ const formattedGoal = computed(() =>
 )
 
 const formattedRaised = computed(() => `$${campaign.value.raisedAmount.toLocaleString()}`)
+
+const progress = ref({
+  total: 0,
+  currentMilestone: 0,
+  nextMilestone: 10000
+})
+
+let pollHandle: ReturnType<typeof setInterval> | null = null
+
+const refreshProgress = async () => {
+  try {
+    const data = await apiService.fetchCampaignProgress()
+    progress.value = {
+      total: data.total,
+      currentMilestone: data.currentMilestone,
+      nextMilestone: data.nextMilestone
+    }
+  } catch (err) {
+    console.error('Failed to refresh campaign progress:', err)
+  }
+}
+
+onMounted(() => {
+  refreshProgress()
+  pollHandle = setInterval(refreshProgress, 20000)
+})
+
+onUnmounted(() => {
+  if (pollHandle) clearInterval(pollHandle)
+})
 
 // TODO: point this at wherever the auction items live (route or anchor link)
 const handleViewAuctionItems = () => {

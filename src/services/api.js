@@ -156,5 +156,13 @@ export const apiService = {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Save failed: ${res.status}`);
     return data;
+  },
+
+  async fetchCampaignProgress() {
+    const res = await fetch(`${API_BASE_URL}/campaign-progress`, {
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error(`Failed to fetch campaign progress: ${res.status}`);
+    return res.json();
   }
 };
