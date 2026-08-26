@@ -128,7 +128,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { fetchDonatorFaqs } from '@/services/api'
+import { apiService } from '@/services/api'
 
 interface FaqItem {
   Id: number
@@ -144,7 +144,6 @@ const loading = ref(true)
 const error = ref(false)
 const activeTab = ref('')
 
-// Derive tab list from the data itself, in first-appearance order (after sorting by Order)
 const topics = computed(() => {
   const seen = new Set<string>()
   const result: string[] = []
@@ -165,7 +164,7 @@ function faqsByTopic(topic: string) {
 
 onMounted(async () => {
   try {
-    const data = await fetchDonatorFaqs()
+    const data = await apiService.fetchDonatorFaqs()
     allFaqs.value = data
     if (topics.value.length > 0) {
       activeTab.value = topics.value[0]
