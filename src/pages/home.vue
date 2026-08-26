@@ -237,6 +237,18 @@ interface CalendarEvent {
   color: string
 }
 
+// Maps NocoDB's "Color" single-select label to an actual hex value.
+// Add/remove entries here to match whatever options exist in NocoDB --
+// this is the ONE place that needs updating if the palette changes.
+const COLOR_MAP: Record<string, string> = {
+  Blue: '#0B4F6C',
+  Red: '#C0392B',
+  Green: '#1E8449',
+  Gold: '#B7950B',
+  Purple: '#6C3483'
+}
+const DEFAULT_EVENT_COLOR = '#0B4F6C'
+
 const userName = ref('praeterusdice')
 
 // Announcements — populated from NocoDB on mount
@@ -298,7 +310,7 @@ const fetchCalendarData = async () => {
       start: new Date(row['Event Date Start']),
       end: new Date(row['Event Date End']),
       description: row['Description'] || 'No additional details provided.',
-      color: row['Color'] || '#0B4F6C'
+      color: COLOR_MAP[row['Color']] || DEFAULT_EVENT_COLOR
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
