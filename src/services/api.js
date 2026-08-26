@@ -164,5 +164,11 @@ export const apiService = {
     });
     if (!res.ok) throw new Error(`Failed to fetch campaign progress: ${res.status}`);
     return res.json();
+  },
+
+  async fetchCampaignInfo() {
+    const res = await fetch(`${API_BASE_URL}/campaign-info`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch campaign info: ${res.status}`);
+    return res.json();
   }
 };
