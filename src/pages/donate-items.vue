@@ -40,7 +40,7 @@
     <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8">
       <v-tab value="submit">Submit a Donation</v-tab>
       <v-tab value="list">My Donations</v-tab>
-      <v-tab value="shipping">Winner Shipping</v-tab>
+      <v-tab value="shipping">Winner and Shipping Info</v-tab>
     </v-tabs>
 
     <!-- APPLICATION INTERFACE CONTAINER VIEWS WINDOWS -->
@@ -83,16 +83,20 @@
                   </div>
                 </div>
 
-                <!-- PHOTO MATRIX CAPTURE BLOCK LAYOUT OVERLAY SECTION -->
-                <label class="field-label">Photos *</label>
-                <div class="dropzone mb-8" @click="$refs.fileInput.click()">
-                  <v-icon size="28" icon="mdi-tray-arrow-up" class="mb-2"></v-icon>
-                  <div class="dropzone-text">
-                    {{ selectedPhotos.length > 0 ? `${selectedPhotos.length} photo(s) selected` : 'Click to upload' }}
+                <!-- PHOTO UPLOAD — this form's own state, NOT the edit modal's -->
+                <label class="field-label">Photos</label>
+                <div class="edit-photo-grid mb-3">
+                  <div v-for="(photo, index) in selectedPhotos" :key="'new-submit-' + index" class="edit-photo-thumb">
+                    <img :src="photoPreviewUrl(photo)" alt="Selected photo">
+                    <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeSelectedPhoto(index)"></v-btn>
                   </div>
-                  <div class="dropzone-hint">1–6 photos</div>
+                </div>
+                <div class="dropzone dropzone-compact mb-2" @click="fileInput.click()" v-if="selectedPhotos.length < 6">
+                  <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
+                  <div class="dropzone-text">Add photos</div>
                   <input type="file" ref="fileInput" multiple accept="image/*" class="d-none" @change="handlePhotoSelection">
                 </div>
+                <div class="dropzone-hint mb-4">{{ selectedPhotos.length }}/6 photos</div>
 
                 <v-btn type="submit" block size="large" flat color="#0A3C46" class="submit-btn" :loading="isSubmitting">
                   Submit donation
@@ -143,13 +147,13 @@
                 </td>
                 <td>{{ item['Category'] || 'Unassigned' }}</td>
                 <td class="text-center">
-                  <v-chip :class="item['Auction Status'] === 'Accepted' ? 'chip-accepted' : 'chip-pending'" size="small" variant="flat">
-                    {{ item['Auction Status'] || 'Submitted' }}
+                  <v-chip :class="item['Item Status'] === 'Accepted' ? 'chip-accepted' : 'chip-pending'" size="small" variant="flat">
+                    {{ item['Item Status'] || 'Submitted' }}
                   </v-chip>
                 </td>
                 <td class="text-right mono">${{ item['Starting Bid Price'] || 0 }}</td>
                 <td class="text-right">
-                  <v-btn size="small" variant="text" color="#0A3C46" class="edit-btn" :disabled="item['Auction Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
+                  <v-btn size="small" variant="text" color="#0A3C46" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
                 </td>
               </tr>
             </tbody>
@@ -161,7 +165,7 @@
       <v-window-item value="shipping">
         <v-card variant="flat" class="ledger-card pa-8">
           <div class="mb-6">
-            <h2 class="ledger-heading mb-1">Winner shipping</h2>
+            <h2 class="ledger-heading mb-1">Winner and shipping info</h2>
             <p class="ledger-sub">Add a tracking number once you have shipped an item.</p>
           </div>
 
@@ -184,7 +188,7 @@
               </tr>
               <tr v-else v-for="winner in acceptedDonations" :key="winner.Id">
                 <td class="item-name">{{ winner['Item Name'] }}</td>
-                <td class="winner-info">{{ winner.winnerContact || 'Awaiting winner details' }}</td>
+                <td class="winner-info">{{ winner['Winner Information'] || 'Awaiting winner details' }}</td>
                 <td class="mono tracking-cell">{{ winner['Tracking Number'] || 'No tracking yet' }}</td>
                 <td>
                   <v-chip :class="winner['Tracking Number'] ? 'chip-accepted' : 'chip-pending'" size="small" variant="flat">
@@ -247,6 +251,25 @@
               <v-text-field v-model="editForm.startPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
             </div>
           </div>
+
+          <!-- PHOTO MANAGEMENT: existing + newly added photos -->
+          <label class="field-label">Photos</label>
+          <div class="edit-photo-grid mb-3">
+            <div v-for="(photo, index) in existingPhotos" :key="'existing-' + index" class="edit-photo-thumb">
+              <img :src="photo.url || photo.signedUrl" :alt="photo.title || 'Photo'">
+              <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeExistingPhoto(index)"></v-btn>
+            </div>
+            <div v-for="(photo, index) in newEditPhotos" :key="'new-' + index" class="edit-photo-thumb">
+              <img :src="photoPreviewUrl(photo)" alt="New photo">
+              <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeNewPhoto(index)"></v-btn>
+            </div>
+          </div>
+          <div class="dropzone dropzone-compact mb-2" @click="$refs.editFileInput.click()" v-if="totalEditPhotoCount < 6">
+            <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
+            <div class="dropzone-text">Add photos</div>
+            <input type="file" ref="editFileInput" multiple accept="image/*" class="d-none" @change="handleEditPhotoSelection">
+          </div>
+          <div class="dropzone-hint mb-4">{{ totalEditPhotoCount }}/6 photos</div>
         </v-card-text>
         <v-card-actions class="justify-end ga-2 pt-2 px-4 pb-4">
           <v-btn variant="text" color="grey-darken-1" @click="closeEditModal">Cancel</v-btn>
@@ -520,6 +543,30 @@ const editForm = ref({
   startPrice: null
 })
 
+// Edit Modal Photo States
+const editFileInput = ref(null)
+const existingPhotos = ref([])   // attachments already saved in NocoDB, kept unless removed
+const newEditPhotos = ref([])    // brand-new File objects picked in this edit session
+
+const totalEditPhotoCount = computed(() => existingPhotos.value.length + newEditPhotos.value.length)
+
+const photoPreviewUrl = (file) => URL.createObjectURL(file)
+
+const removeExistingPhoto = (index) => {
+  existingPhotos.value.splice(index, 1)
+}
+
+const removeNewPhoto = (index) => {
+  newEditPhotos.value.splice(index, 1)
+}
+
+const handleEditPhotoSelection = (event) => {
+  const files = Array.from(event.target.files || [])
+  const remainingSlots = 6 - totalEditPhotoCount.value
+  newEditPhotos.value.push(...files.slice(0, Math.max(remainingSlots, 0)))
+  event.target.value = '' // allow re-selecting the same file if removed and re-added
+}
+
 /**
  * Loads or refreshes data row items right out of your local NocoDB spreadsheet database
  */
@@ -540,7 +587,13 @@ const loadDashboardData = async () => {
  */
 const handlePhotoSelection = (event) => {
   const files = Array.from(event.target.files || [])
-  selectedPhotos.value = files.slice(0, 6) // Cap maximum at 6 safe media attachments safely
+  const remainingSlots = 6 - selectedPhotos.value.length
+  selectedPhotos.value.push(...files.slice(0, Math.max(remainingSlots, 0)))
+  event.target.value = ''
+}
+
+const removeSelectedPhoto = (index) => {
+  selectedPhotos.value.splice(index, 1)
 }
 
 /**
@@ -589,25 +642,34 @@ const openEditModal = (item) => {
     recPrice: item['Recommended Price'] ?? null,
     startPrice: item['Starting Bid Price'] ?? null
   }
+  existingPhotos.value = Array.isArray(item['Photos']) ? [...item['Photos']] : []
+  newEditPhotos.value = []
   editDialog.value = true
 }
 
 const closeEditModal = () => {
   editDialog.value = false
   selectedEditItem.value = null
+  existingPhotos.value = []
+  newEditPhotos.value = []
 }
 
 const saveEditInfo = async () => {
   if (!selectedEditItem.value) return
   isSavingEdit.value = true
   try {
+    // Upload any newly added photos, then merge with whatever existing photos weren't removed
+    const uploadedNewPhotos = await apiService.uploadPhotos(newEditPhotos.value)
+    const finalPhotos = [...existingPhotos.value, ...uploadedNewPhotos]
+
     await apiService.updateDonation(selectedEditItem.value.Id, {
       "Item Name": editForm.value.name,
       "Donator": editForm.value.donatorName,
       "Item Description": editForm.value.description,
       "Category": editForm.value.category,
       "Recommended Price": Number(editForm.value.recPrice) || 0,
-      "Starting Bid Price": Number(editForm.value.startPrice) || 0
+      "Starting Bid Price": Number(editForm.value.startPrice) || 0,
+      "Photos": finalPhotos
     })
     closeEditModal()
     await loadDashboardData()
@@ -653,11 +715,12 @@ const saveTrackingInfo = async () => {
 // Computed dashboard analytics — reads NocoDB's real "Auction Status" column
 const stats = computed(() => ({
   submitted: userDonations.value.length,
-  accepted: userDonations.value.filter(d => d['Auction Status'] === 'Accepted').length,
-  needsReview: userDonations.value.filter(d => d['Auction Status'] === 'Submitted').length
+  accepted: userDonations.value.filter(d => d['Item Status'] === 'Accepted').length,
+  needsReview: userDonations.value.filter(d => d['Item Status'] === 'Submitted').length
 }))
 
-const acceptedDonations = computed(() => userDonations.value.filter(d => d['Auction Status'] === 'Accepted'))
+const acceptedDonations = computed(() => userDonations.value.filter(d => d['Item Status'] === 'Accepted'))
+<!-- ...existing code... -->
 
 const filteredDonations = computed(() => {
   if (!search.value) return userDonations.value
