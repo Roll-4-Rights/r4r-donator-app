@@ -316,13 +316,11 @@ onMounted(() => {
   max-width: 48rem;
 }
 
-/* Micro-interaction lift animation class for your cards and expansion panels */
 .elevation-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.06) !important;
 }
 
-/* Prevents massive title text line-height gaps overlapping other text items */
 .leading-none {
   line-height: 1.15 !important;
 }
@@ -331,12 +329,10 @@ onMounted(() => {
   z-index: 2;
 }
 
-/* Update your parent v-card class to force a strict 3D depth system */
 .elevation-hover {
   transform-style: preserve-3d;
 }
 
-/* --- DESKTOP RULES (Screen widths 1200px and up) --- */
 @media (min-width: 1200px) {
   .corner-dragon {
     position: absolute;
@@ -347,8 +343,8 @@ onMounted(() => {
     z-index: 1;
     pointer-events: none;
     opacity: 0;
-    backface-visibility: hidden; 
-    transform: translate(0, 20px) scale(0.85); 
+    backface-visibility: hidden;
+    transform: translate(0, 20px) scale(0.85);
     transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease-out;
   }
 
@@ -375,7 +371,6 @@ onMounted(() => {
   }
 }
 
-/* BEGIN CALENDAR CSS */
 .custom-calendar-theme {
   min-height: 650px !important;
   font-family: 'Inter', sans-serif !important;
@@ -412,61 +407,6 @@ onMounted(() => {
   line-height: 1.2 !important;
   font-weight: 600 !important;
   display: inline-block;
-}
-
-<!-- filepath: c:\Users\gamer\Documents\Roll4Rights\r4r-auction-app\src\pages\Home.vue -->
-<template>
-  <v-container fluid class="pa-0">
-    <div class="hero-section">
-      <v-img
-        src="https://placehold.co/1600x500?text=Campaign+Artwork"
-        height="500"
-        cover
-        class="hero-image"
-      >
-        <div class="hero-overlay">
-          <div class="hero-title-box">
-            {{ campaignTitle }}
-          </div>
-        </div>
-      </v-img>
-    </div>
-
-    <v-container class="text-center py-8">
-      <h1 class="text-h4" style="color: #103948;">
-        Welcome to the {{ campaignName }} Charity Auction by Roll4Rights!
-      </h1>
-    </v-container>
-  </v-container>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-// Placeholder values until Campaign Settings table is wired up
-const campaignTitle = ref('Campaign Title Goes Here')
-const campaignName = ref('Campaign Name')
-</script>
-
-<style scoped>
-.hero-section {
-  position: relative;
-  width: 100%;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.hero-title-box {
-  background: white;
-  padding: 12px 24px;
-  font-size: 1.2rem;
-  font-style: italic;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 </style>
 
