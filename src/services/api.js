@@ -134,5 +134,27 @@ export const apiService = {
     });
     if (!res.ok) throw new Error(`Failed to send message: ${res.status}`);
     return res.json();
+  },
+
+  // ============= DONATOR PROFILE =============
+
+  async fetchDonatorProfile() {
+    const res = await fetch(`${API_BASE_URL}/donator-profile`, {
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error(`Failed to fetch donator profile: ${res.status}`);
+    return res.json();
+  },
+
+  async saveDonatorProfile(payload) {
+    const res = await fetch(`${API_BASE_URL}/donator-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Save failed: ${res.status}`);
+    return data;
   }
 };
