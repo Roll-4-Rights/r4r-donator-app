@@ -8,27 +8,37 @@ export const apiService = {
     const res = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ name, email, password })
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Register failed: ${res.status}`);
-    return data; // { token, name, email }
+    return data; // { name, email }
   },
 
   async login({ email, password }) {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ email, password })
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Login failed: ${res.status}`);
-    return data; // { token, name, email }
+    return data; // { name, email }
   },
 
-  async fetchCurrentDonator(token) {
+  async logout() {
+    const res = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error(`Logout failed: ${res.status}`);
+  },
+
+  async fetchCurrentDonator() {
     const res = await fetch(`${API_BASE_URL}/auth/me`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+      credentials: 'include'
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Failed to fetch profile: ${res.status}`);
@@ -36,9 +46,11 @@ export const apiService = {
   },
 
   // ============= DONATIONS =============
-  
+
   async fetchDonations() {
-    const res = await fetch(`${API_BASE_URL}/donations`);
+    const res = await fetch(`${API_BASE_URL}/donations`, {
+      credentials: 'include'
+    });
     if (!res.ok) throw new Error(`Failed to fetch donations: ${res.status}`);
     return res.json();
   },
@@ -47,12 +59,13 @@ export const apiService = {
     const res = await fetch(`${API_BASE_URL}/donations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(formPayload)
     });
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
       console.error('❌ Create failed:', errorData);
-      throw new Error(`Create failed: ${res.status}`);
+      throw new Error(errorData.error || `Create failed: ${res.status}`);
     }
     return await res.json();
   },
@@ -61,12 +74,13 @@ export const apiService = {
     const res = await fetch(`${API_BASE_URL}/donations/${recordId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
       console.error('❌ Update failed:', errorData);
-      throw new Error(`Update failed: ${res.status}`);
+      throw new Error(errorData.error || `Update failed: ${res.status}`);
     }
     return await res.json();
   },
