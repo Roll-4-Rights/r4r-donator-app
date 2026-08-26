@@ -720,7 +720,6 @@ const stats = computed(() => ({
 }))
 
 const acceptedDonations = computed(() => userDonations.value.filter(d => d['Item Status'] === 'Accepted'))
-<!-- ...existing code... -->
 
 const filteredDonations = computed(() => {
   if (!search.value) return userDonations.value
