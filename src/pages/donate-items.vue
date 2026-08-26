@@ -527,7 +527,7 @@ const loadDashboardData = async () => {
   isLoadingTables.value = true
   try {
     const rawNocoRows = await apiService.fetchDonations()
-    userDonations.value = rawNocoRows || []
+    userDonations.value = rawNocoRows?.list || (Array.isArray(rawNocoRows) ? rawNocoRows : [])
   } catch (err) {
     console.error('Failed to sync frontend views with NocoDB records:', err)
   } finally {
@@ -556,7 +556,6 @@ const submitForm = async () => {
     await apiService.createDonation({
       "Item Name": form.value.name,
       "Donator": form.value.donatorName,
-      "Donator Email": 'gamer.test.session@gmail.com',
       "Item Description": form.value.description,
       "Category": form.value.category,
       "Recommended Price": Number(form.value.recPrice) || 0,
@@ -602,8 +601,7 @@ const saveEditInfo = async () => {
   if (!selectedEditItem.value) return
   isSavingEdit.value = true
   try {
-    await apiService.updateDonation({
-      Id: selectedEditItem.value.Id,
+    await apiService.updateDonation(selectedEditItem.value.Id, {
       "Item Name": editForm.value.name,
       "Donator": editForm.value.donatorName,
       "Item Description": editForm.value.description,
@@ -638,9 +636,7 @@ const saveTrackingInfo = async () => {
   if (!selectedWinner.value) return
   isSavingTracking.value = true
   try {
-    // Updates the existing record via PATCH — createDonation() would try to make a new row
-    await apiService.updateDonation({
-      Id: selectedWinner.value.Id,
+    await apiService.updateDonation(selectedWinner.value.Id, {
       "Tracking Number": trackingInput.value
     })
     selectedWinner.value['Tracking Number'] = trackingInput.value

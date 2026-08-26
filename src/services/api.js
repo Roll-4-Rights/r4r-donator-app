@@ -109,8 +109,9 @@ export const apiService = {
 
     const res = await fetch(`${API_BASE_URL}/upload`, {
       method: 'POST',
+      credentials: 'include',
       body: mediaFormData
-      // NO HEADERS - let browser set Content-Type with boundary
+      // NO Content-Type header - browser sets it with the multipart boundary
     });
     
     if (!res.ok) throw new Error(`Media Upload Failed: ${res.status}`);
