@@ -136,6 +136,23 @@ export const apiService = {
     return res.json();
   },
 
+  async fetchMessages() {
+    const res = await fetch(`${API_BASE_URL}/messages`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch messages: ${res.status}`);
+    return res.json();
+  },
+
+  async sendMessage(question) {
+    const res = await fetch(`${API_BASE_URL}/messages`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ Question: question })
+    });
+    if (!res.ok) throw new Error(`Failed to send message: ${res.status}`);
+    return res.json();
+  },
+
   // ============= DONATOR PROFILE =============
 
   async fetchDonatorProfile() {
