@@ -247,7 +247,7 @@ const fetchAnnouncements = async () => {
       id: row.Id,
       title: row['Title'],
       date: row['Created At']
-        ? new Date(row['Created At']).toLocaleDateString()
+        ? new Date(row['Created At']).toLocaleString()
         : '',
       content: row['Body']
     }))
@@ -290,8 +290,8 @@ const fetchCalendarData = async () => {
     const rawEvents = await apiService.fetchCalendar()
     publicCalendar.value = (rawEvents || []).map((row: any) => ({
       title: row['Title'],
-      start: new Date(row['Event Start Date']),
-      end: new Date(row['Event End Date']),
+      start: new Date(row['Event Date Start']),
+      end: new Date(row['Event Date End']),
       description: row['Description'] || 'No additional details provided.'
     }))
   } catch (error) {
