@@ -25,6 +25,15 @@
         class="body-shape"
       />
 
+      <!-- Wing — moved AFTER body so it renders on top, made larger + fan-shaped -->
+      <path
+        d="M160,90 Q180,35 235,30 Q260,45 250,75 Q235,60 210,68 Q225,85 210,100 Q190,85 175,95 Z"
+        fill="#2c3a47"
+        stroke="#1c2732"
+        stroke-width="1.5"
+        class="wing"
+      />
+
       <!-- Head / snout -->
       <path
         d="M175,88 Q212,82 232,100 Q222,112 205,110 Q188,108 175,98 Z"
