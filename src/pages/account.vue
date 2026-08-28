@@ -257,8 +257,6 @@ const fileInputRef = ref(null)
 const selectedFile = ref(null)
 const isUploading = ref(false)
 
-// Image URL states
-const avatarPreview = ref(originalAvatar.value)
 
 // Trigger the file picker hidden inside the Vuetify input element
 const triggerFileSelect = () => {
@@ -282,14 +280,6 @@ const onFileSelected = (fileOrArray) => {
   avatarPreview.value = URL.createObjectURL(file)
 }
 
-// Cancel selection and wipe temporary blob out of memory
-const cancelSelection = () => {
-  if (avatarPreview.value.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarPreview.value)
-  }
-  selectedFile.value = null
-  avatarPreview.value = originalAvatar.value
-}
 
 //password
 const closePasswordModal = () => {
