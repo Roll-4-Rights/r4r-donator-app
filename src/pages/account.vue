@@ -173,6 +173,71 @@
       </v-card>
     </v-dialog>
   </v-container>
+
+
+
+      <!-- AVATAR UPLOAD -->
+ <div class="d-flex flex-column align-center justify-center pa-4">
+    <!-- Interactive Avatar Trigger -->
+    <v-hover v-slot="{ isHovering, props }">
+      <v-avatar
+        size="150"
+        v-bind="props"
+        class="cursor-pointer elevation-3 position-relative"
+        @click="triggerFileSelect"
+      >
+        <!-- Fallback if there's no image -->
+        <v-img
+          v-if="avatarPreview"
+          :src="avatarPreview"
+          alt="User Avatar"
+          cover
+        />
+        <v-icon v-else size="80" color="grey-lighten-1">mdi-account-circle</v-icon>
+
+        <!-- Hover Overlay Shield -->
+        <v-fade-transition>
+          <div
+            v-if="isHovering"
+            class="d-flex align-center justify-center position-absolute w-100 h-100"
+            style="background: rgba(0, 0, 0, 0.45); top: 0; left: 0;"
+          >
+            <v-icon color="white" size="32">mdi-camera</v-icon>
+          </div>
+        </v-fade-transition>
+      </v-avatar>
+    </v-hover>
+
+    <!-- Hidden Native Vuetify File Input -->
+    <v-file-input
+      ref="fileInputRef"
+      v-model="selectedFile"
+      accept="image/png, image/jpeg, image/webp"
+      class="d-none"
+      @update:model-value="onFileSelected"
+    />
+
+    <!-- Action Buttons -->
+    <div v-if="selectedFile" class="mt-4 d-flex ga-2">
+      <v-btn
+        color="primary"
+        :loading="isUploading"
+        prepend-icon="mdi-upload"
+        @click="uploadAvatar"
+      >
+        Save Photo
+      </v-btn>
+      <v-btn
+        variant="text"
+        color="error"
+        :disabled="isUploading"
+        @click="cancelSelection"
+      >
+        Cancel
+      </v-btn>
+    </div>
+  </div>      
+
 </template>
 
 
@@ -180,6 +245,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import axios from 'axios'
 
 // Validation Ref Frameworks
 const profileFormRef = ref(null)
@@ -259,6 +325,71 @@ const updatePassword = async () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
+
+//PROFILE IMAGE
+// State variables
+const fileInputRef = ref(null)
+const selectedFile = ref(null)
+const isUploading = ref(false)
+
+// Placeholder or current user avatar url from your DB
+const avatarPreview = ref('https://vuetifyjs.com') 
+const originalAvatar = avatarPreview.value
+
+// Open native file picker programmatically
+const triggerFileSelect = () => {
+  // Access internal input element inside Vuetify structure
+  fileInputRef.value?.$el.querySelector('input').click()
+}
+
+// Generate client-side preview when file is picked
+const onFileSelected = (file) => {
+  if (!file) return
+
+  // Create a local blob URL for instant UI preview
+  avatarPreview.value = URL.createObjectURL(file)
+}
+
+// Send the binary file data to your API endpoint
+const uploadAvatar = async () => {
+  if (!selectedFile.value) return
+
+  isUploading.value = true
+  
+  // Package file into browser multipart Form Data
+  const formData = new FormData()
+  formData.append('avatar', selectedFile.value)
+
+  try {
+    // Replace URL with your actual backend account update endpoint
+    const response = await axios.post('/api/account/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    
+    // Server should return the updated persistent cloud storage image URL
+    avatarPreview.value = response.data.avatarUrl
+    selectedFile.value = null // clear input state
+    alert('Avatar updated successfully!')
+  } catch (error) {
+    console.error('Upload failed:', error)
+    alert('Failed to save avatar image.')
+    revertPreview()
+  } finally {
+    isUploading.value = false
+  }
+}
+
+// Cancel action and discard changes
+const cancelSelection = () => {
+  selectedFile.value = null
+  revertPreview()
+}
+
+const revertPreview = () => {
+  avatarPreview.value = originalAvatar
+}
 </script>
 
 <style scoped>
@@ -278,5 +409,8 @@ const updatePassword = async () => {
 :deep(.v-text-field .v-input__details) {
   padding-top: 6px !important;
   padding-left: 4px !important;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
