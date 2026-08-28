@@ -293,7 +293,7 @@ const uploadAvatar = async () => {
 
   try {
     const response = await axios.post('/api/account/avatar', formData)
-    }
+
     
     // Clean up temporary blob memory
     if (avatarPreview.value.startsWith('blob:')) {
@@ -313,6 +313,7 @@ const uploadAvatar = async () => {
   } finally {
     isUploading.value = false
   }
+}
 
 // Cancel selection and wipe temporary blob out of memory
 const cancelSelection = () => {
