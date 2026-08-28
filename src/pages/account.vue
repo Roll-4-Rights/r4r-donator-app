@@ -177,66 +177,51 @@
 
 
       <!-- AVATAR UPLOAD -->
- <div class="d-flex flex-column align-center justify-center pa-4">
-    <!-- Interactive Avatar Trigger -->
-    <v-hover v-slot="{ isHovering, props }">
-      <v-avatar
-        size="150"
-        v-bind="props"
-        class="cursor-pointer elevation-3 position-relative"
-        @click="triggerFileSelect"
-      >
-        <!-- Fallback if there's no image -->
-        <v-img
-          v-if="avatarPreview"
-          :src="avatarPreview"
-          alt="User Avatar"
-          cover
-        />
-        <v-icon v-else size="80" color="grey-lighten-1">mdi-account-circle</v-icon>
+<v-container class="d-flex flex-column align-center">
+    
+    <!-- Clickable Avatar Preview Container -->
+    <v-avatar size="150" class="elevation-3 cursor-pointer mb-4" @click="triggerFileSelect">
+      <v-img :src="avatarPreview" alt="User Avatar">
+        <!-- Optional hover overlay hint -->
+        <template v-slot:placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+    </v-avatar>
 
-        <!-- Hover Overlay Shield -->
-        <v-fade-transition>
-          <div
-            v-if="isHovering"
-            class="d-flex align-center justify-center position-absolute w-100 h-100"
-            style="background: rgba(0, 0, 0, 0.45); top: 0; left: 0;"
-          >
-            <v-icon color="white" size="32">mdi-camera</v-icon>
-          </div>
-        </v-fade-transition>
-      </v-avatar>
-    </v-hover>
-
-    <!-- Hidden Native Vuetify File Input -->
+    <!-- Hidden Vuetify File Input -->
+    <!-- We hide it completely using standard CSS or Vuetify utility classes -->
     <v-file-input
       ref="fileInputRef"
-      v-model="selectedFile"
-      accept="image/png, image/jpeg, image/webp"
+      accept="image/*"
       class="d-none"
       @update:model-value="onFileSelected"
     />
 
-    <!-- Action Buttons -->
-    <div v-if="selectedFile" class="mt-4 d-flex ga-2">
-      <v-btn
-        color="primary"
-        :loading="isUploading"
-        prepend-icon="mdi-upload"
-        @click="uploadAvatar"
-      >
-        Save Photo
-      </v-btn>
-      <v-btn
-        variant="text"
-        color="error"
-        :disabled="isUploading"
-        @click="cancelSelection"
-      >
-        Cancel
-      </v-btn>
-    </div>
-  </div>      
+    <!-- Action Buttons: Only show when a new file has been staged -->
+    <v-expand-transition>
+      <div v-if="selectedFile" class="d-flex ga-3">
+        <v-btn 
+          color="success" 
+          :loading="isUploading" 
+          @click="uploadAvatar"
+        >
+          Save Changes
+        </v-btn>
+        
+        <v-btn 
+          color="grey-lighten-1" 
+          :disabled="isUploading" 
+          @click="cancelSelection"
+        >
+          Cancel
+        </v-btn>
+      </div>
+    </v-expand-transition>
+
+  </v-container>  
 
 </template>
 
@@ -294,8 +279,77 @@ const avatarBgColor = computed(() => {
   return colorPalette[colorSelectorIndex]
 })
 
-const handleAvatarClick = () => {
-  console.log('Avatar modification hook placeholder logs triggered.')
+//PROFILE PICTURE CODE// State variables
+const fileInputRef = ref(null)
+const selectedFile = ref(null)
+const isUploading = ref(false)
+
+// Image URL states
+const originalAvatar = ref('https://unsplash.com') 
+const avatarPreview = ref(originalAvatar.value)
+
+// Trigger the file picker hidden inside the Vuetify input element
+const triggerFileSelect = () => {
+  fileInputRef.value?.click()
+}
+
+// Vuetify 3 passes the file directly or inside an array
+const onFileSelected = (fileOrArray) => {
+  // Extract single file if Vuetify delivers it as an array
+  const file = Array.isArray(fileOrArray) ? fileOrArray[0] : fileOrArray
+  if (!file) return
+
+  // Revoke old blob memory if switching between multiple local selections
+  if (avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value)
+  }
+
+  // Save file data for the eventual upload step
+  selectedFile.value = file
+  // Generate temporary preview URL
+  avatarPreview.value = URL.createObjectURL(file)
+}
+
+// Send binary data to backend when "Save" is clicked
+const uploadAvatar = async () => {
+  if (!selectedFile.value) return
+
+  isUploading.value = true
+  const formData = new FormData()
+  formData.append('avatar', selectedFile.value)
+
+  try {
+    const response = await axios.post('/api/account/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    
+    // Clean up temporary blob memory
+    if (avatarPreview.value.startsWith('blob:')) {
+      URL.revokeObjectURL(avatarPreview.value)
+    }
+
+    // Set new image from backend as the permanent source
+    originalAvatar.value = response.data.avatarUrl
+    avatarPreview.value = response.data.avatarUrl
+    selectedFile.value = null 
+    
+    alert('Avatar updated successfully!')
+  } catch (error) {
+    console.error('Upload failed:', error)
+    alert('Failed to save avatar image.')
+    revertPreview()
+  } finally {
+    isUploading.value = false
+  }
+}
+
+// Cancel selection and wipe temporary blob out of memory
+const cancelSelection = () => {
+  if (avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value)
+  }
+  selectedFile.value = null
+  avatarPreview.value = originalAvatar.value
 }
 
 const closePasswordModal = () => {
@@ -324,71 +378,6 @@ const updatePassword = async () => {
     showSuccessAlert.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-}
-
-//PROFILE IMAGE
-// State variables
-const fileInputRef = ref(null)
-const selectedFile = ref(null)
-const isUploading = ref(false)
-
-// Placeholder or current user avatar url from your DB
-const avatarPreview = ref('https://vuetifyjs.com') 
-const originalAvatar = avatarPreview.value
-
-// Open native file picker programmatically
-const triggerFileSelect = () => {
-  // Access internal input element inside Vuetify structure
-  fileInputRef.value?.$el.querySelector('input').click()
-}
-
-// Generate client-side preview when file is picked
-const onFileSelected = (file) => {
-  if (!file) return
-
-  // Create a local blob URL for instant UI preview
-  avatarPreview.value = URL.createObjectURL(file)
-}
-
-// Send the binary file data to your API endpoint
-const uploadAvatar = async () => {
-  if (!selectedFile.value) return
-
-  isUploading.value = true
-  
-  // Package file into browser multipart Form Data
-  const formData = new FormData()
-  formData.append('avatar', selectedFile.value)
-
-  try {
-    // Replace URL with your actual backend account update endpoint
-    const response = await axios.post('/api/account/avatar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    
-    // Server should return the updated persistent cloud storage image URL
-    avatarPreview.value = response.data.avatarUrl
-    selectedFile.value = null // clear input state
-    alert('Avatar updated successfully!')
-  } catch (error) {
-    console.error('Upload failed:', error)
-    alert('Failed to save avatar image.')
-    revertPreview()
-  } finally {
-    isUploading.value = false
-  }
-}
-
-// Cancel action and discard changes
-const cancelSelection = () => {
-  selectedFile.value = null
-  revertPreview()
-}
-
-const revertPreview = () => {
-  avatarPreview.value = originalAvatar
 }
 </script>
 
