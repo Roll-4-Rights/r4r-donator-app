@@ -26,15 +26,18 @@
         <p class="text-body-2 text-grey-darken-1 mb-0">Manage your user profile configuration settings.</p>
       </div>
 
-      <!-- SECTION 1: CHROMATIC INITIAL AVATAR DISPLAY -->
+            <!-- SECTION 1: AVATAR DISPLAY + UPLOAD -->
       <div class="mb-6 text-center">
         <div class="position-relative d-inline-block">
           <v-avatar 
             size="90" 
-            :style="{ backgroundColor: avatarBgColor }" 
+            :style="{ backgroundColor: avatarPreview ? undefined : avatarBgColor }" 
             class="text-white text-h4 font-weight-black border rounded-circle elevation-1"
           >
-            {{ profileForm.name ? profileForm.name.charAt(0).toUpperCase() : 'P' }}
+            <v-img v-if="avatarPreview" :src="avatarPreview" alt="User Avatar" cover></v-img>
+            <template v-else>
+              {{ profileForm.name ? profileForm.name.charAt(0).toUpperCase() : 'P' }}
+            </template>
           </v-avatar>
           <v-btn
             icon="mdi-camera"
@@ -42,9 +45,29 @@
             color="#0A3C46"
             class="text-white position-absolute elevation-1"
             style="bottom: 0; right: 0;"
-            @click="handleAvatarClick"
+            @click="triggerFileSelect"
           ></v-btn>
         </div>
+
+        <!-- Hidden file input -->
+        <v-file-input
+          ref="fileInputRef"
+          accept="image/*"
+          class="d-none"
+          @update:model-value="onFileSelected"
+        />
+
+        <!-- Save/Cancel appear once a file is staged -->
+        <v-expand-transition>
+          <div v-if="selectedFile" class="d-flex ga-3 justify-center mt-3">
+            <v-btn color="success" size="small" :loading="isUploading" @click="uploadAvatar">
+              Save Photo
+            </v-btn>
+            <v-btn color="grey-lighten-1" size="small" :disabled="isUploading" @click="cancelSelection">
+              Cancel
+            </v-btn>
+          </div>
+        </v-expand-transition>
       </div>
 
       <!-- MAIN FORM FIELDS BLOCK -->
@@ -173,56 +196,6 @@
       </v-card>
     </v-dialog>
   </v-container>
-
-
-
-      <!-- AVATAR UPLOAD -->
-<v-container class="d-flex flex-column align-center">
-    
-    <!-- Clickable Avatar Preview Container -->
-    <v-avatar size="150" class="elevation-3 cursor-pointer mb-4" @click="triggerFileSelect">
-      <v-img :src="avatarPreview" alt="User Avatar">
-        <!-- Optional hover overlay hint -->
-        <template v-slot:placeholder>
-          <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img>
-    </v-avatar>
-
-    <!-- Hidden Vuetify File Input -->
-    <!-- We hide it completely using standard CSS or Vuetify utility classes -->
-    <v-file-input
-      ref="fileInputRef"
-      accept="image/*"
-      class="d-none"
-      @update:model-value="onFileSelected"
-    />
-
-    <!-- Action Buttons: Only show when a new file has been staged -->
-    <v-expand-transition>
-      <div v-if="selectedFile" class="d-flex ga-3">
-        <v-btn 
-          color="success" 
-          :loading="isUploading" 
-          @click="uploadAvatar"
-        >
-          Save Changes
-        </v-btn>
-        
-        <v-btn 
-          color="grey-lighten-1" 
-          :disabled="isUploading" 
-          @click="cancelSelection"
-        >
-          Cancel
-        </v-btn>
-      </div>
-    </v-expand-transition>
-
-  </v-container>  
-
 </template>
 
 
@@ -319,9 +292,8 @@ const uploadAvatar = async () => {
   formData.append('avatar', selectedFile.value)
 
   try {
-    const response = await axios.post('/api/account/avatar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    const response = await axios.post('/api/account/avatar', formData)
+    }
     
     // Clean up temporary blob memory
     if (avatarPreview.value.startsWith('blob:')) {
@@ -341,7 +313,6 @@ const uploadAvatar = async () => {
   } finally {
     isUploading.value = false
   }
-}
 
 // Cancel selection and wipe temporary blob out of memory
 const cancelSelection = () => {
