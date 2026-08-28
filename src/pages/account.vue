@@ -258,7 +258,6 @@ const selectedFile = ref(null)
 const isUploading = ref(false)
 
 // Image URL states
-const originalAvatar = ref('https://unsplash.com') 
 const avatarPreview = ref(originalAvatar.value)
 
 // Trigger the file picker hidden inside the Vuetify input element
@@ -292,6 +291,7 @@ const cancelSelection = () => {
   avatarPreview.value = originalAvatar.value
 }
 
+//password
 const closePasswordModal = () => {
   passwordDialog.value = false
   passwordForm.value.current = ''

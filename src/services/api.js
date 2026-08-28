@@ -203,37 +203,3 @@ export const apiService = {
     return res.json();
   }
 };
-
-
-  // ============= ACCOUNT SETTINGS =============
-
-const uploadAvatar = async () => {
-  if (!selectedFile.value) return
-
-  isUploading.value = true
-  const formData = new FormData()
-  formData.append('avatar', selectedFile.value)
-
-  try {
-    const response = await axios.post('/account', formData)
-
-    
-    // Clean up temporary blob memory
-    if (avatarPreview.value.startsWith('blob:')) {
-      URL.revokeObjectURL(avatarPreview.value)
-    }
-
-    // Set new image from backend as the permanent source
-    originalAvatar.value = response.data.avatarUrl
-    avatarPreview.value = response.data.avatarUrl
-    selectedFile.value = null 
-    
-    alert('Avatar updated successfully!')
-  } catch (error) {
-    console.error('Upload failed:', error)
-    alert('Failed to save avatar image.')
-    revertPreview()
-  } finally {
-    isUploading.value = false
-  }
-}
