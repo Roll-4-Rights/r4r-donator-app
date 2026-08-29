@@ -52,8 +52,10 @@
         <!-- Hidden file input -->
         <v-file-input
           ref="fileInputRef"
+          v-model="fileInputModel"
           accept="image/*"
           class="d-none"
+          style="display: none"
           @update:model-value="onFileSelected"
         />
 
