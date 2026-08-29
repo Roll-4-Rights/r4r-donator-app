@@ -203,23 +203,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
 import { apiService, API_BASE_URL } from '@/services/api'
 import { ref, onMounted } from 'vue'
-import { apiService, API_BASE_URL } from '@/services/api'
 
-const navAvatarUrl = ref(null)
-
-onMounted(async () => {
-  try {
-    const data = await apiService.fetchCurrentDonator()
-    if (data.profile_picture) {
-      navAvatarUrl.value = `${API_BASE_URL}${data.profile_picture}`
-    }
-  } catch (e) {
-    // not logged in, or fetch failed — falls back to the icon below
-  }
-})
 
 // Validation Ref Frameworks
 const profileFormRef = ref(null)
