@@ -237,8 +237,6 @@ const rules = {
 }
 
 // Profile Pic
-import { ref, computed, onMounted } from 'vue'
-
 const fileInputRef = ref(null)
 const fileInputModel = ref(null)
 const selectedFile = ref(null)
