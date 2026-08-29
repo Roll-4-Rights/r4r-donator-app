@@ -46,34 +46,38 @@
     </div>
 
     <!-- Message History Cards List -->
-    <template v-else>
       <v-row>
         <v-col cols="12" v-for="msg in pagedMessages" :key="msg.Id" class="pb-4">
-          <v-card class="rounded-xl" variant="flat" border>
-            <v-card-text class="pa-6 text-left">
-              <div class="d-flex justify-space-between align-center mb-4">
-                <span class="text-caption text-medium-emphasis">
-                  {{ formatDate(msg['Created At']) }}
-                </span>
-                <v-chip
-                  size="small"
-                  :color="msg.Status === 'Answered' ? 'success' : 'warning'"
-                  variant="flat"
-                  class="font-weight-bold"
-                >
-                  {{ msg.Status }}
-                </v-chip>
-              </div>
-              <p class="text-body-1 font-weight-bold text-black mb-2">{{ msg.Question }}</p>
-              <div class="bg-grey-lighten-4 rounded-lg pa-4 mt-3" v-if="msg.Answer">
-                <p class="text-body-2 text-high-emphasis style-answer">
-                  {{ msg.Answer }}
-                </p>
-              </div>
-              <p v-else class="text-body-2 text-medium-emphasis font-italic mt-2">
-                Awaiting a response from the team.
+          <v-card-text class="pa-6 text-left">
+            <div class="d-flex justify-space-between align-center mb-4">
+              <span class="text-caption text-medium-emphasis">
+                {{ formatDate(msg['Created At']) }}
+              </span>
+              <v-chip
+                size="small"
+                :color="msg.Status === 'Answered' ? 'success' : 'warning'"
+                variant="flat"
+                class="font-weight-bold"
+              >
+                {{ msg.Status }}
+              </v-chip>
+            </div>
+
+            <div class="text-overline text-medium-emphasis mb-1">Question</div>
+            <p class="text-body-1 font-weight-bold text-black mb-4">{{ msg.Question }}</p>
+
+            <v-divider class="mb-4"></v-divider>
+
+            <div class="text-overline text-medium-emphasis mb-1">Answer</div>
+            <div class="bg-grey-lighten-4 rounded-lg pa-4" v-if="msg.Answer">
+              <p class="text-body-2 text-high-emphasis style-answer mb-0">
+                {{ msg.Answer }}
               </p>
-            </v-card-text>
+            </div>
+            <p v-else class="text-body-2 text-medium-emphasis font-italic mb-0">
+              Awaiting a response from the team.
+            </p>
+          </v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -86,8 +90,10 @@
           color="#0B4F6C"
           density="comfortable"
         ></v-pagination>
-      </div>
-    </template>
+  </div>
+  </v-container>
+</template>
+
 
 
 
