@@ -202,8 +202,9 @@
 
 
 <script setup>
-import { ref, computed } from 'vue'
-import axios from 'axios';
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+import { apiService, API_BASE_URL } from '@/services/api'
 
 // Validation Ref Frameworks
 const profileFormRef = ref(null)
@@ -214,7 +215,12 @@ const isPasswordValid = ref(false)
 // UI Feedback States
 const showSuccessAlert = ref(false)
 
-
+// True Account Profile State
+const profileForm = ref({
+  email: '',
+  name: '',
+  profile_picture: null
+})
 
 // Dialog Form Workspace Values
 const passwordDialog = ref(false)
@@ -251,9 +257,17 @@ const avatarBgColor = computed(() => {
   return `hsl(${hue}, 45%, 45%)`
 })
 
-onMounted(() => {
-  if (profileForm.value.profile_picture) {
-    avatarPreview.value = `${API_BASE_URL}${profileForm.value.profile_picture}`
+onMounted(async () => {
+  try {
+    const data = await apiService.fetchCurrentDonator()
+    profileForm.value.email = data.email
+    profileForm.value.name = data.name
+    profileForm.value.profile_picture = data.profile_picture
+    if (data.profile_picture) {
+      avatarPreview.value = `${API_BASE_URL}${data.profile_picture}`
+    }
+  } catch (e) {
+    // surface e.message to the user
   }
 })
 
@@ -283,7 +297,7 @@ async function uploadAvatar() {
   if (!selectedFile.value) return
   isUploading.value = true
   try {
-    const data = await auth.uploadProfilePicture(selectedFile.value)
+    const data = await apiService.uploadProfilePicture(selectedFile.value)
     profileForm.value.profile_picture = data.profile_picture
     if (avatarPreview.value?.startsWith('blob:')) URL.revokeObjectURL(avatarPreview.value)
     avatarPreview.value = `${API_BASE_URL}${data.profile_picture}`
@@ -305,8 +319,6 @@ function cancelSelection() {
   selectedFile.value = null
   fileInputModel.value = null
 }
-
-
 
 //password
 const closePasswordModal = () => {

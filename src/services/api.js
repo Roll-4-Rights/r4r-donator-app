@@ -1,6 +1,5 @@
 // src/services/api.js
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'; //  Flask middleware
-
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'; //  Flask middleware
 export const apiService = {
   // ============= AUTH =============
 
@@ -43,6 +42,22 @@ export const apiService = {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Failed to fetch profile: ${res.status}`);
     return data; // { donator_id, email }
+  },
+
+  // ============= PROFILE PICS UPLOAD =============
+
+  async uploadProfilePicture(file) {
+    const formData = new FormData();
+    formData.append('picture', file);
+
+    const res = await fetch(`${API_BASE_URL}/auth/profile-picture`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`);
+    return data; // { profile_picture }
   },
 
   // ============= DONATIONS =============
@@ -203,19 +218,3 @@ export const apiService = {
     return res.json();
   }
 };
-
-  // ============= PROFILE PICS UPLOAD =============
-
-async uploadProfilePicture(file) {
-  const formData = new FormData()
-  formData.append('picture', file)
-
-  const res = await fetch(`${API_BASE_URL}/auth/profile-picture`, {
-    method: 'POST',
-    credentials: 'include',
-    body: formData
-  })
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`)
-  return data
-}
