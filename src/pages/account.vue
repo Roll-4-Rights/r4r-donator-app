@@ -332,22 +332,32 @@ const closePasswordModal = () => {
 // Data Save Executions
 const saveProfile = async () => {
   const { valid } = await profileFormRef.value.validate()
-  if (valid) {
-    console.log('Dispatching updated profile records to server backend:', profileForm.value)
+  if (!valid) return
+  try {
+    await apiService.updateName(profileForm.value.name)
     showSuccessAlert.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  } catch (e) {
+    // surface e.message to the user
   }
 }
 
 const updatePassword = async () => {
   const { valid } = await passwordFormRef.value.validate()
-  if (valid) {
-    console.log('Securely syncing updated user credentials password payload to core auth channels...')
+  if (!valid) return
+  try {
+    await apiService.changePassword({
+      current_password: passwordForm.value.current,
+      new_password: passwordForm.value.new
+    })
     closePasswordModal()
     showSuccessAlert.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  } catch (e) {
+    // surface e.message to the user
   }
 }
+
 </script>
 
 <style scoped>

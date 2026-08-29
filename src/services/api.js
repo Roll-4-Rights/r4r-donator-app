@@ -44,7 +44,7 @@ export const apiService = {
     return data; // { donator_id, email }
   },
 
-  // ============= PROFILE PICS UPLOAD =============
+  // ============= ACCOUNT  =============
 
   async uploadProfilePicture(file) {
     const formData = new FormData();
@@ -58,6 +58,30 @@ export const apiService = {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`);
     return data; // { profile_picture }
+  },
+
+    async updateName(name) {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Update failed: ${res.status}`);
+    return data; // { name }
+  },
+
+  async changePassword({ current_password, new_password }) {
+    const res = await fetch(`${API_BASE_URL}/auth/password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ current_password, new_password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Password update failed: ${res.status}`);
+    return data;
   },
 
   // ============= DONATIONS =============
