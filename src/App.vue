@@ -35,7 +35,12 @@
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props" class="mr-2 position-relative z-index-top">
               <v-avatar size="36" class="cursor-pointer border bg-white-transparent">
-                <v-img src="https://placehold.co" alt="User Avatar"></v-img>
+                <v-img
+                  v-if="authState.profile_picture"
+                  :src="`${API_BASE_URL}${authState.profile_picture}`"
+                  alt="User Avatar"
+                ></v-img>
+                <v-icon v-else color="white">mdi-account</v-icon>
               </v-avatar>
             </v-btn>
           </template>
@@ -43,7 +48,12 @@
           <v-card class="mt-2 pa-2">
             <v-card-text class="pt-4 pb-3 px-4 text-center">
               <v-avatar size="48" class="mb-2 border bg-grey-lighten-3">
-                <v-img src="https://placehold.co"></v-img>
+                <v-img
+                  v-if="authState.profile_picture"
+                  :src="`${API_BASE_URL}${authState.profile_picture}`"
+                  alt="User Avatar"
+                ></v-img>
+                <v-icon v-else color="grey-darken-1" size="28">mdi-account</v-icon>
               </v-avatar>
               <div class="text-subtitle-2 font-weight-bold text-grey-darken-4">
                 {{ authState.name || 'Donator' }}
@@ -124,6 +134,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
 import { socket } from '@/socket'
 import { authState, logout } from '@/services/authStore'
+import { API_BASE_URL } from '@/services/api'
 
 const route = useRoute()
 const router = useRouter()

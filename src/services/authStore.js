@@ -7,9 +7,19 @@ export const authState = reactive({
   token: localStorage.getItem(STORAGE_KEY) || null,
   name: null,
   email: null,
+  profile_picture: null,
+  donator_id: null,
   isLoggedIn: false,
   loading: true // true until we've checked if the stored token is still valid
 });
+
+async function applyProfile() {
+  const profile = await apiService.fetchCurrentDonator();
+  authState.name = profile.name;
+  authState.email = profile.email;
+  authState.profile_picture = profile.profile_picture;
+  authState.donator_id = profile.donator_id;
+}
 
 export async function initAuth() {
   if (!authState.token) {
@@ -17,11 +27,10 @@ export async function initAuth() {
     return;
   }
   try {
-    const profile = await apiService.fetchCurrentDonator(authState.token);
-    authState.email = profile.email;
+    await applyProfile();
     authState.isLoggedIn = true;
   } catch (err) {
-    // token expired or invalid - clear it
+    // session expired or invalid - clear it
     logout();
   } finally {
     authState.loading = false;
@@ -42,11 +51,13 @@ export function waitForAuthReady() {
 export async function register({ name, email, password }) {
   const data = await apiService.register({ name, email, password });
   setSession(data);
+  await applyProfile();
 }
 
 export async function login({ email, password }) {
   const data = await apiService.login({ email, password });
   setSession(data);
+  await applyProfile();
 }
 
 function setSession(data) {
@@ -61,6 +72,8 @@ export function logout() {
   authState.token = null;
   authState.name = null;
   authState.email = null;
+  authState.profile_picture = null;
+  authState.donator_id = null;
   authState.isLoggedIn = false;
   localStorage.removeItem(STORAGE_KEY);
 }
