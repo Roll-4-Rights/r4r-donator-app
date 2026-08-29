@@ -214,11 +214,7 @@ const isPasswordValid = ref(false)
 // UI Feedback States
 const showSuccessAlert = ref(false)
 
-// True Account Profile State
-const profileForm = ref({
-  email: 'praeterusdice@gmail.com',
-  name: 'praeterusdice'
-})
+
 
 // Dialog Form Workspace Values
 const passwordDialog = ref(false)
@@ -240,45 +236,78 @@ const rules = {
   matchingPassword: (v) => v === passwordForm.value.new || 'Passwords do not match'
 }
 
-// CHROMATIC SHUFFLE GENERATOR: Assigns beautiful muted background tones based on username text hashes
-const avatarBgColor = computed(() => {
-  const nameString = profileForm.value.name || 'P'
-  let textHash = 0
-  for (let i = 0; i < nameString.length; i++) {
-    textHash = nameString.charCodeAt(i) + ((textHash << 5) - textHash)
-  }
-  const colorPalette = ['#8BA196', '#6B8E23', '#708090', '#A0522D', '#4682B4', '#556B2F', '#8B4513']
-  const colorSelectorIndex = Math.abs(textHash) % colorPalette.length
-  return colorPalette[colorSelectorIndex]
-})
+// Profile Pic
+import { ref, computed, onMounted } from 'vue'
 
-//PROFILE PICTURE CODE// State variables
 const fileInputRef = ref(null)
+const fileInputModel = ref(null)
 const selectedFile = ref(null)
+const avatarPreview = ref(null)
 const isUploading = ref(false)
 
+const avatarBgColor = computed(() => {
+  const str = profileForm.value.name || ''
+  let hash = 0
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  const hue = Math.abs(hash) % 360
+  return `hsl(${hue}, 45%, 45%)`
+})
 
-// Trigger the file picker hidden inside the Vuetify input element
-const triggerFileSelect = () => {
-  fileInputRef.value?.click()
+onMounted(() => {
+  if (profileForm.value.profile_picture) {
+    avatarPreview.value = `${API_BASE_URL}${profileForm.value.profile_picture}`
+  }
+})
+
+function triggerFileSelect() {
+  fileInputRef.value?.$el.querySelector('input[type="file"]')?.click()
 }
 
-// Vuetify 3 passes the file directly or inside an array
-const onFileSelected = (fileOrArray) => {
-  // Extract single file if Vuetify delivers it as an array
-  const file = Array.isArray(fileOrArray) ? fileOrArray[0] : fileOrArray
-  if (!file) return
+function onFileSelected(file) {
+  const f = Array.isArray(file) ? file[0] : file
+  if (!f) return
 
-  // Revoke old blob memory if switching between multiple local selections
-  if (avatarPreview.value.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarPreview.value)
+  if (!f.type.startsWith('image/')) {
+    // surface "Please select an image file" to the user
+    return
+  }
+  if (f.size > 5 * 1024 * 1024) {
+    // surface "Image must be under 5MB" to the user
+    return
   }
 
-  // Save file data for the eventual upload step
-  selectedFile.value = file
-  // Generate temporary preview URL
-  avatarPreview.value = URL.createObjectURL(file)
+  selectedFile.value = f
+  if (avatarPreview.value?.startsWith('blob:')) URL.revokeObjectURL(avatarPreview.value)
+  avatarPreview.value = URL.createObjectURL(f)
 }
+
+async function uploadAvatar() {
+  if (!selectedFile.value) return
+  isUploading.value = true
+  try {
+    const data = await auth.uploadProfilePicture(selectedFile.value)
+    profileForm.value.profile_picture = data.profile_picture
+    if (avatarPreview.value?.startsWith('blob:')) URL.revokeObjectURL(avatarPreview.value)
+    avatarPreview.value = `${API_BASE_URL}${data.profile_picture}`
+    selectedFile.value = null
+    fileInputModel.value = null
+    showSuccessAlert.value = true
+  } catch (e) {
+    // surface e.message to the user
+  } finally {
+    isUploading.value = false
+  }
+}
+
+function cancelSelection() {
+  if (avatarPreview.value?.startsWith('blob:')) URL.revokeObjectURL(avatarPreview.value)
+  avatarPreview.value = profileForm.value.profile_picture
+    ? `${API_BASE_URL}${profileForm.value.profile_picture}`
+    : null
+  selectedFile.value = null
+  fileInputModel.value = null
+}
+
 
 
 //password

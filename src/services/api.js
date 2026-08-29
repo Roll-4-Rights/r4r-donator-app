@@ -203,3 +203,19 @@ export const apiService = {
     return res.json();
   }
 };
+
+  // ============= PROFILE PICS UPLOAD =============
+
+async uploadProfilePicture(file) {
+  const formData = new FormData()
+  formData.append('picture', file)
+
+  const res = await fetch(`${API_BASE_URL}/auth/profile-picture`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`)
+  return data
+}
