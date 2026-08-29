@@ -90,6 +90,9 @@
           
           <v-list-item to="/guides-faq" prepend-icon="mdi-help-circle-outline" title="Guides/FAQs"></v-list-item>
           <v-list-item to="/current-campaign" prepend-icon="mdi-sword-cross" title="Current Campaign"></v-list-item>
+
+          <v-list-item to="/messages" prepend-icon="mdi-sword-cross" title="Messages"></v-list-item>
+
           
           <!-- DONATE ITEMS TAB: Automatically clears alert dots when navigating to shipping information updates -->
           <v-list-item to="/donate-items" prepend-icon="mdi-creation-outline" title="Donate Items and View Winner Info">
