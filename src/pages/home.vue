@@ -273,20 +273,7 @@ const fetchAnnouncements = async () => {
   }
 }
 
-// Messages block
-const messages = ref([
-  {
-    id: 101,
-    sender: 'System Admin',
-    subject: 'question',
-    date: '7/21/2026, 12:00 AM',
-    preview: 'testingtesting'
-  }
-])
 
-const latestMessage = computed(() => {
-  return messages.value.length > 0 ? messages.value[0] : null
-})
 
 // Calendar API — now explicitly typed
 const publicCalendar = ref<CalendarEvent[]>([])
