@@ -114,8 +114,13 @@
                   {{ latestMessage.preview }}
                 </p>
 
-                <v-chip size="x-small" color="grey-darken-2" variant="flat" class="font-weight-bold px-3 py-2 text-white">
-                  Answered
+                <v-chip
+                  size="x-small"
+                  :color="latestMessage.status === 'Answered' ? 'success' : 'warning'"
+                  variant="flat"
+                  class="font-weight-bold px-3 py-2 text-white"
+                >
+                  {{ latestMessage.status }}
                 </v-chip>
               </div>
             </div>
@@ -228,6 +233,42 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
 
+
+// Messages Preview
+interface MessageItem {
+  Id: number
+  Question: string
+  Answer: string
+  Status: string
+  'Created At': string
+}
+
+const latestMessage = ref<{ date: string; subject: string; preview: string; status: string } | null>(null)
+
+function truncate(text: string, max = 140) {
+  if (!text) return ''
+  return text.length > max ? text.slice(0, max).trimEnd() + '…' : text
+}
+
+const fetchLatestMessage = async () => {
+  try {
+    const rows: MessageItem[] = await apiService.fetchMessages()
+    if (rows && rows.length > 0) {
+      const mostRecent = rows[0]
+      latestMessage.value = {
+        date: mostRecent['Created At']
+          ? new Date(mostRecent['Created At']).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
+          : '',
+        subject: mostRecent.Question,
+        preview: mostRecent.Answer ? truncate(mostRecent.Answer) : 'Awaiting a response from the team.',
+        status: mostRecent.Status
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch latest message:', error)
+  }
+}
+
 // Define the real shape of a calendar event, instead of letting TS guess "never"
 interface CalendarEvent {
   title: string
@@ -312,6 +353,7 @@ const handleEventClick = (payload: { event: CalendarEvent }) => {
 onMounted(() => {
   fetchAnnouncements()
   fetchCalendarData()
+  fetchLatestMessage()
 })
 </script>
 
