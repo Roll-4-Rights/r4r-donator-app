@@ -78,7 +78,6 @@
               Awaiting a response from the team.
             </p>
           </v-card-text>
-          </v-card>
         </v-col>
       </v-row>
 
