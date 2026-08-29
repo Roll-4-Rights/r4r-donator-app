@@ -7,7 +7,7 @@
     </p>
 
     <!-- Submit box -->
-    <v-card class="rounded-2xl border-0 mb-10" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+    <v-card class="rounded-2xl mb-10 pa-2" variant="flat" border>
       <v-card-text class="pa-6">
         <v-textarea
           v-model="newQuestion"
@@ -17,23 +17,26 @@
           auto-grow
           hide-details
           class="mb-4"
+          maxlength="1000"
+          :counter="true"
         />
         <v-btn
           color="#0B4F6C"
-          class="text-white"
+          class="text-white px-6"
+          rounded="lg"
           :disabled="!newQuestion.trim() || sending"
           :loading="sending"
           @click="submitMessage"
         >
           Send
         </v-btn>
-        <p v-if="submitError" class="text-caption text-red mt-2">
+        <p v-if="submitError" class="text-caption text-error mt-2">
           Something went wrong sending your message. Please try again.
         </p>
       </v-card-text>
     </v-card>
 
-    <!-- History -->
+    <!-- History Status Check -->
     <div v-if="loading" class="text-center py-8">
       <v-progress-circular indeterminate color="#0B4F6C" />
     </div>
@@ -42,25 +45,31 @@
       <p class="text-body-2 text-medium-emphasis">No messages yet. Ask your first question above.</p>
     </div>
 
+    <!-- Message History Cards List -->
     <v-row v-else>
       <v-col cols="12" v-for="msg in messages" :key="msg.Id" class="pb-4">
-        <v-card class="rounded-xl border-0" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+        <v-card class="rounded-xl" variant="flat" border>
           <v-card-text class="pa-6 text-left">
-            <div class="d-flex justify-space-between align-center mb-2">
-              <span class="text-caption text-medium-emphasis">{{ formatDate(msg['Created At']) }}</span>
+            <div class="d-flex justify-space-between align-center mb-4">
+              <span class="text-caption text-medium-emphasis">
+                {{ formatDate(msg['Created At']) }}
+              </span>
               <v-chip
                 size="small"
-                :color="msg.Status === 'Answered' ? 'green' : 'orange'"
-                class="text-white font-weight-bold"
+                :color="msg.Status === 'Answered' ? 'success' : 'warning'"
+                variant="flat"
+                class="font-weight-bold"
               >
                 {{ msg.Status }}
               </v-chip>
             </div>
             <p class="text-body-1 font-weight-bold text-black mb-2">{{ msg.Question }}</p>
-            <p v-if="msg.Answer" class="text-body-2 text-medium-emphasis leading-relaxed">
-              {{ msg.Answer }}
-            </p>
-            <p v-else class="text-body-2 text-medium-emphasis font-italic">
+            <div class="bg-grey-lighten-4 rounded-lg pa-4 mt-3" v-if="msg.Answer">
+              <p class="text-body-2 text-high-emphasis style-answer">
+                {{ msg.Answer }}
+              </p>
+            </div>
+            <p v-else class="text-body-2 text-medium-emphasis font-italic mt-2">
               Awaiting a response from the team.
             </p>
           </v-card-text>
@@ -97,11 +106,13 @@ async function loadMessages() {
 }
 
 async function submitMessage() {
-  if (!newQuestion.value.trim()) return
+  const sanitizedQuestion = newQuestion.value.trim()
+  if (!sanitizedQuestion) return
+  
   sending.value = true
   submitError.value = false
   try {
-    await apiService.sendMessage(newQuestion.value.trim())
+    await apiService.sendMessage(sanitizedQuestion)
     newQuestion.value = ''
     await loadMessages()
   } catch (e) {
@@ -113,3 +124,10 @@ async function submitMessage() {
 
 onMounted(loadMessages)
 </script>
+
+<style scoped>
+.style-answer {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+</style>
