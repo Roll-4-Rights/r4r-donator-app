@@ -70,25 +70,17 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
 import { apiService } from '@/services/api'
 
-interface MessageItem {
-  Id: number
-  Question: string
-  Answer: string
-  Status: string
-  'Created At': string
-}
-
-const messages = ref<MessageItem[]>([])
+const messages = ref([])
 const loading = ref(true)
 const newQuestion = ref('')
 const sending = ref(false)
 const submitError = ref(false)
 
-function formatDate(value: string) {
+function formatDate(value) {
   if (!value) return ''
   return new Date(value).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
 }
