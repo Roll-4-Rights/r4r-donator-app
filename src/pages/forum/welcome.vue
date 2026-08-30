@@ -12,11 +12,9 @@
     <div class="rules-card">
       <h1>Chat Rules</h1>
       <ol class="rules-list">
-        <li>Be respectful — no harassment, hate speech, or personal attacks.</li>
+        <li>Be respectful, no harassment, hate speech, or personal attacks.</li>
         <li>Keep it civil, even in disagreements.</li>
-        <li>No spam, self-promotion, or off-topic advertising.</li>
-        <li>Keep Donation Talk focused on donations and the auction — save general chatter for General Chat.</li>
-        <li>No sharing of personal contact information in public channels.</li>
+        <li>No sharing of personal contact information of yourself or others in any channel.</li>
         <li>Moderators may remove messages or threads that break these rules.</li>
       </ol>
     </div>
