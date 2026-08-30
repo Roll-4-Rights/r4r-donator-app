@@ -5,7 +5,7 @@
       <p>
         This is our community hub! Browse the channels on the left to chat with
         other members, talk about donations, discuss your craft or just anything in general, or head over to
-        <strong>Introduce Yourself</strong> to say hello. We're glad you're here :) (obvs this can say anything)
+        <strong>Introduce Yourself</strong> to say hello. We're glad you're here!
       </p>
     </div>
 
