@@ -242,3 +242,58 @@ export const apiService = {
     return res.json();
   }
 };
+
+
+  // ============= INTRO THREADS =============
+
+  async fetchIntroThreads(page = 1) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads?page=${page}`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch threads: ${res.status}`);
+    return res.json();
+  },
+
+  async fetchMyIntroThread() {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/mine`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch your intro: ${res.status}`);
+    return res.json();
+  },
+
+  async saveIntroThread({ title, body }) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ title, body })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Save failed: ${res.status}`);
+    return data;
+  },
+
+  async deleteIntroThread(threadId) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}`, { method: 'DELETE', credentials: 'include' });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+  },
+
+  async fetchIntroReplies(threadId, page = 1) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}/replies?page=${page}`, { credentials: 'include' });
+    if (!res.ok) throw new Error(`Failed to fetch replies: ${res.status}`);
+    return res.json();
+  },
+
+  async sendIntroReply(threadId, message) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}/replies`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Reply failed: ${res.status}`);
+    return data;
+  },
+
+  async deleteIntroReply(replyId) {
+    const res = await fetch(`${API_BASE_URL}/forum/intro-replies/${replyId}`, { method: 'DELETE', credentials: 'include' });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+  },
