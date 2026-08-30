@@ -12,13 +12,13 @@
           class="header-logo-blend-wrapper-full d-none d-sm-block"
           :class="{ 'dimmed-backdrop': isMenuOpen }"
         >
-          <v-img 
+          <!-- <v-img 
             src="https://unsplash.com" 
             alt="Header Background Graphic"
             cover
             height="100%"
             width="100%"
-          ></v-img>
+          ></v-img> -->
           <div class="blend-overlay-mask-responsive"></div>
         </div>
 
