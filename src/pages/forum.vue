@@ -1,6 +1,12 @@
 <template>
   <div class="forum-container">
-    <aside class="forum-sidebar">
+    <button class="mobile-toggle" @click="sidebarOpen = !sidebarOpen">
+      <span class="mdi mdi-menu"></span>
+    </button>
+
+    <div v-if="sidebarOpen" class="sidebar-backdrop" @click="sidebarOpen = false"></div>
+
+    <aside class="forum-sidebar" :class="{ open: sidebarOpen }">
       <h2>Forum Channels</h2>
       <nav class="subforum-nav">
         <router-link 
@@ -9,6 +15,7 @@
           :to="`/forum/${channel.path}`"
           class="channel-link"
           active-class="active"
+          @click="sidebarOpen = false"
         >
           <span class="channel-icon">{{ channel.icon }}</span>
           <span class="channel-name">{{ channel.name }}</span>
@@ -23,6 +30,11 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { socket } from '@/socket'
+
+const sidebarOpen = ref(false)
+
 const channels = [
   { name: 'Welcome', path: 'welcome', icon: '' },
   { name: 'Introduce Yourself', path: 'pinned-information', icon: '' },
@@ -30,12 +42,29 @@ const channels = [
   { name: 'Donation Talk', path: 'donation-talk', icon: '' },
   { name: 'Dice Chat', path: 'dice-chat', icon: '' },
 ]
+
+onMounted(() => {
+  socket.connect()
+})
+
+onUnmounted(() => {
+  socket.disconnect()
+})
 </script>
 
 <style scoped>
 .forum-container {
   display: flex;
   height: 100%;
+  position: relative;
+}
+
+.mobile-toggle {
+  display: none;
+}
+
+.sidebar-backdrop {
+  display: none;
 }
 
 .forum-sidebar {
@@ -43,6 +72,7 @@ const channels = [
   background: #2c2f33;
   padding: 20px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .forum-sidebar h2 {
@@ -92,5 +122,51 @@ const channels = [
   flex: 1;
   background: #36393f;
   overflow-y: auto;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #2c2f33;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+  }
+
+  .forum-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 15;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+  }
+
+  .forum-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .forum-content {
+    padding-top: 50px;
+  }
 }
 </style>

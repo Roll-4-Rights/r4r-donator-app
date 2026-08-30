@@ -12,7 +12,7 @@ export const state = reactive({
 });
 
 export const socket = io(URL, {
-  autoConnect: true,
+  autoConnect: false,
   withCredentials: true,
   transports: ['websocket', 'polling']
 });

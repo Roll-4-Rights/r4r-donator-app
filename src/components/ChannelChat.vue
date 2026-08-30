@@ -113,4 +113,16 @@ watch(messages, () => {
 .composer input::placeholder { color: #6b7c80; }
 .composer button { background: #4fd1c5; color: #103948; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
 .composer button:hover { background: #6ee0d5; }
+
+@media (max-width: 768px) {
+  .messages {
+    padding: 12px;
+  }
+  .message-content {
+    max-width: 85%;
+  }
+  .composer {
+    padding: 10px 12px;
+  }
+}
 </style>
