@@ -241,7 +241,7 @@ export const apiService = {
     if (!res.ok) throw new Error(`Failed to fetch donator FAQs: ${res.status}`);
     return res.json();
   }
-}
+},
 
 
   // ============= INTRO THREADS =============
