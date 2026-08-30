@@ -1,10 +1,9 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
-import { identity } from "./identity";
 
 const URL = import.meta.env.PROD
-  ? "https://your-production-server.com"
-  : "http://localhost:3001";
+  ? "https://api.roll4rights.duckdns.org"
+  : "http://localhost:5000";
 
 export const state = reactive({
   connected: false,
@@ -14,14 +13,12 @@ export const state = reactive({
 
 export const socket = io(URL, {
   autoConnect: true,
+  withCredentials: true,
   transports: ['websocket', 'polling']
 });
 
 socket.on("connect", () => {
   state.connected = true;
-  if (identity.userId) {
-    socket.emit('identify', { userId: identity.userId, username: identity.username });
-  }
 });
 
 socket.on("disconnect", () => {
@@ -39,14 +36,11 @@ export function sendChannelMessage(text) {
   if (!state.activeChannel || !text.trim()) return;
   socket.emit('send_channel_message', {
     channel: state.activeChannel,
-    senderID: identity.userId,
-    senderName: identity.username,
     message: text
   });
 }
 
 socket.on('channel_history', ({ channel, messages }) => {
-  // Don't overwrite local cache with an empty result (e.g. failed NocoDB fetch)
   const existing = state.messagesByChannel[channel];
   if (!existing || existing.length === 0) {
     state.messagesByChannel[channel] = messages;
