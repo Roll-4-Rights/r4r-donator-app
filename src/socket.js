@@ -25,6 +25,10 @@ socket.on("disconnect", () => {
   state.connected = false;
 });
 
+socket.on("connect_error", (err) => {
+  console.error("Socket connect_error:", err.message);
+});
+
 export function joinChannel(channel) {
   if (state.activeChannel === channel) return;
   if (state.activeChannel) socket.emit('leave_channel', { channel: state.activeChannel });
