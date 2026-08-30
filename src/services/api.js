@@ -241,7 +241,7 @@ export const apiService = {
     if (!res.ok) throw new Error(`Failed to fetch donator FAQs: ${res.status}`);
     return res.json();
   }
-};
+}
 
 
   // ============= INTRO THREADS =============
@@ -296,4 +296,4 @@ export const apiService = {
   async deleteIntroReply(replyId) {
     const res = await fetch(`${API_BASE_URL}/forum/intro-replies/${replyId}`, { method: 'DELETE', credentials: 'include' });
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-  },
+  };
