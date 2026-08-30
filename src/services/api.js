@@ -60,7 +60,7 @@ export const apiService = {
     return data; // { profile_picture }
   },
 
-    async updateName(name) {
+  async updateName(name) {
     const res = await fetch(`${API_BASE_URL}/auth/me`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -125,7 +125,7 @@ export const apiService = {
   },
 
   // ============= CALENDAR =============
-  
+
   async fetchCalendar() {
     const res = await fetch(`${API_BASE_URL}/calendar`);
     if (!res.ok) throw new Error(`Failed to fetch calendar: ${res.status}`);
@@ -139,10 +139,10 @@ export const apiService = {
   },
 
   // ============= FILE UPLOAD =============
-  
+
   async uploadPhotos(files) {
     if (!files || !files.length) return [];
-    
+
     const mediaFormData = new FormData();
     files.forEach(file => mediaFormData.append('file', file));
 
@@ -152,13 +152,13 @@ export const apiService = {
       body: mediaFormData
       // NO Content-Type header - browser sets it with the multipart boundary
     });
-    
+
     if (!res.ok) throw new Error(`Media Upload Failed: ${res.status}`);
     return await res.json();
   },
 
   // ============= CHAT =============
-  
+
   async fetchUserMessages() {
     const res = await fetch(`${API_BASE_URL}/chat/user-messages`);
     if (!res.ok) throw new Error(`Failed to fetch messages: ${res.status}`);
@@ -240,9 +240,7 @@ export const apiService = {
     const res = await fetch(`${API_BASE_URL}/donator-faqs`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch donator FAQs: ${res.status}`);
     return res.json();
-  }
-},
-
+  },
 
   // ============= INTRO THREADS =============
 
@@ -296,4 +294,5 @@ export const apiService = {
   async deleteIntroReply(replyId) {
     const res = await fetch(`${API_BASE_URL}/forum/intro-replies/${replyId}`, { method: 'DELETE', credentials: 'include' });
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-  };
+  }
+};
