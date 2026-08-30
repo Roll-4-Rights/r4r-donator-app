@@ -1,5 +1,7 @@
 // src/services/api.js
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'; //  Flask middleware
+export const CHAT_API_BASE_URL = import.meta.env.VITE_CHAT_API_BASE_URL || 'http://localhost:5001/api'; // dedicated chat/forum service
+
 export const apiService = {
   // ============= AUTH =============
 
@@ -12,7 +14,7 @@ export const apiService = {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Register failed: ${res.status}`);
-    return data; // { name, email }
+    return data;
   },
 
   async login({ email, password }) {
@@ -24,7 +26,7 @@ export const apiService = {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Login failed: ${res.status}`);
-    return data; // { name, email }
+    return data;
   },
 
   async logout() {
@@ -41,7 +43,7 @@ export const apiService = {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Failed to fetch profile: ${res.status}`);
-    return data; // { donator_id, email }
+    return data;
   },
 
   // ============= ACCOUNT  =============
@@ -57,7 +59,7 @@ export const apiService = {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Upload failed: ${res.status}`);
-    return data; // { profile_picture }
+    return data;
   },
 
   async updateName(name) {
@@ -69,7 +71,7 @@ export const apiService = {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Update failed: ${res.status}`);
-    return data; // { name }
+    return data;
   },
 
   async changePassword({ current_password, new_password }) {
@@ -150,14 +152,13 @@ export const apiService = {
       method: 'POST',
       credentials: 'include',
       body: mediaFormData
-      // NO Content-Type header - browser sets it with the multipart boundary
     });
 
     if (!res.ok) throw new Error(`Media Upload Failed: ${res.status}`);
     return await res.json();
   },
 
-  // ============= CHAT =============
+  // ============= CHAT (existing user-message inbox, not live chat) =============
 
   async fetchUserMessages() {
     const res = await fetch(`${API_BASE_URL}/chat/user-messages`);
@@ -242,22 +243,22 @@ export const apiService = {
     return res.json();
   },
 
-  // ============= INTRO THREADS =============
+  // ============= INTRO THREADS (now served by the chat service) =============
 
   async fetchIntroThreads(page = 1) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads?page=${page}`, { credentials: 'include' });
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads?page=${page}`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch threads: ${res.status}`);
     return res.json();
   },
 
   async fetchMyIntroThread() {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/mine`, { credentials: 'include' });
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads/mine`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch your intro: ${res.status}`);
     return res.json();
   },
 
   async saveIntroThread({ title, body }) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads`, {
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -269,18 +270,18 @@ export const apiService = {
   },
 
   async deleteIntroThread(threadId) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}`, { method: 'DELETE', credentials: 'include' });
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads/${threadId}`, { method: 'DELETE', credentials: 'include' });
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
   },
 
   async fetchIntroReplies(threadId, page = 1) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}/replies?page=${page}`, { credentials: 'include' });
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads/${threadId}/replies?page=${page}`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch replies: ${res.status}`);
     return res.json();
   },
 
   async sendIntroReply(threadId, message) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-threads/${threadId}/replies`, {
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-threads/${threadId}/replies`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -292,7 +293,7 @@ export const apiService = {
   },
 
   async deleteIntroReply(replyId) {
-    const res = await fetch(`${API_BASE_URL}/forum/intro-replies/${replyId}`, { method: 'DELETE', credentials: 'include' });
+    const res = await fetch(`${CHAT_API_BASE_URL}/forum/intro-replies/${replyId}`, { method: 'DELETE', credentials: 'include' });
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
   }
 };
