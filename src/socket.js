@@ -2,7 +2,7 @@ import { reactive } from "vue";
 import { io } from "socket.io-client";
 
 const URL = import.meta.env.PROD
-  ? "https://api.roll4rights.duckdns.org"
+  ? "https://chat.roll4rights.duckdns.org"
   : "http://localhost:5000";
 
 export const state = reactive({
