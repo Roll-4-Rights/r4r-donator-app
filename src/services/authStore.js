@@ -19,6 +19,7 @@ async function applyProfile() {
   authState.email = profile.email;
   authState.profile_picture = profile.profile_picture;
   authState.donator_id = profile.donator_id;
+  authState.is_admin = profile.is_admin;
 }
 
 export async function initAuth() {

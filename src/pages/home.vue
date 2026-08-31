@@ -316,7 +316,7 @@ const fetchAnnouncements = async () => {
 
 
 
-// Calendar API — now explicitly typed
+// Calendar API
 const publicCalendar = ref<CalendarEvent[]>([])
 const calendarValue = ref<Date>(new Date())
 const calendarRef = ref<any>(null)
