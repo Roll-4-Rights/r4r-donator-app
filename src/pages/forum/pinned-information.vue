@@ -3,8 +3,7 @@
     <div class="welcome-blurb">
       <h2>Introduce Yourself 👋</h2>
       <p>
-        Post a little bit about yourself so the community can get to know you.
-        Everyone gets one intro — you can edit it any time. Others can reply below to say hi.
+        Post a little bit about yourself so the community can get to know you! Socials and storefronts welcome!
       </p>
     </div>
 
