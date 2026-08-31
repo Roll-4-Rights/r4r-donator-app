@@ -15,6 +15,7 @@ import ForumDiceChat from './pages/forum/dice-chat.vue'
 import Login from './pages/login.vue'
 import Register from './pages/register.vue'
 import Messages from './pages/messages.vue'
+import Admin from './pages/admin.vue'
 import { authState, waitForAuthReady } from './services/authStore'
 
 const routes: Array<RouteRecordRaw> = [
@@ -26,6 +27,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/current-campaign', name: 'CurrentCampaign', component: CurrentCampaign },
   { path: '/donate-items', name: 'DonateItems', component: DonateItems },
   { path: '/account', name: 'Account', component: Account },
+  { path: '/admin', name: 'Admin', component: Admin },
   { path: '/messages', name: 'Messages', component: Messages },
   { 
     path: '/forum', 
