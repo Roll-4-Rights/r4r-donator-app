@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/account', name: 'Account', component: Account },
   { path: '/admin', name: 'Admin', component: Admin },
   { path: '/messages', name: 'Messages', component: Messages },
-  { path: 'admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
+  { path: '/admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
   { 
     path: '/forum', 
     name: 'Forum', 
