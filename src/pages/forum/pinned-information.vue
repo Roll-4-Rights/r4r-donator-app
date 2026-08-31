@@ -20,11 +20,17 @@
     <v-expansion-panels v-else v-model="openPanel" variant="accordion" class="thread-panels">
       <v-expansion-panel v-for="thread in threads" :key="thread.id" :value="thread.id" class="thread-panel">
         <v-expansion-panel-title>
-          <div>
-            <h3>{{ thread.title }}</h3>
-            <p class="thread-meta">
-              {{ thread.author }} · {{ formatTime(thread.createdAt) }} · {{ thread.replyCount }} {{ thread.replyCount === 1 ? 'reply' : 'replies' }}
-            </p>
+          <div class="d-flex align-center ga-3">
+            <div class="thread-avatar" :style="thread.authorPicture ? {} : { background: colorForUser(thread.donatorId) }">
+              <img v-if="thread.authorPicture" :src="`${API_BASE_URL}${thread.authorPicture}`" alt="" />
+              <template v-else>{{ initialsForName(thread.author) }}</template>
+            </div>
+            <div>
+              <h3>{{ thread.title }}</h3>
+              <p class="thread-meta">
+                {{ thread.author }} · {{ formatTime(thread.createdAt) }} · {{ thread.replyCount }} {{ thread.replyCount === 1 ? 'reply' : 'replies' }}
+              </p>
+            </div>
           </div>
         </v-expansion-panel-title>
 
@@ -43,6 +49,10 @@
               <div v-if="repliesState[thread.id].items.length === 0" class="empty-state small"><p>No replies yet.</p></div>
               <div v-else class="reply-list">
                 <div v-for="reply in repliesState[thread.id].items" :key="reply.id" class="reply-item">
+                  <div class="reply-avatar" :style="reply.authorPicture ? {} : { background: colorForUser(reply.donatorId) }">
+                    <img v-if="reply.authorPicture" :src="`${API_BASE_URL}${reply.authorPicture}`" alt="" />
+                    <template v-else>{{ initialsForName(reply.author) }}</template>
+                  </div>
                   <div class="reply-body">
                     <span class="reply-author">{{ reply.author }}</span>
                     <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
@@ -92,8 +102,9 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { apiService } from '@/services/api'
+import { apiService, API_BASE_URL } from '@/services/api'
 import { authState } from '@/services/authStore'
+import { colorForUser, initialsForName } from '../../utils/userColor'
 
 const threads = ref([])
 const threadPage = ref(1)
@@ -283,4 +294,19 @@ onMounted(() => {
 .modal-textarea { min-height: 100px; resize: vertical; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
 .btn-cancel { background: transparent; color: #dce6e8; border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+
+.thread-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e2b30; font-weight: 700; font-size: 14px;
+  flex-shrink: 0; overflow: hidden;
+}
+.thread-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.reply-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e2b30; font-weight: 700; font-size: 12px;
+  flex-shrink: 0; overflow: hidden;
+}
+.reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
 </style>
