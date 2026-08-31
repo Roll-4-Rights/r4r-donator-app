@@ -82,6 +82,9 @@
           <button v-if="msg.senderID === myId" class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
             <span class="mdi mdi-delete-outline"></span>
           </button>
+          <button v-if="msg.senderID === myId || authState.is_admin" class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
+            <span class="mdi mdi-delete-outline"></span>
+          </button>
         </div>
       </div>
     </div>
