@@ -30,7 +30,6 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/account', name: 'Account', component: Account },
   { path: '/admin', name: 'Admin', component: Admin },
   { path: '/messages', name: 'Messages', component: Messages },
-  { path: '/admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
   { 
     path: '/forum', 
     name: 'Forum', 
@@ -41,7 +40,9 @@ const routes: Array<RouteRecordRaw> = [
       { path: 'pinned-information', name: 'ForumPinnedInformation', component: ForumPinnedInformation },
       { path: 'general-chat', name: 'ForumGeneralChat', component: ForumGeneralChat },
       { path: 'donation-talk', name: 'ForumDonationTalk', component: ForumDonationTalk },
-      { path: 'dice-chat', name: 'ForumDiceChat', component: ForumDiceChat }
+      { path: 'dice-chat', name: 'ForumDiceChat', component: ForumDiceChat },
+      { path: 'admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
+
     ]
   }
 ]
