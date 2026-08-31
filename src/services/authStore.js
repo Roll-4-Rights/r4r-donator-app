@@ -45,8 +45,8 @@ export function waitForAuthReady() {
   });
 }
 
-export async function register({ name, email, password }) {
-  const data = await apiService.register({ name, email, password });
+export async function register({ name, email, password, invite_code, passcode }) {
+  const data = await apiService.register({ name, email, password, invite_code, passcode });
   setSession(data);
   await applyProfile();
 }
@@ -75,3 +75,5 @@ export function logout() {
   authState.isLoggedIn = false;
   localStorage.removeItem(STORAGE_KEY);
 }
+
+

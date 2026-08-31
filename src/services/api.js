@@ -17,6 +17,24 @@ export const apiService = {
     return data;
   },
 
+
+async register({ name, email, password, invite_code, passcode }) {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ name, email, password, invite_code, passcode })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Register failed: ${res.status}`);
+  return data;
+},
+
+async verifyInvite(code) {
+  const res = await fetch(`${API_BASE_URL}/auth/verify-invite?code=${encodeURIComponent(code)}`);
+  return res.json();
+},
+
   async login({ email, password }) {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
