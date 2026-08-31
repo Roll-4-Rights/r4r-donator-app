@@ -17,10 +17,14 @@
         class="message-row"
         :class="{ grouped: isGrouped(msg, messages[i - 1]) }"
       >
-        <div class="avatar" v-if="!isGrouped(msg, messages[i - 1])" :style="{ background: colorForUser(msg.senderID) }">
-          {{ initialsForName(msg.senderName) }}
-        </div>
-        <div class="avatar-spacer" v-else></div>
+      <div
+        class="avatar"
+        v-if="!isGrouped(msg, messages[i - 1])"
+        :style="msg.senderPicture ? {} : { background: colorForUser(msg.senderID) }"
+      >
+        <img v-if="msg.senderPicture" :src="`${API_BASE_URL}${msg.senderPicture}`" class="avatar-img" alt="" />
+        <template v-else>{{ initialsForName(msg.senderName) }}</template>
+      </div>
 
         <div class="message-body">
           <div class="message-meta" v-if="!isGrouped(msg, messages[i - 1])">
@@ -51,6 +55,7 @@ import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { state, joinChannel, sendChannelMessage, deleteMessage } from '../socket'
 import { colorForUser, initialsForName } from '../utils/userColor'
 import { authState } from '@/services/authStore'
+import { API_BASE_URL } from '@/services/api'
 
 const props = defineProps({
   channel: { type: String, required: true },
@@ -154,5 +159,12 @@ watch(messages, () => {
 }
 .msg-delete:hover {
   color: #ff6363;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }
 </style>
