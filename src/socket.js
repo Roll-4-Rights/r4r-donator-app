@@ -43,7 +43,18 @@ export function sendChannelMessage(text, replyTo = null) {
     message: text,
     replyTo
   });
+};
+
+export function toggleReaction(messageId, channel, emoji) {
+  socket.emit('toggle_reaction', { messageId, channel, emoji });
 }
+
+socket.on('reactions_updated', ({ id, channel, reactions }) => {
+  const messages = state.messagesByChannel[channel];
+  if (!messages) return;
+  const target = messages.find((m) => m.id === id);
+  if (target) target.reactions = reactions;
+});
 
 export function editMessage(messageId, channel, newText) {
   if (!newText.trim()) return;

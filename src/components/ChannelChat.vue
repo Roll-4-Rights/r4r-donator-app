@@ -51,9 +51,28 @@
             <button class="edit-cancel" @click="cancelEdit">Cancel</button>
           </div>
           <div v-else class="text">{{ msg.message }}</div>
+
+          <div v-if="msg.reactions && msg.reactions.length > 0" class="reaction-row">
+            <button
+              v-for="r in msg.reactions"
+              :key="r.emoji"
+              class="reaction-pill"
+              :class="{ mine: r.donatorIds.includes(myId) }"
+              @click="pickReaction(msg, r.emoji)"
+            >{{ r.emoji }} {{ r.donatorIds.length }}</button>
+          </div>
         </div>
 
         <div class="msg-actions">
+          <div class="reaction-picker-wrapper">
+            <button class="msg-action-btn" @click="toggleReactionPicker(msg.id)" title="Add reaction">
+              <span class="mdi mdi-emoticon-plus-outline"></span>
+            </button>
+            <div v-if="reactionPickerFor === msg.id" class="reaction-picker-backdrop" @click="reactionPickerFor = null"></div>
+            <div v-if="reactionPickerFor === msg.id" class="reaction-picker" @click.stop>
+              <button v-for="emoji in REACTION_EMOJIS" :key="emoji" class="reaction-option" @click="pickReaction(msg, emoji)">{{ emoji }}</button>
+            </div>
+          </div>
           <button class="msg-action-btn" @click="startReply(msg)" title="Reply">
             <span class="mdi mdi-reply"></span>
           </button>
@@ -81,20 +100,11 @@
             <span class="mdi mdi-emoticon-outline"></span>
           </button>
           <div v-if="showEmojiPicker" class="emoji-picker" @click.stop>
-            <button
-              v-for="emoji in EMOJI_LIST"
-              :key="emoji"
-              class="emoji-option"
-              @click="insertEmoji(emoji)"
-            >{{ emoji }}</button>
+            <button v-for="emoji in EMOJI_LIST" :key="emoji" class="emoji-option" @click="insertEmoji(emoji)">{{ emoji }}</button>
           </div>
         </div>
 
-        <input
-          v-model="draft"
-          @keyup.enter="send"
-          :placeholder="`Message #${channel}`"
-        />
+        <input v-model="draft" @keyup.enter="send" :placeholder="`Message #${channel}`" />
         <button @click="send">Send</button>
       </div>
     </div>
@@ -103,7 +113,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { state, joinChannel, sendChannelMessage, deleteMessage, editMessage } from '../socket'
+import { state, joinChannel, sendChannelMessage, deleteMessage, editMessage, toggleReaction } from '../socket'
 import { colorForUser, initialsForName } from '../utils/userColor'
 import { API_BASE_URL } from '@/services/api'
 import { authState } from '@/services/authStore'
@@ -115,6 +125,7 @@ const props = defineProps({
 })
 
 const EMOJI_LIST = ['😀','😂','😅','😊','😍','🤔','😢','😭','😡','👍','👎','🙏','👏','🎉','🔥','💯','❤️','💙','💚','💛','🧡','💜','🖤','✨','⭐','🎲','🎮','🍕','🍺','🎂','🐉','⚔️','🛡️','🏆','👀','😴','🤯','🥳','😎','🙌','💪','🤝','🎁','📢','❗','❓','✅','❌','🚀','🌈']
+const REACTION_EMOJIS = ['❤️', '👍', '😂', '😮', '😢', '🎉']
 
 const draft = ref('')
 const scrollEl = ref(null)
@@ -122,6 +133,7 @@ const showEmojiPicker = ref(false)
 const replyingTo = ref(null)
 const editingId = ref(null)
 const editingDraft = ref('')
+const reactionPickerFor = ref(null)
 
 const messages = computed(() => state.messagesByChannel[props.channel] || [])
 const myId = computed(() => String(authState.donator_id))
@@ -133,6 +145,15 @@ function truncate(text, max = 60) {
 
 function insertEmoji(emoji) {
   draft.value += emoji
+}
+
+function toggleReactionPicker(msgId) {
+  reactionPickerFor.value = reactionPickerFor.value === msgId ? null : msgId
+}
+
+function pickReaction(msg, emoji) {
+  toggleReaction(msg.id, props.channel, emoji)
+  reactionPickerFor.value = null
 }
 
 function startReply(msg) {
@@ -201,32 +222,11 @@ watch(messages, () => {
 .messages { flex: 1; overflow-y: auto; padding: 20px; }
 .empty-state { text-align: center; color: #6b7c80; margin-top: 40px; }
 
-.message-row {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 2px;
-  padding: 2px 0;
-}
+.message-row { position: relative; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 2px; padding: 2px 0; }
 .message-row.grouped { margin-bottom: 0; }
 
-.avatar,
-.avatar-spacer {
-  width: 38px;
-  flex-shrink: 0;
-}
-.avatar {
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1e2b30;
-  font-weight: 700;
-  font-size: 13px;
-  overflow: hidden;
-}
+.avatar, .avatar-spacer { width: 38px; flex-shrink: 0; }
+.avatar { height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1e2b30; font-weight: 700; font-size: 13px; overflow: hidden; }
 .avatar-img { width: 100%; height: 100%; object-fit: cover; }
 
 .message-body { flex: 1; min-width: 0; }
@@ -236,114 +236,43 @@ watch(messages, () => {
 .edited-tag { font-size: 10px; color: #6b7c80; font-style: italic; }
 .text { color: #dce6e8; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
 
-.reply-preview {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #8a9a9e;
-  margin-bottom: 3px;
-  padding-left: 8px;
-  border-left: 2px solid #4fd1c5;
-}
+.reply-preview { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8a9a9e; margin-bottom: 3px; padding-left: 8px; border-left: 2px solid #4fd1c5; }
 .reply-preview .mdi { font-size: 13px; }
 .reply-preview-author { color: #4fd1c5; font-weight: 600; }
 
 .edit-row { display: flex; align-items: center; gap: 8px; }
-.edit-input {
-  flex: 1;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #4fd1c5;
-  background: #2a3a3f;
-  color: #fff;
-  font-size: 14px;
-}
-.edit-save, .edit-cancel {
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.edit-input { flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid #4fd1c5; background: #2a3a3f; color: #fff; font-size: 14px; }
+.edit-save, .edit-cancel { border: none; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
 .edit-save { background: #4fd1c5; color: #103948; }
 .edit-cancel { background: transparent; color: #8a9a9e; }
 
-.msg-actions {
-  position: absolute;
-  top: -14px;
-  right: 8px;
-  display: flex;
-  gap: 2px;
-  background: #2a3a3f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 2px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.12s ease-out;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-.message-row:hover .msg-actions {
-  opacity: 1;
-  pointer-events: auto;
-}
-.msg-action-btn {
-  background: none;
-  border: none;
-  color: #b8c3c6;
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
+.reaction-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.reaction-pill { display: flex; align-items: center; gap: 4px; background: #2a3a3f; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1px 8px; font-size: 12px; color: #dce6e8; cursor: pointer; }
+.reaction-pill:hover { border-color: #4fd1c5; }
+.reaction-pill.mine { background: rgba(79, 209, 197, 0.15); border-color: #4fd1c5; color: #4fd1c5; }
+
+.msg-actions { position: absolute; top: -14px; right: 8px; display: flex; gap: 2px; background: #2a3a3f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 2px; opacity: 0; pointer-events: none; transition: opacity 0.12s ease-out; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+.message-row:hover .msg-actions { opacity: 1; pointer-events: auto; }
+.msg-action-btn { background: none; border: none; color: #b8c3c6; cursor: pointer; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
 .msg-action-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 .msg-action-btn.danger:hover { color: #ff6363; }
 
 @media (hover: none) {
-  .msg-actions {
-    position: static;
-    opacity: 1;
-    pointer-events: auto;
-    box-shadow: none;
-    border: none;
-    background: none;
-    padding: 0;
-    margin-left: 4px;
-  }
+  .msg-actions { position: static; opacity: 1; pointer-events: auto; box-shadow: none; border: none; background: none; padding: 0; margin-left: 4px; }
 }
 
-.composer-wrapper {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: #1e2b30;
-}
+.reaction-picker-wrapper { position: relative; }
+.reaction-picker-backdrop { position: fixed; inset: 0; z-index: 4; }
+.reaction-picker { position: absolute; bottom: 32px; right: 0; display: flex; gap: 2px; background: #2a3a3f; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 4px 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.35); z-index: 5; }
+.reaction-option { background: none; border: none; font-size: 17px; cursor: pointer; padding: 2px 4px; border-radius: 50%; line-height: 1; }
+.reaction-option:hover { background: rgba(255,255,255,0.1); }
 
-.reply-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
-  background: #2a3a3f;
-  color: #b8c3c6;
-  font-size: 13px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+.composer-wrapper { border-top: 1px solid rgba(255, 255, 255, 0.08); background: #1e2b30; }
+.reply-bar { display: flex; align-items: center; gap: 8px; padding: 8px 20px; background: #2a3a3f; color: #b8c3c6; font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 .reply-bar .mdi { color: #4fd1c5; }
 .reply-bar-text { flex: 1; }
 .reply-bar-text strong { color: #4fd1c5; }
-.reply-bar-close {
-  background: none;
-  border: none;
-  color: #8a9a9e;
-  font-size: 18px;
-  cursor: pointer;
-  line-height: 1;
-}
+.reply-bar-close { background: none; border: none; color: #8a9a9e; font-size: 18px; cursor: pointer; line-height: 1; }
 .reply-bar-close:hover { color: #ff6363; }
 
 .composer { display: flex; align-items: center; padding: 15px 20px; gap: 10px; }
@@ -353,48 +282,10 @@ watch(messages, () => {
 .composer button:hover { background: #6ee0d5; }
 
 .emoji-wrapper { position: relative; flex-shrink: 0; }
-.emoji-toggle {
-  background: #2a3a3f;
-  border: none;
-  color: #b8c3c6;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.emoji-toggle { background: #2a3a3f; border: none; color: #b8c3c6; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 .emoji-toggle:hover { color: #4fd1c5; }
-
 .emoji-backdrop { position: fixed; inset: 0; z-index: 30; }
-
-.emoji-picker {
-  position: absolute;
-  bottom: 48px;
-  left: 0;
-  z-index: 31;
-  background: #2a3a3f;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 8px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 2px;
-  width: 260px;
-  max-height: 200px;
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-.emoji-option {
-  background: none;
-  border: none;
-  font-size: 18px;
-  padding: 4px;
-  cursor: pointer;
-  border-radius: 4px;
-  line-height: 1;
-}
+.emoji-picker { position: absolute; bottom: 48px; left: 0; z-index: 31; background: #2a3a3f; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; width: 260px; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); }
+.emoji-option { background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; border-radius: 4px; line-height: 1; }
 .emoji-option:hover { background: rgba(255, 255, 255, 0.08); }
 </style>
