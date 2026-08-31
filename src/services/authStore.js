@@ -9,8 +9,9 @@ export const authState = reactive({
   email: null,
   profile_picture: null,
   donator_id: null,
+  is_admin: false,
   isLoggedIn: false,
-  loading: true // true until we've checked if the stored token is still valid
+  loading: true
 });
 
 async function applyProfile() {
@@ -75,6 +76,7 @@ export function logout() {
   authState.email = null;
   authState.profile_picture = null;
   authState.donator_id = null;
+  authState.is_admin = false;
   authState.isLoggedIn = false;
   localStorage.removeItem(STORAGE_KEY);
 }
