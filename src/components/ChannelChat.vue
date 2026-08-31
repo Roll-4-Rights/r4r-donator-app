@@ -27,7 +27,10 @@
             <span class="sender" :style="{ color: colorForUser(msg.senderID) }">{{ msg.senderName }}</span>
             <span class="time">{{ formatTime(msg.timestamp) }}</span>
           </div>
-          <div class="text">{{ msg.message }}</div>
+          <div class="text-row">
+            <div class="text">{{ msg.message }}</div>
+            <button v-if="msg.senderID === myId" class="msg-delete" @click="removeMessage(msg)" title="Delete message">×</button>
+          </div>
         </div>
       </div>
     </div>
@@ -45,8 +48,9 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { state, joinChannel, sendChannelMessage } from '../socket'
+import { state, joinChannel, sendChannelMessage, deleteMessage } from '../socket'
 import { colorForUser, initialsForName } from '../utils/userColor'
+import { authState } from '@/services/authStore'
 
 const props = defineProps({
   channel: { type: String, required: true },
@@ -73,6 +77,13 @@ function isGrouped(current, prev) {
   if (prev.senderID !== current.senderID) return false
   const gap = new Date(current.timestamp) - new Date(prev.timestamp)
   return gap < 5 * 60 * 1000
+}
+
+const myId = computed(() => String(authState.donator_id))
+
+function removeMessage(msg) {
+  if (!confirm('Delete this message?')) return
+  deleteMessage(msg.id, props.channel)
 }
 
 onMounted(() => {
@@ -124,5 +135,24 @@ watch(messages, () => {
   .composer {
     padding: 10px 12px;
   }
+}
+
+.text-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.msg-delete {
+  background: none;
+  border: none;
+  color: #6b7c80;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.msg-delete:hover {
+  color: #ff6363;
 }
 </style>

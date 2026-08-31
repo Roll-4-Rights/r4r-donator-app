@@ -42,6 +42,18 @@ export function sendChannelMessage(text) {
     channel: state.activeChannel,
     message: text
   });
+
+  export function deleteMessage(messageId, channel) {
+  socket.emit('delete_message', { messageId, channel });
+}
+
+socket.on('message_deleted', ({ id, channel }) => {
+  const messages = state.messagesByChannel[channel];
+  if (messages) {
+    state.messagesByChannel[channel] = messages.filter((m) => m.id !== id);
+  }
+});
+
 }
 
 socket.on('channel_history', ({ channel, messages }) => {
