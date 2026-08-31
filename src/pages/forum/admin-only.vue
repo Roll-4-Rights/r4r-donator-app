@@ -1,6 +1,6 @@
 <template>
   <div v-if="authState.is_admin" class="h-100">
-    <ChannelChat channel="admin-only" title="Admin Lounge" icon="mdi-shield-star-outline" />
+    <ChannelChat channel="admin-lounge" title="Admin Lounge" icon="mdi-shield-star-outline" />
   </div>
   <div v-else class="not-authorized">
     <p>You don't have access to this channel.</p>
