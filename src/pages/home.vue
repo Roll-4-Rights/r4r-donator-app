@@ -144,7 +144,7 @@
           Important Dates
         </h2>
         <p class="text-body-2 text-medium-emphasis mt-1 mb-0">
-          deadlines, social calendar, and other events
+          deadlines and other events
         </p>
       </div>
 
@@ -288,6 +288,7 @@ const COLOR_MAP: Record<string, string> = {
   Gold: '#B7950B',
   Purple: '#6C3483'
 }
+const DEFAULT_EVENT_COLOR = '#0B4F6C'
 
 const userName = computed(() => authState.name || 'Donator')
 
@@ -337,7 +338,7 @@ const fetchCalendarData = async () => {
       start: new Date(row['Event Date Start']),
       end: new Date(row['Event Date End']),
       description: row['Description'] || 'No additional details provided.',
-      color: COLOR_MAP[row['Color']] || 
+      color: COLOR_MAP[row['Color']] || DEFAULT_EVENT_COLOR
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
@@ -443,6 +444,7 @@ onMounted(() => {
   transition: all 0.2s ease-in-out !important;
   width: 100% !important;
   display: flex !important;
+  align-center: true;
 }
 
 .custom-event-pill span {
