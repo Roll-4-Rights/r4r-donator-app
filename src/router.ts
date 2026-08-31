@@ -16,7 +16,7 @@ import Login from './pages/login.vue'
 import Register from './pages/register.vue'
 import Messages from './pages/messages.vue'
 import Admin from './pages/admin.vue'
-import ForumAdminOnly from './pages/forum/admin-only.vue'
+import ForumAdminOnly from './pages/forum/admin-lounge.vue'
 import { authState, waitForAuthReady } from './services/authStore'
 
 const routes: Array<RouteRecordRaw> = [
@@ -41,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
       { path: 'general-chat', name: 'ForumGeneralChat', component: ForumGeneralChat },
       { path: 'donation-talk', name: 'ForumDonationTalk', component: ForumDonationTalk },
       { path: 'dice-chat', name: 'ForumDiceChat', component: ForumDiceChat },
-      { path: 'admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
+      { path: 'admin-lounge', name: 'ForumAdminOnly', component: ForumAdminOnly },
 
     ]
   }
