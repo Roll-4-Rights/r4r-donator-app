@@ -24,15 +24,10 @@ async function applyProfile() {
 }
 
 export async function initAuth() {
-  if (!authState.token) {
-    authState.loading = false;
-    return;
-  }
   try {
     await applyProfile();
     authState.isLoggedIn = true;
   } catch (err) {
-    // session expired or invalid - clear it
     logout();
   } finally {
     authState.loading = false;

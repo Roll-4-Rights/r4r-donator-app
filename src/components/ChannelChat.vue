@@ -4,12 +4,14 @@
     <header class="channel-header">
       <span class="channel-icon mdi" :class="icon || 'mdi-pound'"></span>
       <span class="channel-title">{{ title || channel }}</span>
-    </header>
+      </header>
+  </div>
 
     <div class="messages" ref="scrollEl">
       <div v-if="messages.length === 0" class="empty-state">
         <p>No one is here yet 😔</p>
       </div>
+    </div>
 
       <div
         v-for="(msg, i) in messages"
