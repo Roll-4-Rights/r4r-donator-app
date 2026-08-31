@@ -5,30 +5,25 @@
       <p class="admin-subtitle">Manage registered donators</p>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <span class="stat-value">{{ donators.length }}</span>
-        <span class="stat-label">Total Donators</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value">{{ adminCount }}</span>
-        <span class="stat-label">Admins</span>
-      </div>
-    </div>
-
-    <div class="search-row">
+    <div class="controls-row">
       <input v-model="search" class="search-input" placeholder="Search by name or email…" />
+      <div class="filter-pills">
+        <button class="filter-pill" :class="{ active: statusFilter === 'all' }" @click="statusFilter = 'all'">All</button>
+        <button class="filter-pill" :class="{ active: statusFilter === 'admin' }" @click="statusFilter = 'admin'">Admins</button>
+        <button class="filter-pill" :class="{ active: statusFilter === 'donator' }" @click="statusFilter = 'donator'">Donators</button>
+      </div>
     </div>
+    <p class="result-count">Showing {{ filteredDonators.length }} of {{ donators.length }}</p>
 
     <div v-if="loading" class="empty-state"><p>Loading donators…</p></div>
     <div v-else-if="loadError" class="empty-state"><p>Couldn't load donators. Try refreshing.</p></div>
-    <div v-else-if="filteredDonators.length === 0" class="empty-state"><p>No donators match your search.</p></div>
+    <div v-else-if="filteredDonators.length === 0" class="empty-state"><p>No donators match.</p></div>
 
     <div v-else class="donator-table">
       <div class="table-header">
         <span>Name</span>
         <span>Email</span>
-        <span>Joined</span>
+        <span class="sortable" @click="toggleSort">Joined <span class="sort-arrow">{{ sortDir === 'desc' ? '↓' : '↑' }}</span></span>
         <span>Status</span>
         <span class="text-right">Actions</span>
       </div>
@@ -58,16 +53,31 @@ import { authState } from '@/services/authStore'
 
 const donators = ref([])
 const search = ref('')
+const statusFilter = ref('all') // 'all' | 'admin' | 'donator'
+const sortDir = ref('desc') // 'desc' = newest first, 'asc' = oldest first
 const loading = ref(true)
 const loadError = ref(false)
 
-const adminCount = computed(() => donators.value.filter((d) => d.isAdmin).length)
-
 const filteredDonators = computed(() => {
+  let list = donators.value
+
   const q = search.value.trim().toLowerCase()
-  if (!q) return donators.value
-  return donators.value.filter((d) => d.name.toLowerCase().includes(q) || d.email.toLowerCase().includes(q))
+  if (q) {
+    list = list.filter((d) => d.name.toLowerCase().includes(q) || d.email.toLowerCase().includes(q))
+  }
+
+  if (statusFilter.value === 'admin') list = list.filter((d) => d.isAdmin)
+  else if (statusFilter.value === 'donator') list = list.filter((d) => !d.isAdmin)
+
+  return [...list].sort((a, b) => {
+    const diff = new Date(a.createdAt) - new Date(b.createdAt)
+    return sortDir.value === 'asc' ? diff : -diff
+  })
 })
+
+function toggleSort() {
+  sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc'
+}
 
 async function loadDonators() {
   loading.value = true
@@ -131,14 +141,25 @@ onMounted(loadDonators)
 .admin-header h1 { color: #fff; font-size: 28px; font-weight: 800; }
 .admin-subtitle { color: #8a9a9e; font-size: 14px; margin-top: 4px; }
 
-.stats-row { display: flex; gap: 16px; margin-bottom: 24px; }
-.stat-card { background: #1e2b30; border-radius: 10px; padding: 16px 24px; flex: 1; }
-.stat-value { display: block; color: #4fd1c5; font-size: 28px; font-weight: 800; }
-.stat-label { color: #8a9a9e; font-size: 13px; }
-
-.search-row { margin-bottom: 20px; }
-.search-input { width: 100%; max-width: 360px; padding: 10px 14px; border-radius: 8px; border: none; background: #2a3a3f; color: #fff; font-size: 14px; }
+.controls-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.search-input { flex: 1; min-width: 220px; max-width: 360px; padding: 10px 14px; border-radius: 8px; border: none; background: #2a3a3f; color: #fff; font-size: 14px; }
 .search-input::placeholder { color: #6b7c80; }
+
+.filter-pills { display: flex; gap: 6px; }
+.filter-pill {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2a3a3f;
+  color: #8a9a9e;
+}
+.filter-pill:hover { color: #dce6e8; }
+.filter-pill.active { background: rgba(79, 209, 197, 0.15); color: #4fd1c5; }
+
+.result-count { color: #6b7c80; font-size: 13px; margin-bottom: 20px; }
 
 .empty-state { padding: 40px; text-align: center; color: #6b7c80; }
 
@@ -159,6 +180,10 @@ onMounted(loadDonators)
   letter-spacing: 0.05em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+.sortable { cursor: pointer; user-select: none; }
+.sortable:hover { color: #dce6e8; }
+.sort-arrow { color: #4fd1c5; }
 
 .table-row {
   color: #dce6e8;
