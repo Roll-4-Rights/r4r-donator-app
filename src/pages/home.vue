@@ -18,7 +18,7 @@
             Hail and well met, {{ userName }}!
           </h1>
           <p class="text-body-1 text-medium-emphasis leading-relaxed max-w-3xl">
-            Thanks for supporting the auction! Here you will be able to submit your donations, as well as view information and contact the team. Please start by reading the Auction Information in the navigation pane.
+            Thanks for supporting the auction! Here you will be able to submit and view your donations, as well as contact the team.
           </p>
         </div>
       </v-card-text>
@@ -144,7 +144,7 @@
           Important Dates
         </h2>
         <p class="text-body-2 text-medium-emphasis mt-1 mb-0">
-          deadlines and other events
+          deadlines, social calendar, and other events
         </p>
       </div>
 
@@ -288,7 +288,6 @@ const COLOR_MAP: Record<string, string> = {
   Gold: '#B7950B',
   Purple: '#6C3483'
 }
-const DEFAULT_EVENT_COLOR = '#0B4F6C'
 
 const userName = computed(() => authState.name || 'Donator')
 
@@ -338,7 +337,7 @@ const fetchCalendarData = async () => {
       start: new Date(row['Event Date Start']),
       end: new Date(row['Event Date End']),
       description: row['Description'] || 'No additional details provided.',
-      color: COLOR_MAP[row['Color']] || DEFAULT_EVENT_COLOR
+      color: COLOR_MAP[row['Color']] || 
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
@@ -444,7 +443,6 @@ onMounted(() => {
   transition: all 0.2s ease-in-out !important;
   width: 100% !important;
   display: flex !important;
-  align-center: true;
 }
 
 .custom-event-pill span {
