@@ -4,14 +4,12 @@
     <header class="channel-header">
       <span class="channel-icon mdi" :class="icon || 'mdi-pound'"></span>
       <span class="channel-title">{{ title || channel }}</span>
-      </header>
-  </div>
+    </header>
 
     <div class="messages" ref="scrollEl">
       <div v-if="messages.length === 0" class="empty-state">
         <p>No one is here yet 😔</p>
       </div>
-    </div>
 
       <div
         v-for="(msg, i) in messages"
@@ -65,26 +63,28 @@
           </div>
         </div>
 
-          <div class="msg-actions">
-            <div class="reaction-picker-wrapper">
-              <button class="msg-action-btn" @click="toggleReactionPicker(msg.id)" title="Add reaction">
-                <span class="mdi mdi-emoticon-plus-outline"></span>
-              </button>
-              <div v-if="reactionPickerFor === msg.id" class="reaction-picker-backdrop" @click="reactionPickerFor = null"></div>
-              <div v-if="reactionPickerFor === msg.id" class="reaction-picker" @click.stop>
-                <button v-for="emoji in REACTION_EMOJIS" :key="emoji" class="reaction-option" @click="pickReaction(msg, emoji)">{{ emoji }}</button>
-              </div>
+        <div class="msg-actions">
+          <div class="reaction-picker-wrapper">
+            <button class="msg-action-btn" @click="toggleReactionPicker(msg.id)" title="Add reaction">
+              <span class="mdi mdi-emoticon-plus-outline"></span>
+            </button>
+            <div v-if="reactionPickerFor === msg.id" class="reaction-picker-backdrop" @click="reactionPickerFor = null"></div>
+            <div v-if="reactionPickerFor === msg.id" class="reaction-picker" @click.stop>
+              <button v-for="emoji in REACTION_EMOJIS" :key="emoji" class="reaction-option" @click="pickReaction(msg, emoji)">{{ emoji }}</button>
             </div>
-            <button class="msg-action-btn" @click="startReply(msg)" title="Reply">
-              <span class="mdi mdi-reply"></span>
-            </button>
-            <button v-if="msg.senderID === myId" class="msg-action-btn" @click="startEdit(msg)" title="Edit">
-              <span class="mdi mdi-pencil-outline"></span>
-            </button>
-            <button v-if="msg.senderID === myId || authState.is_admin" class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
-              <span class="mdi mdi-delete-outline"></span>
-            </button>
           </div>
+          <button class="msg-action-btn" @click="startReply(msg)" title="Reply">
+            <span class="mdi mdi-reply"></span>
+          </button>
+          <button v-if="msg.senderID === myId" class="msg-action-btn" @click="startEdit(msg)" title="Edit">
+            <span class="mdi mdi-pencil-outline"></span>
+          </button>
+          <button v-if="msg.senderID === myId || authState.is_admin" class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
+            <span class="mdi mdi-delete-outline"></span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div class="composer-wrapper">
       <div v-if="replyingTo" class="reply-bar">
@@ -185,7 +185,10 @@ function send() {
 }
 
 function removeMessage(msg) {
-  if (!confirm('Delete this message?')) return
+  const label = msg.senderID === myId.value
+    ? 'Delete this message?'
+    : `Delete this message from ${msg.senderName}?`
+  if (!confirm(label)) return
   deleteMessage(msg.id, props.channel)
 }
 
