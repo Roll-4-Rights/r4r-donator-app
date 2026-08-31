@@ -30,18 +30,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { socket } from '@/socket'
+import { authState } from '@/services/authStore'
 
 const sidebarOpen = ref(false)
 
-const channels = [
-  { name: 'Welcome', path: 'welcome', icon: '' },
-  { name: 'Introduce Yourself', path: 'pinned-information', icon: '' },
-  { name: 'General Chat', path: 'general-chat', icon: '' },
-  { name: 'Donation Talk', path: 'donation-talk', icon: '' },
-  { name: 'Dice Chat', path: 'dice-chat', icon: '' },
-]
+const channels = computed(() => {
+  const base = [
+    { name: 'Welcome', path: 'welcome', icon: '' },
+    { name: 'Introduce Yourself', path: 'pinned-information', icon: '' },
+    { name: 'General Chat', path: 'general-chat', icon: '' },
+    { name: 'Donation Talk', path: 'donation-talk', icon: '' },
+    { name: 'Dice Chat', path: 'dice-chat', icon: '' },
+  ]
+  if (authState.is_admin) {
+    base.push({ name: 'Admin Lounge', path: 'admin-only', icon: '' })
+  }
+  return base
+})
 
 onMounted(() => {
   socket.connect()

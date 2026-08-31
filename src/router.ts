@@ -16,6 +16,7 @@ import Login from './pages/login.vue'
 import Register from './pages/register.vue'
 import Messages from './pages/messages.vue'
 import Admin from './pages/admin.vue'
+import ForumAdminOnly from './pages/forum/admin-only.vue'
 import { authState, waitForAuthReady } from './services/authStore'
 
 const routes: Array<RouteRecordRaw> = [
@@ -29,6 +30,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/account', name: 'Account', component: Account },
   { path: '/admin', name: 'Admin', component: Admin },
   { path: '/messages', name: 'Messages', component: Messages },
+  { path: 'admin-only', name: 'ForumAdminOnly', component: ForumAdminOnly },
   { 
     path: '/forum', 
     name: 'Forum', 
