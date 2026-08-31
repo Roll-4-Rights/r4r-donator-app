@@ -45,7 +45,7 @@ const channels = computed(() => {
     { name: 'Dice Chat', path: 'dice-chat', icon: '' },
   ]
   if (authState.is_admin) {
-    base.push({ name: 'Admin Lounge', path: 'admin-lounge', icon: '' })
+    base.push({ name: 'Admin Lounge', path: 'admin-only', icon: '' })
   }
   return base
 })
