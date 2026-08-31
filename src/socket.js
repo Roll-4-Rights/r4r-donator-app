@@ -36,12 +36,18 @@ export function joinChannel(channel) {
   socket.emit('join_channel', { channel });
 }
 
-export function sendChannelMessage(text) {
+export function sendChannelMessage(text, replyTo = null) {
   if (!state.activeChannel || !text.trim()) return;
   socket.emit('send_channel_message', {
     channel: state.activeChannel,
-    message: text
+    message: text,
+    replyTo
   });
+}
+
+export function editMessage(messageId, channel, newText) {
+  if (!newText.trim()) return;
+  socket.emit('edit_message', { messageId, channel, message: newText });
 }
 
 export function deleteMessage(messageId, channel) {
@@ -57,6 +63,16 @@ socket.on('channel_history', ({ channel, messages }) => {
 
 socket.on('channel_message', (msg) => {
   (state.messagesByChannel[msg.channel] ??= []).push(msg);
+});
+
+socket.on('message_edited', ({ id, channel, message, editedAt }) => {
+  const messages = state.messagesByChannel[channel];
+  if (!messages) return;
+  const target = messages.find((m) => m.id === id);
+  if (target) {
+    target.message = message;
+    target.editedAt = editedAt;
+  }
 });
 
 socket.on('message_deleted', ({ id, channel }) => {

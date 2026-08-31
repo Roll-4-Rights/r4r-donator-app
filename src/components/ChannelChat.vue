@@ -31,32 +31,79 @@
           <div class="message-meta" v-if="!isGrouped(msg, messages[i - 1])">
             <span class="sender" :style="{ color: colorForUser(msg.senderID) }">{{ msg.senderName }}</span>
             <span class="time">{{ formatTime(msg.timestamp) }}</span>
+            <span v-if="msg.editedAt" class="edited-tag">(edited)</span>
           </div>
-          <div class="text">{{ msg.message }}</div>
+
+          <div v-if="msg.replyTo" class="reply-preview">
+            <span class="mdi mdi-reply"></span>
+            <span class="reply-preview-author">{{ msg.replyTo.senderName || 'Unknown' }}</span>
+            <span class="reply-preview-text">{{ truncate(msg.replyTo.message) }}</span>
+          </div>
+
+          <div v-if="editingId === msg.id" class="edit-row">
+            <input
+              v-model="editingDraft"
+              class="edit-input"
+              @keyup.enter="saveEdit(msg)"
+              @keyup.escape="cancelEdit"
+            />
+            <button class="edit-save" @click="saveEdit(msg)">Save</button>
+            <button class="edit-cancel" @click="cancelEdit">Cancel</button>
+          </div>
+          <div v-else class="text">{{ msg.message }}</div>
         </div>
 
-        <div v-if="msg.senderID === myId" class="msg-actions">
-          <button class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
+        <div class="msg-actions">
+          <button class="msg-action-btn" @click="startReply(msg)" title="Reply">
+            <span class="mdi mdi-reply"></span>
+          </button>
+          <button v-if="msg.senderID === myId" class="msg-action-btn" @click="startEdit(msg)" title="Edit">
+            <span class="mdi mdi-pencil-outline"></span>
+          </button>
+          <button v-if="msg.senderID === myId" class="msg-action-btn danger" @click="removeMessage(msg)" title="Delete">
             <span class="mdi mdi-delete-outline"></span>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="composer">
-      <input
-        v-model="draft"
-        @keyup.enter="send"
-        :placeholder="`Message #${channel}`"
-      />
-      <button @click="send">Send</button>
+    <div class="composer-wrapper">
+      <div v-if="replyingTo" class="reply-bar">
+        <span class="mdi mdi-reply"></span>
+        <span class="reply-bar-text">Replying to <strong>{{ replyingTo.senderName }}</strong>: {{ truncate(replyingTo.message) }}</span>
+        <button class="reply-bar-close" @click="replyingTo = null">×</button>
+      </div>
+
+      <div class="composer">
+        <div class="emoji-wrapper">
+          <div v-if="showEmojiPicker" class="emoji-backdrop" @click="showEmojiPicker = false"></div>
+          <button class="emoji-toggle" @click="showEmojiPicker = !showEmojiPicker" title="Emoji">
+            <span class="mdi mdi-emoticon-outline"></span>
+          </button>
+          <div v-if="showEmojiPicker" class="emoji-picker" @click.stop>
+            <button
+              v-for="emoji in EMOJI_LIST"
+              :key="emoji"
+              class="emoji-option"
+              @click="insertEmoji(emoji)"
+            >{{ emoji }}</button>
+          </div>
+        </div>
+
+        <input
+          v-model="draft"
+          @keyup.enter="send"
+          :placeholder="`Message #${channel}`"
+        />
+        <button @click="send">Send</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { state, joinChannel, sendChannelMessage, deleteMessage } from '../socket'
+import { state, joinChannel, sendChannelMessage, deleteMessage, editMessage } from '../socket'
 import { colorForUser, initialsForName } from '../utils/userColor'
 import { API_BASE_URL } from '@/services/api'
 import { authState } from '@/services/authStore'
@@ -67,15 +114,53 @@ const props = defineProps({
   icon: { type: String, default: '' }
 })
 
+const EMOJI_LIST = ['😀','😂','😅','😊','😍','🤔','😢','😭','😡','👍','👎','🙏','👏','🎉','🔥','💯','❤️','💙','💚','💛','🧡','💜','🖤','✨','⭐','🎲','🎮','🍕','🍺','🎂','🐉','⚔️','🛡️','🏆','👀','😴','🤯','🥳','😎','🙌','💪','🤝','🎁','📢','❗','❓','✅','❌','🚀','🌈']
+
 const draft = ref('')
 const scrollEl = ref(null)
+const showEmojiPicker = ref(false)
+const replyingTo = ref(null)
+const editingId = ref(null)
+const editingDraft = ref('')
 
 const messages = computed(() => state.messagesByChannel[props.channel] || [])
 const myId = computed(() => String(authState.donator_id))
 
+function truncate(text, max = 60) {
+  if (!text) return ''
+  return text.length > max ? text.slice(0, max).trimEnd() + '…' : text
+}
+
+function insertEmoji(emoji) {
+  draft.value += emoji
+}
+
+function startReply(msg) {
+  replyingTo.value = { id: msg.id, senderName: msg.senderName, message: msg.message }
+}
+
+function startEdit(msg) {
+  editingId.value = msg.id
+  editingDraft.value = msg.message
+}
+
+function cancelEdit() {
+  editingId.value = null
+  editingDraft.value = ''
+}
+
+function saveEdit(msg) {
+  const text = editingDraft.value.trim()
+  if (!text) return
+  editMessage(msg.id, props.channel, text)
+  cancelEdit()
+}
+
 function send() {
-  sendChannelMessage(draft.value)
+  sendChannelMessage(draft.value, replyingTo.value?.id || null)
   draft.value = ''
+  replyingTo.value = null
+  showEmojiPicker.value = false
 }
 
 function removeMessage(msg) {
@@ -148,7 +233,42 @@ watch(messages, () => {
 .message-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
 .sender { font-weight: 600; font-size: 14px; }
 .time { font-size: 11px; color: #6b7c80; }
+.edited-tag { font-size: 10px; color: #6b7c80; font-style: italic; }
 .text { color: #dce6e8; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+
+.reply-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a9a9e;
+  margin-bottom: 3px;
+  padding-left: 8px;
+  border-left: 2px solid #4fd1c5;
+}
+.reply-preview .mdi { font-size: 13px; }
+.reply-preview-author { color: #4fd1c5; font-weight: 600; }
+
+.edit-row { display: flex; align-items: center; gap: 8px; }
+.edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #4fd1c5;
+  background: #2a3a3f;
+  color: #fff;
+  font-size: 14px;
+}
+.edit-save, .edit-cancel {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.edit-save { background: #4fd1c5; color: #103948; }
+.edit-cancel { background: transparent; color: #8a9a9e; }
 
 .msg-actions {
   position: absolute;
@@ -198,9 +318,83 @@ watch(messages, () => {
   }
 }
 
-.composer { display: flex; padding: 15px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08); background: #1e2b30; }
-.composer input { flex: 1; padding: 10px 14px; border-radius: 8px; border: none; background: #2a3a3f; color: #fff; margin-right: 10px; }
+.composer-wrapper {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1e2b30;
+}
+
+.reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: #2a3a3f;
+  color: #b8c3c6;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.reply-bar .mdi { color: #4fd1c5; }
+.reply-bar-text { flex: 1; }
+.reply-bar-text strong { color: #4fd1c5; }
+.reply-bar-close {
+  background: none;
+  border: none;
+  color: #8a9a9e;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+.reply-bar-close:hover { color: #ff6363; }
+
+.composer { display: flex; align-items: center; padding: 15px 20px; gap: 10px; }
+.composer input { flex: 1; padding: 10px 14px; border-radius: 8px; border: none; background: #2a3a3f; color: #fff; }
 .composer input::placeholder { color: #6b7c80; }
-.composer button { background: #4fd1c5; color: #103948; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+.composer button { background: #4fd1c5; color: #103948; border: none; padding: 0 20px; height: 40px; border-radius: 8px; cursor: pointer; font-weight: 700; }
 .composer button:hover { background: #6ee0d5; }
+
+.emoji-wrapper { position: relative; flex-shrink: 0; }
+.emoji-toggle {
+  background: #2a3a3f;
+  border: none;
+  color: #b8c3c6;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emoji-toggle:hover { color: #4fd1c5; }
+
+.emoji-backdrop { position: fixed; inset: 0; z-index: 30; }
+
+.emoji-picker {
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  z-index: 31;
+  background: #2a3a3f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  width: 260px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.emoji-option {
+  background: none;
+  border: none;
+  font-size: 18px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 1;
+}
+.emoji-option:hover { background: rgba(255, 255, 255, 0.08); }
 </style>

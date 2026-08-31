@@ -7,7 +7,7 @@
     <div v-if="sidebarOpen" class="sidebar-backdrop" @click="sidebarOpen = false"></div>
 
     <aside class="forum-sidebar" :class="{ open: sidebarOpen }">
-      <h2>Forum Channels</h2>
+      <h2>Chat Channels</h2>
       <nav class="subforum-nav">
         <router-link 
           v-for="channel in channels" 

@@ -232,7 +232,7 @@
 // filepath: c:\Users\gamer\Documents\Roll4Rights\r4r-donator-app\src\pages\home.vue
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
-
+import { authState } from '@/services/authStore'
 
 // Messages Preview
 interface MessageItem {
@@ -290,7 +290,7 @@ const COLOR_MAP: Record<string, string> = {
 }
 const DEFAULT_EVENT_COLOR = '#0B4F6C'
 
-const userName = ref('praeterusdice')
+const userName = computed(() => authState.name || 'Donator')
 
 // Announcements — populated from NocoDB on mount
 const announcements = ref<Array<{ id: number; title: string; date: string; content: string }>>([])
