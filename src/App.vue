@@ -108,6 +108,7 @@
           
           <v-list-item to="/donator-information" prepend-icon="mdi-earth" title="Submit Donator Information"></v-list-item>
           <v-list-item to="/account" prepend-icon="mdi-account-circle-outline" title="Account"></v-list-item>
+          <v-list-item v-if="authState.is_admin" to="/admin" prepend-icon="mdi-shield-crown-outline" title="Admin"></v-list-item>
         </v-list>
 
         <template v-slot:append>
