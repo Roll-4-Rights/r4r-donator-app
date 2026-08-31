@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const URL = import.meta.env.PROD
   ? "https://chat.roll4rights.duckdns.org"
-  : "http://localhost:5000";
+  : "http://localhost:5001";
 
 export const state = reactive({
   connected: false,
