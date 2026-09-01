@@ -10,9 +10,13 @@
     <!-- SUBMISSION GUIDELINES INFO DRAWER -->
     <v-expansion-panels class="guidelines mb-8" variant="accordion">
       <v-expansion-panel elevation="0">
-        <v-expansion-panel-title class="guidelines-title">Submission guidelines</v-expansion-panel-title>
+        <v-expansion-panel-title class="guidelines-title">Submission guidelines and info:</v-expansion-panel-title>
         <v-expansion-panel-text class="guidelines-text">
-          some instructions here blah blah blah.
+          Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
+          <br>
+          Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
+          Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit items after their status changes to "Accepted".
+          Needs Reviewed: this means the item has been sent to the admin team and is being looked over, items can still be edited at this time.
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>

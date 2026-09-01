@@ -38,7 +38,8 @@
           <p class="thread-body">{{ thread.body }}</p>
 
           <div v-if="thread.donatorId === myDonatorId" class="thread-owner-actions">
-            <button class="btn-delete" @click="deleteMyThread">Delete My Intro</button>
+            <button class="btn-edit" @click="openMyThreadModal">Edit Intro</button>
+            <button class="btn-delete" @click="deleteMyThread">Delete Intro</button>
           </div>
 
           <v-divider class="my-4"></v-divider>
@@ -47,7 +48,7 @@
             <div v-if="!repliesState[thread.id] || repliesState[thread.id].loading" class="empty-state small"><p>Loading replies…</p></div>
             <template v-else>
               <div v-if="repliesState[thread.id].items.length === 0" class="empty-state small"><p>No replies yet.</p></div>
-              <div v-else class="reply-list">
+                            <div v-else class="reply-list">
                 <div v-for="reply in repliesState[thread.id].items" :key="reply.id" class="reply-item">
                   <div class="reply-avatar" :style="reply.authorPicture ? {} : { background: colorForUser(reply.donatorId) }">
                     <img v-if="reply.authorPicture" :src="`${API_BASE_URL}${reply.authorPicture}`" alt="" />
@@ -56,9 +57,24 @@
                   <div class="reply-body">
                     <span class="reply-author">{{ reply.author }}</span>
                     <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
-                    <p>{{ reply.message }}</p>
+                    <span v-if="reply.editedAt" class="reply-edited-tag">(edited)</span>
+
+                    <div v-if="editingReplyId === reply.id" class="reply-edit-row">
+                      <input
+                        v-model="editingReplyDraft"
+                        class="reply-edit-input"
+                        @keyup.enter="saveReplyEdit(thread.id, reply.id)"
+                        @keyup.escape="cancelReplyEdit"
+                      />
+                      <button class="reply-edit-save" @click="saveReplyEdit(thread.id, reply.id)">Save</button>
+                      <button class="reply-edit-cancel" @click="cancelReplyEdit">Cancel</button>
+                    </div>
+                    <p v-else>{{ reply.message }}</p>
                   </div>
-                  <button v-if="reply.donatorId === myDonatorId" class="btn-delete-small" @click="deleteReply(thread.id, reply.id)">Delete</button>
+                  <div v-if="reply.donatorId === myDonatorId" class="reply-owner-actions">
+                    <button class="btn-edit-small" @click="startReplyEdit(reply)">Edit</button>
+                    <button class="btn-delete-small" @click="deleteReply(thread.id, reply.id)">Delete</button>
+                  </div>
                 </div>
               </div>
 
@@ -122,9 +138,40 @@ const showModal = ref(false)
 const draftTitle = ref('')
 const draftBody = ref('')
 
+const editingReplyId = ref(null)
+const editingReplyDraft = ref('')
+
 function formatTime(ts) {
   return new Date(ts).toLocaleString()
 }
+
+function startReplyEdit(reply) {
+  editingReplyId.value = reply.id
+  editingReplyDraft.value = reply.message
+}
+
+function cancelReplyEdit() {
+  editingReplyId.value = null
+  editingReplyDraft.value = ''
+}
+
+async function saveReplyEdit(threadId, replyId) {
+  const text = editingReplyDraft.value.trim()
+  if (!text) return
+  try {
+    await apiService.editIntroReply(replyId, text)
+    const state = repliesState.value[threadId]
+    const target = state?.items.find((r) => r.id === replyId)
+    if (target) {
+      target.message = text
+      target.editedAt = new Date().toISOString()
+    }
+    cancelReplyEdit()
+  } catch (e) {
+    console.error('Failed to edit reply:', e)
+  }
+}
+
 
 async function loadThreads(page = 1) {
   loadingThreads.value = true
@@ -309,4 +356,20 @@ onMounted(() => {
   flex-shrink: 0; overflow: hidden;
 }
 .reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.btn-edit { border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; margin-right: 8px; }
+.btn-edit:hover { background: rgba(79, 209, 197, 0.3); }
+
+.reply-edited-tag { font-size: 10px; color: #6b7c80; font-style: italic; margin-left: 6px; }
+
+.reply-edit-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.reply-edit-input { flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid #4fd1c5; background: #1e2b30; color: #fff; font-size: 13px; }
+.reply-edit-save, .reply-edit-cancel { border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.reply-edit-save { background: #4fd1c5; color: #103948; }
+.reply-edit-cancel { background: transparent; color: #8a9a9e; }
+
+.reply-owner-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.btn-edit-small { border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; }
+.btn-edit-small:hover { background: rgba(79, 209, 197, 0.3); }
+
 </style>
