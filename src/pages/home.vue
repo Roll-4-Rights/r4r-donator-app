@@ -56,19 +56,25 @@
           >
             <v-expansion-panel-title class="py-6 px-8">
               <div style="display: block !important; width: 100% !important; text-align: left !important;">
-                <div class="d-flex align-center flex-wrap ga-2 mb-1">
-                  <span class="text-subtitle-2 font-weight-bold text-medium-emphasis" style="display: block !important;">
+                <div class="d-flex align-center ga-2 mb-1">
+                  <span class="text-subtitle-2 font-weight-bold text-medium-emphasis" style="display: block !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important;">
                     {{ item.date }}
                   </span>
-                  <v-chip v-if="item.priority" size="x-small" variant="flat" :color="PRIORITY_COLOR_MAP[item.priority] || '#0B4F6C'" class="font-weight-bold text-white">
+                  <v-chip v-if="item.priority" size="x-small" variant="flat" :color="PRIORITY_COLOR_MAP[item.priority] || '#0B4F6C'" class="font-weight-bold text-white flex-shrink-0">
                     {{ item.priority }}
                   </v-chip>
                 </div>
-                <div class="text-h6 font-weight-black text-black" style="display: block !important; white-space: normal !important; overflow-wrap: break-word !important;">
+                <div class="text-h6 font-weight-black text-black" style="display: block !important; white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0; font-size: 1.4rem !important;">
                   {{ item.title }}
                 </div>
               </div>
             </v-expansion-panel-title>
+                        
+            <v-expansion-panel-text class="pa-6">
+              <div class="text-body-2 text-medium-emphasis leading-relaxed" style="white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
+                {{ item.content }}
+              </div>
+            </v-expansion-panel-text>
                         
             <v-expansion-panel-text class="pa-6">
               <div class="text-body-2 text-medium-emphasis leading-relaxed">

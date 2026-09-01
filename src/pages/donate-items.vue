@@ -525,7 +525,7 @@ const form = ref({
 const userDonations = ref([])
 
 // Formats a row index into a 3-digit lot number, e.g. 1 -> "001"
-const pad3 = (n) => String(n).padStart(3, '0')
+// const pad3 = (n) => String(n).padStart(3, '0')
 
 // Shared category list for both the submit form and the edit dialog
 const categoryOptions = ['Artwork & Photography', 'Books & Games', 'Custom Commissions', 'Dice', 'Home Goods', 'Tabletop Accessories', 'Wearables', 'Crafting Supplies', 'Live Event Tickets']
