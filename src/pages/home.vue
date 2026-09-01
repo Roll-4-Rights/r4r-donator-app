@@ -56,15 +56,15 @@
           >
             <v-expansion-panel-title class="py-6 px-8">
               <div style="display: block !important; width: 100% !important; text-align: left !important;">
-                <div class="d-flex align-center justify-space-between mb-1">
+                <div class="d-flex align-center flex-wrap ga-2 mb-1">
                   <span class="text-subtitle-2 font-weight-bold text-medium-emphasis" style="display: block !important;">
                     {{ item.date }}
                   </span>
-                  <v-chip v-if="item.priority" size="x-small" variant="flat" :color="PRIORITY_COLOR_MAP[item.priority] || '#0B4F6C'" class="font-weight-bold text-white ml-2">
+                  <v-chip v-if="item.priority" size="x-small" variant="flat" :color="PRIORITY_COLOR_MAP[item.priority] || '#0B4F6C'" class="font-weight-bold text-white">
                     {{ item.priority }}
                   </v-chip>
                 </div>
-                <div class="text-body-1 font-weight-black text-black" style="display: block !important;">
+                <div class="text-h6 font-weight-black text-black" style="display: block !important; white-space: normal !important; overflow-wrap: break-word !important;">
                   {{ item.title }}
                 </div>
               </div>
