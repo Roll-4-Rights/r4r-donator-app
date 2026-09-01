@@ -18,7 +18,7 @@
             Hail and well met, {{ userName }}!
           </h1>
           <p class="text-body-1 text-medium-emphasis leading-relaxed max-w-3xl">
-            Thanks for supporting the auction! Here you will be able to submit and view your donations, as well as contact the team.
+            Thanks for supporting the auction! Here you will be able to submit and view your donations, join the chat, view the FAQ, as well as contact the team with any questions.
           </p>
         </div>
       </v-card-text>
