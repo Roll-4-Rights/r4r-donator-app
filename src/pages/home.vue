@@ -308,9 +308,9 @@ const DEFAULT_EVENT_COLOR = '#0B4F6C'
 // option's color swatch, and grab the hex it shows. This is the ONE
 // place that needs updating if you change a priority's color later.
 const PRIORITY_COLOR_MAP: Record<string, string> = {
-  High: '#C0392B',
+  High: '#FF4A3F',
   Medium: '#B7950B',
-  Low: '#7F8C8D'
+  Normal: '#D0F1FD'
 }
 
 
