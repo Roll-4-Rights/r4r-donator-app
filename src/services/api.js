@@ -156,9 +156,9 @@ async register({ name, email, password, invite_code, passcode }) {
 
   // ============= FILE UPLOAD =============
 
-  async uploadPhotos(files) {
+async uploadPhotos(files) {
     if (!files || !files.length) return [];
-
+    
     const mediaFormData = new FormData();
     files.forEach(file => mediaFormData.append('file', file));
 
@@ -167,10 +167,11 @@ async register({ name, email, password, invite_code, passcode }) {
       credentials: 'include',
       body: mediaFormData
     });
-
-    if (!res.ok) throw new Error(`Media Upload Failed: ${res.status}`);
-    return await res.json();
-  },
+    
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Media Upload Failed: ${res.status}`);
+    return data;
+},
 
   // ============= CHAT (existing user-message inbox, not live chat) =============
 

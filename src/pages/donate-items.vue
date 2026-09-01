@@ -625,7 +625,7 @@ const submitForm = async () => {
     await loadDashboardData()
   } catch (error) {
     console.error('Submission Bug Trace:', error)
-    alert('Submission failed.')
+    alert(error.message || 'Submission failed.')
   } finally {
     isSubmitting.value = false
   }
@@ -675,7 +675,7 @@ const saveEditInfo = async () => {
     await loadDashboardData()
   } catch (err) {
     console.error('Edit Save Bug Trace:', err)
-    alert('Update failed.')
+    alert(err.message || 'Update failed.')
   } finally {
     isSavingEdit.value = false
   }
