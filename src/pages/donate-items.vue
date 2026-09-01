@@ -3,9 +3,8 @@
 
     <!-- PAGE HEADER -->
     <div class="page-head mb-8">
-      <span class="eyebrow">Auction Donation Desk</span>
       <h1 class="page-title">Donate an Item</h1>
-      <p class="page-sub">Submit items, manage your donations, and view winner info.</p>
+      <p class="page-sub">Submit items, manage your donations, view winner info, and add tracking.</p>
     </div>
 
     <!-- SUBMISSION GUIDELINES INFO DRAWER -->
@@ -140,7 +139,7 @@
                 <td colspan="6" class="text-center py-8 empty-text">No donations submitted yet.</td>
               </tr>
               <tr v-else v-for="(item, index) in filteredDonations" :key="item.Id">
-                <td class="col-lot mono">№{{ pad3(index + 1) }}</td>
+                <td class="col-lot mono">№{{ item['Lot Number'] ? pad3(item['Lot Number']) : '—' }}</td>
                 <td>
                   <div class="item-name">{{ item['Item Name'] }}</div>
                   <div class="item-donator">by {{ item['Donator'] || 'Anonymous' }}</div>
