@@ -551,6 +551,7 @@ const newEditPhotos = ref([])    // brand-new File objects picked in this edit s
 const totalEditPhotoCount = computed(() => existingPhotos.value.length + newEditPhotos.value.length)
 
 const photoPreviewUrl = (file) => URL.createObjectURL(file)
+const pad3 = (num) => String(num).padStart(3, '0')
 
 const removeExistingPhoto = (index) => {
   existingPhotos.value.splice(index, 1)
