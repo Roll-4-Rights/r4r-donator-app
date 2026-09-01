@@ -75,12 +75,7 @@
                 {{ item.content }}
               </div>
             </v-expansion-panel-text>
-                        
-            <v-expansion-panel-text class="pa-6">
-              <div class="text-body-2 text-medium-emphasis leading-relaxed">
-                {{ item.content }}
-              </div>
-            </v-expansion-panel-text>
+        
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
