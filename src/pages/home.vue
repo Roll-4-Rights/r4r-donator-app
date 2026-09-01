@@ -56,8 +56,13 @@
           >
             <v-expansion-panel-title class="py-6 px-8">
               <div style="display: block !important; width: 100% !important; text-align: left !important;">
-                <div class="text-subtitle-2 font-weight-bold text-medium-emphasis mb-1" style="display: block !important;">
-                  {{ item.date }}
+                <div class="d-flex align-center justify-space-between mb-1">
+                  <span class="text-subtitle-2 font-weight-bold text-medium-emphasis" style="display: block !important;">
+                    {{ item.date }}
+                  </span>
+                  <v-chip v-if="item.priority" size="x-small" variant="flat" :color="PRIORITY_COLOR_MAP[item.priority] || '#0B4F6C'" class="font-weight-bold text-white ml-2">
+                    {{ item.priority }}
+                  </v-chip>
                 </div>
                 <div class="text-body-1 font-weight-black text-black" style="display: block !important;">
                   {{ item.title }}
@@ -210,6 +215,11 @@
           </div>
         </div>
 
+        <!-- 2b. Event Type Chip -->
+        <v-chip v-if="selectedEvent.eventType" size="small" variant="flat" :color="selectedEvent.color" class="font-weight-bold text-white mb-4">
+          {{ selectedEvent.eventType }}
+        </v-chip>
+
         <!-- 3. Details Label & Description Text Box -->
         <div class="text-subtitle-2 text-grey-darken-2 mb-1 font-weight-bold">Details</div>
         <p class="text-high-emphasis font-weight-medium bg-grey-lighten-4 pa-4 rounded-xl border border-faint" style="line-height: 1.5;">
@@ -276,6 +286,7 @@ interface CalendarEvent {
   end: Date
   description: string
   color: string
+  eventType: string
 }
 
 // Maps NocoDB's "Color" single-select label to an actual hex value.
@@ -290,7 +301,22 @@ const COLOR_MAP: Record<string, string> = {
 }
 const DEFAULT_EVENT_COLOR = '#0B4F6C'
 
+
+
+// Maps NocoDB's "Priority" single-select label to an actual hex value.
+// Copy these directly from NocoDB: edit the Priority field, click each
+// option's color swatch, and grab the hex it shows. This is the ONE
+// place that needs updating if you change a priority's color later.
+const PRIORITY_COLOR_MAP: Record<string, string> = {
+  High: '#C0392B',
+  Medium: '#B7950B',
+  Low: '#7F8C8D'
+}
+
+
 const userName = computed(() => authState.name || 'Donator')
+
+
 
 // Announcements — populated from NocoDB on mount
 const announcements = ref<Array<{ id: number; title: string; date: string; content: string }>>([])
@@ -307,7 +333,8 @@ const fetchAnnouncements = async () => {
             timeStyle: 'short'
           })
         : '',
-      content: row['Body']
+      content: row['Body'],
+      priority: row['Priority'] || null
     }))
   } catch (error) {
     console.error('Failed to fetch announcements:', error)
@@ -338,7 +365,8 @@ const fetchCalendarData = async () => {
       start: new Date(row['Event Date Start']),
       end: new Date(row['Event Date End']),
       description: row['Description'] || 'No additional details provided.',
-      color: COLOR_MAP[row['Color']] || DEFAULT_EVENT_COLOR
+      color: COLOR_MAP[row['Color']] || DEFAULT_EVENT_COLOR,
+      eventType: row['Event Type'] || ''
     }))
   } catch (error) {
     console.error('Failed to sync calendar:', error)
