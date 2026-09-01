@@ -71,7 +71,7 @@
             </v-expansion-panel-title>
                         
             <v-expansion-panel-text class="pa-6">
-              <div class="text-body-2 text-medium-emphasis leading-relaxed" style="white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
+              <div class="text-body-2 text-small-emphasis leading-relaxed" style="white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
                 {{ item.content }}
               </div>
             </v-expansion-panel-text>
