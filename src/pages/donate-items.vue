@@ -121,7 +121,7 @@
           <table class="ledger-table">
             <thead>
               <tr>
-                <!-- <th class="col-lot">Lot</th> -->
+                <th class="col-lot">Lot</th>
                 <th>Item</th>
                 <th>Category</th>
                 <th class="text-center">Status</th>
