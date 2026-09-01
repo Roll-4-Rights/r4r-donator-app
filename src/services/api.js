@@ -30,10 +30,6 @@ async register({ name, email, password, invite_code, passcode }) {
   return data;
 },
 
-async verifyInvite(code) {
-  const res = await fetch(`${API_BASE_URL}/auth/verify-invite?code=${encodeURIComponent(code)}`);
-  return res.json();
-},
 
   async login({ email, password }) {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
