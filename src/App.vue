@@ -7,6 +7,14 @@
       <!-- HEADER BAR WITH DYNAMIC SCALING IMAGE AND SHADOW TEXT CONTRAST OVERLAY -->
       <v-app-bar color="primary" elevation="1" class="position-relative overflow-hidden">
         
+        <v-app-bar-nav-icon
+          v-if="!isForumRoute"
+          class="position-relative z-index-top"
+          @click="drawerOpen = !drawerOpen"
+        ></v-app-bar-nav-icon>
+
+        <!-- FULL-WIDTH RESPONSIVE BLEND IMAGE CONTAINER -->
+        
         <!-- FULL-WIDTH RESPONSIVE BLEND IMAGE CONTAINER -->
         <div 
           class="header-logo-blend-wrapper-full d-none d-sm-block"
@@ -76,20 +84,27 @@
       <!-- Sidebar Container Box Panel Layer Wrapper -->
       <v-navigation-drawer
         v-if="!isForumRoute"
+        v-model="drawerOpen"
+        :permanent="!mobile"
+        :temporary="mobile"
         style="background-color: #103948 !important;"
         theme="dark"
-        permanent
         elevation="2"
         width="280"
       >
-        <v-list style="background-color: transparent !important;" class="pa-2 custom-sidebar-list" active-color="secondary">
+        <v-list
+          style="background-color: transparent !important;"
+          class="pa-2 custom-sidebar-list"
+          active-color="secondary"
+          @click="closeDrawerOnMobile"
+        >
           <v-list-item to="/" exact prepend-icon="mdi-view-dashboard" title="Home"></v-list-item>
           
           
           <v-list-item to="/forum" prepend-icon="mdi-forum" title="Chat"></v-list-item>
           
           <v-list-item to="/guides-faq" prepend-icon="mdi-help-circle-outline" title="Guides/FAQs"></v-list-item>
-          <v-list-item to="/current-campaign" prepend-icon="mdi-sword-cross" title="Current Campaign"></v-list-item>
+          <!-- <v-list-item to="/current-campaign" prepend-icon="mdi-sword-cross" title="Current Campaign"></v-list-item> -->
 
           <v-list-item to="/messages" prepend-icon="mdi-email-outline" title="Messages"></v-list-item>
 
@@ -136,6 +151,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import { socket } from '@/socket'
 import { authState, logout } from '@/services/authStore'
 import { API_BASE_URL } from '@/services/api'
@@ -143,6 +159,13 @@ import { API_BASE_URL } from '@/services/api'
 const route = useRoute()
 const router = useRouter()
 const isMenuOpen = ref(false)
+
+const { mobile } = useDisplay()
+const drawerOpen = ref(!mobile.value)
+
+function closeDrawerOnMobile() {
+  if (mobile.value) drawerOpen.value = false
+}
 
 const isForumRoute = computed(() => route.path.startsWith('/forum'))
 const isAuthPage = computed(() => route.path === '/login' || route.path === '/register')
