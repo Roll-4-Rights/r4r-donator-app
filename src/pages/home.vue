@@ -48,7 +48,7 @@
 
         <v-expansion-panels variant="accordion" class="rounded-xl">
           <v-expansion-panel
-            v-for="item in announcements"
+            v-for="item in pagedAnnouncements"
             :key="item.id"
             class="mb-4 rounded-xl border-0 overflow-hidden elevation-hover"
             style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
@@ -64,7 +64,7 @@
                     {{ item.priority }}
                   </v-chip>
                 </div>
-                <div class="text-h6 font-weight-black text-black" style="display: block !important; white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0; font-size: 1.4rem !important;">
+                <div class="text-h6 font-weight-black text-black" style="display: block !important; white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0; font-size: 1.2rem !important;">
                   {{ item.title }}
                 </div>
               </div>
@@ -78,6 +78,15 @@
         
           </v-expansion-panel>
         </v-expansion-panels>
+
+        <div v-if="totalAnnouncementPages > 1" class="d-flex justify-center mt-6">
+          <v-pagination
+            v-model="announcementPage"
+            :length="totalAnnouncementPages"
+            density="comfortable"
+            color="#0B4F6C"
+          ></v-pagination>
+        </div>
       </v-col>
 
       <!-- Recent Messages Component Column (Right Side) -->
@@ -320,7 +329,20 @@ const userName = computed(() => authState.name || 'Donator')
 
 
 // Announcements — populated from NocoDB on mount
-const announcements = ref<Array<{ id: number; title: string; date: string; content: string }>>([])
+// Announcements — populated from NocoDB on mount
+const announcements = ref<Array<{ id: number; title: string; date: string; content: string; priority: string | null }>>([])
+
+const ANNOUNCEMENTS_PER_PAGE = 3
+const announcementPage = ref(1)
+
+const pagedAnnouncements = computed(() => {
+  const start = (announcementPage.value - 1) * ANNOUNCEMENTS_PER_PAGE
+  return announcements.value.slice(start, start + ANNOUNCEMENTS_PER_PAGE)
+})
+
+const totalAnnouncementPages = computed(() =>
+  Math.max(1, Math.ceil(announcements.value.length / ANNOUNCEMENTS_PER_PAGE))
+)
 
 const fetchAnnouncements = async () => {
   try {
