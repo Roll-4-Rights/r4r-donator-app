@@ -34,12 +34,12 @@
         <div class="ledger-value accent-amber">{{ stats.needsReview }}</div>
         <div class="ledger-label">Under review</div>
       </div>
-    </div>
       <div class="ledger-divider"></div>
       <div class="ledger-item">
         <div class="ledger-value accent-brass">{{ stats.accepted }}</div>
         <div class="ledger-label">Items accepted</div>
       </div>
+    </div>
 
     <!-- MASTER WORKSPACE TABS NAVIGATION CONTROL BAR -->
     <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8">
