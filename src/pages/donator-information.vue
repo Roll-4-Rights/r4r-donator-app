@@ -110,8 +110,8 @@
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Shipping*</div>
           <v-radio-group v-model="form.shippingType" color="#0B4F6C" class="mb-4">
-            <v-radio label="I will pay for shipping" value="donator_pays" class="mb-2"></v-radio>
-            <v-radio label="The item winner will pay for shipping" value="winner_pays"></v-radio>
+            <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
+            <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
           </v-radio-group>
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Estimated shipping cost</div>
