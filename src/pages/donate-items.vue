@@ -14,11 +14,11 @@
         <v-expansion-panel-text class="guidelines-text">
           Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
           <br>
-          Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
+          ● Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
           <br>
-          Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit items after their status changes to "Accepted".
+          ● Under Review: this means the item has been sent to the admin team and is being looked over, items can still be edited or deleted at this time. If there is an issue, a team member will reach out.
           <br>
-          Needs Reviewed: this means the item has been sent to the admin team and is being looked over, items can still be edited at this time.
+          ● Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit or delete items after their status changes to "Accepted".
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -29,17 +29,17 @@
         <div class="ledger-value">{{ stats.submitted }}</div>
         <div class="ledger-label">Items submitted</div>
       </div>
+    <div class="ledger-divider"></div>
+      <div class="ledger-item">
+        <div class="ledger-value accent-amber">{{ stats.needsReview }}</div>
+        <div class="ledger-label">Under review</div>
+      </div>
+    </div>
       <div class="ledger-divider"></div>
       <div class="ledger-item">
         <div class="ledger-value accent-brass">{{ stats.accepted }}</div>
         <div class="ledger-label">Items accepted</div>
       </div>
-      <div class="ledger-divider"></div>
-      <div class="ledger-item">
-        <div class="ledger-value accent-amber">{{ stats.needsReview }}</div>
-        <div class="ledger-label">Needs review</div>
-      </div>
-    </div>
 
     <!-- MASTER WORKSPACE TABS NAVIGATION CONTROL BAR -->
     <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8">
