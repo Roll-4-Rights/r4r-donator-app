@@ -235,7 +235,7 @@ const form = ref({
   waresDescription: '',
   location: '',
   website: '',
-  shippingType: 'donator_pays',
+  shippingType: 'Donator pays shipping',
   shippingCost: '',
   winnerPaymentMethod: '',
   shippingCountries: [] as string[]
@@ -339,7 +339,7 @@ onMounted(async () => {
       form.value.waresDescription = profile['Wares Description'] || ''
       form.value.location = profile['Location'] || ''
       form.value.website = profile['Website'] || ''
-      form.value.shippingType = profile['Shipping Type'] || 'donator_pays'
+      form.value.shippingType = profile['Shipping Type'] || 'Donator pays shipping'
       form.value.shippingCost = profile['Estimated Shipping Cost'] || ''
       form.value.winnerPaymentMethod = profile['Winner Payment Method'] || ''
       form.value.shippingCountries = parseCountriesField(profile['Shipping Countries'])
