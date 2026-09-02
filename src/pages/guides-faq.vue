@@ -20,7 +20,7 @@
             </v-avatar>
             <h2 class="text-h6 font-weight-black text-black mb-2">Step 1</h2>
             <p class="text-body-2 text-medium-emphasis leading-relaxed">
-              Complete your Donator Information form on the Submit Donator Information page located in the navigation to the left. This form only needs to be submitted once. If there are any issues after you submit, reach out to a team member.
+              Complete your Donator Information form on the Submit Donator Information page located in the navigation to the left. This form only needs to be submitted once.
             </p>
           </v-card-text>
         </v-card>
@@ -55,7 +55,7 @@
             </v-avatar>
             <h2 class="text-h6 font-weight-black text-black mb-2">Step 3</h2>
             <p class="text-body-2 text-medium-emphasis leading-relaxed">
-              Keep an eye on the portal main page for any announcements. Check the FAQ below for any answers you may need. Join the chat! If you still have questions, send a team member a message using the form (not made yet).
+              Keep an eye on the portal main page for any announcements. Check the FAQ below for any answers you may need. Join the chat! If you still have questions, send a team member a message.
             </p>
           </v-card-text>
         </v-card>

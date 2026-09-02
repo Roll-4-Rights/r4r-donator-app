@@ -15,7 +15,9 @@
           Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
           <br>
           Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
+          <br>
           Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit items after their status changes to "Accepted".
+          <br>
           Needs Reviewed: this means the item has been sent to the admin team and is being looked over, items can still be edited at this time.
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -64,7 +66,7 @@
 
               <v-form @submit.prevent="submitForm">
                 <label class="field-label">Item name *</label>
-                <v-text-field v-model="form.name" placeholder="The name you wish your item to show up as" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.name" placeholder="The name of your item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
                 <label class="field-label">Donator name *</label>
                 <v-text-field v-model="form.donatorName" placeholder="The name or creator handle of the one donating the item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
@@ -77,12 +79,20 @@
 
                 <div class="price-row mb-6">
                   <div class="price-field">
-                    <label class="field-label">Recommended price *</label>
-                    <v-text-field v-model="form.recPrice" placeholder="This is the price you would usually sell this item at" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <label class="field-label">Recommended price *</label> 
+                    <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
+                    <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
+                    This is the price you would usually sell this item at
+                  </p>
+                    <v-text-field v-model="form.recPrice"  prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                   <div class="price-field">
-                    <label class="field-label">Starting bid price *</label>
-                    <v-text-field v-model="form.startPrice" placeholder="This is the price you would like the bids to start at" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <label class="field-label">Starting bid price *</label> 
+                    <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
+                    <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
+                    This is the price you would like the bids to start at
+                  </p>
+                    <v-text-field v-model="form.startPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                 </div>
 
