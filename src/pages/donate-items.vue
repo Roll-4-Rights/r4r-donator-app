@@ -64,13 +64,13 @@
 
               <v-form @submit.prevent="submitForm">
                 <label class="field-label">Item name *</label>
-                <v-text-field v-model="form.name" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.name" placeholder="The name you wish your item to show up as" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
                 <label class="field-label">Donator name *</label>
-                <v-text-field v-model="form.donatorName" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.donatorName" placeholder="The name or creator handle of the one donating the item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
                 <label class="field-label">Item description *</label>
-                <v-textarea v-model="form.description" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
+                <v-textarea v-model="form.description" placeholder="This will be in the item description on the auction page" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
 
                 <label class="field-label">Category *</label>
                 <v-select v-model="form.category" :items="categoryOptions" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
@@ -78,11 +78,11 @@
                 <div class="price-row mb-6">
                   <div class="price-field">
                     <label class="field-label">Recommended price *</label>
-                    <v-text-field v-model="form.recPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field v-model="form.recPrice" placeholder="This is the price you would usually sell this item at" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                   <div class="price-field">
                     <label class="field-label">Starting bid price *</label>
-                    <v-text-field v-model="form.startPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field v-model="form.startPrice" placeholder="This is the price you would like the bids to start at" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                 </div>
 

@@ -17,7 +17,7 @@
       <h1 class="text-h5 font-weight-black text-black mb-2">Form submitted</h1>
       <p class="text-body-2 text-medium-emphasis mb-6">
         Your donator information has been saved. If you need to correct anything (a typo, wrong countries, etc.),
-        you can resubmit at any time to overwrite your previous answers.
+        you can resubmit at any time to overwrite your previous answers. We'd appreciate alerting a team member of the changes, thanks!
       </p>
       <v-btn
         color="#0B4F6C"
@@ -42,7 +42,7 @@
           <h1 class="text-h4 font-weight-black text-black mb-1">Submit donator information</h1>
           <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
             <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
-            Please submit this form only ONCE
+            Please submit this form only ONCE. You can make edits afterwards if needed.
           </p>
         </div>
 
@@ -55,7 +55,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Social media name*</div>
           <v-text-field
             v-model="form.socialName"
-            placeholder="e.g. @yourhandle"
+            placeholder="e.g. @yourinstagramhandle"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -65,10 +65,10 @@
             required
           ></v-text-field>
 
-          <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Description of your wares*</div>
+          <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Description of yourself and your wares*</div>
           <v-textarea
             v-model="form.waresDescription"
-            placeholder="e.g. what you want in the description section of your item"
+            placeholder="e.g. a little bit about you and what you sell, create, or provide. This will show in your blurb on the creator globe!"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -117,7 +117,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Estimated shipping cost</div>
           <v-text-field
             v-model="form.shippingCost"
-            placeholder="e.g. United States: $7"
+            placeholder="e.g. United States: $7, Australia: $30, etc."
             variant="outlined"
             density="comfortable"
             class="mb-4"
