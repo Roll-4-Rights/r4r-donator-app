@@ -140,6 +140,17 @@ async register({ name, email, password, invite_code, passcode }) {
     return await res.json();
   },
 
+
+async deleteDonation(recordId) {
+  const res = await fetch(`${API_BASE_URL}/donations/${recordId}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Delete failed: ${res.status}`);
+  return data;
+},
+
   // ============= CALENDAR =============
 
   async fetchCalendar() {

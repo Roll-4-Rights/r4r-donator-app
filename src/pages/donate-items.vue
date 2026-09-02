@@ -220,9 +220,11 @@
           <label class="field-label">Tracking number</label>
           <v-text-field v-model="trackingInput" placeholder="Enter tracking number" variant="outlined" density="comfortable" hide-details></v-text-field>
         </v-card-text>
-        <v-card-actions class="justify-end ga-2 pt-2 px-4 pb-4">
-          <v-btn variant="text" color="grey-darken-1" @click="closeTrackingModal">Cancel</v-btn>
-          <v-btn variant="flat" color="#0A3C46" class="submit-btn" :loading="isSavingTracking" @click="saveTrackingInfo">Save details</v-btn>
+        <v-card-actions class="dialog-actions">
+          <v-btn variant="text" color="#ff6363" @click="deleteDonation" :disabled="isSavingEdit">Delete</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="closeEditModal">Cancel</v-btn>
+          <v-btn variant="flat" color="#0A3C46" class="text-white" @click="saveEditInfo" :loading="isSavingEdit">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -680,6 +682,23 @@ const saveEditInfo = async () => {
   } catch (err) {
     console.error('Edit Save Bug Trace:', err)
     alert(err.message || 'Update failed.')
+  } finally {
+    isSavingEdit.value = false
+  }
+}
+
+
+const deleteDonation = async () => {
+  if (!selectedEditItem.value) return
+  if (!confirm(`Delete "${selectedEditItem.value['Item Name']}"? This cannot be undone.`)) return
+  isSavingEdit.value = true
+  try {
+    await apiService.deleteDonation(selectedEditItem.value.Id)
+    closeEditModal()
+    await loadDashboardData()
+  } catch (err) {
+    console.error('Delete Donation Bug Trace:', err)
+    alert(err.message || 'Delete failed.')
   } finally {
     isSavingEdit.value = false
   }
