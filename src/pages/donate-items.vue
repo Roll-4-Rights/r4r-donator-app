@@ -128,8 +128,8 @@
                 <th>Item</th>
                 <th>Category</th>
                 <th class="text-center">Status</th>
-                <th class="text-right">Starting bid</th>
-                <th class="text-right">Actions</th>
+                <th class="text-center">Starting bid</th>
+                <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -267,12 +267,12 @@
               <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeNewPhoto(index)"></v-btn>
             </div>
           </div>
-          <div class="dropzone dropzone-compact mb-2" @click="$refs.editFileInput.click()" v-if="totalEditPhotoCount < 6">
+          <div class="dropzone dropzone-compact mb-2" @click="$refs.editFileInput.click()" v-if="totalEditPhotoCount < 10">
             <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
             <div class="dropzone-text">Add photos</div>
             <input type="file" ref="editFileInput" multiple accept="image/*" class="d-none" @change="handleEditPhotoSelection">
           </div>
-          <div class="dropzone-hint mb-4">{{ totalEditPhotoCount }}/6 photos</div>
+          <div class="dropzone-hint mb-4">{{ totalEditPhotoCount }}/please upload 1-6 photos</div>
         </v-card-text>
         <v-card-actions class="justify-end ga-2 pt-2 px-4 pb-4">
           <v-btn variant="text" color="grey-darken-1" @click="closeEditModal">Cancel</v-btn>
@@ -566,7 +566,7 @@ const removeNewPhoto = (index) => {
 
 const handleEditPhotoSelection = (event) => {
   const files = Array.from(event.target.files || [])
-  const remainingSlots = 6 - totalEditPhotoCount.value
+  const remainingSlots = 10 - totalEditPhotoCount.value
   newEditPhotos.value.push(...files.slice(0, Math.max(remainingSlots, 0)))
   event.target.value = '' // allow re-selecting the same file if removed and re-added
 }
