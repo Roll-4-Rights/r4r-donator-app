@@ -115,7 +115,7 @@
           </v-radio-group>
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Estimated shipping cost</div>
-          <v-text-field
+          <v-textarea
             v-model="form.shippingCost"
             placeholder="e.g. United States: $7, Australia: $30, etc."
             variant="outlined"
@@ -123,8 +123,10 @@
             class="mb-4"
             color="#0B4F6C"
             rounded="lg"
+            rows="2"
+            auto-grow
             persistent-placeholder
-          ></v-text-field>
+          ></v-textarea>
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">
             If applicable, how would you like your item winner to pay for shipping?
