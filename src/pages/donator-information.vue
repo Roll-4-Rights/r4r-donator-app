@@ -83,7 +83,7 @@
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Where are you located?*</div>
           <v-text-field
             v-model="form.location"
-            placeholder="be as detailed as you can without giving your full address"
+            placeholder="be as detailed as you want without giving your full address, this will be used to place you on the donator globe! Only our country shipping location will be displayed on your auction item(s)."
             variant="outlined"
             density="comfortable"
             class="mb-4"
