@@ -3,7 +3,7 @@
     <div class="welcome-blurb">
       <h2>Introduce Yourself 👋</h2>
       <p>
-        Post a little bit about yourself so the community can get to know you! Socials and storefronts welcome!
+        Post a little bit about yourself so the community can get to know you! Socials welcome!
       </p>
     </div>
 
@@ -17,89 +17,90 @@
     <div v-if="loadingThreads" class="empty-state"><p>Loading…</p></div>
     <div v-else-if="threads.length === 0" class="empty-state"><p>No introductions yet. Be the first to say hello!</p></div>
 
-    <v-expansion-panels v-else v-model="openPanel" variant="accordion" class="thread-panels">
-      <v-expansion-panel v-for="thread in threads" :key="thread.id" :value="thread.id" class="thread-panel">
-        <v-expansion-panel-title>
-          <div class="d-flex align-center ga-3">
-            <div class="thread-avatar" :style="thread.authorPicture ? {} : { background: colorForUser(thread.donatorId) }">
-              <img v-if="thread.authorPicture" :src="`${API_BASE_URL}${thread.authorPicture}`" alt="" />
-              <template v-else>{{ initialsForName(thread.author) }}</template>
+    <div v-else class="thread-scroll-window" ref="threadScrollEl" @scroll="handleThreadScroll">
+      <v-expansion-panels v-model="openPanel" variant="accordion" class="thread-panels">
+        <v-expansion-panel v-for="thread in threads" :key="thread.id" :value="thread.id" class="thread-panel">
+          <v-expansion-panel-title>
+            <div class="d-flex align-center ga-3">
+              <div class="thread-avatar" :style="thread.authorPicture ? {} : { background: colorForUser(thread.donatorId) }">
+                <img v-if="thread.authorPicture" :src="`${API_BASE_URL}${thread.authorPicture}`" alt="" />
+                <template v-else>{{ initialsForName(thread.author) }}</template>
+              </div>
+              <div>
+                <h3>{{ thread.title }}</h3>
+                <p class="thread-meta">
+                  {{ thread.author }} · {{ formatTime(thread.createdAt) }} · {{ thread.replyCount }} {{ thread.replyCount === 1 ? 'reply' : 'replies' }}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3>{{ thread.title }}</h3>
-              <p class="thread-meta">
-                {{ thread.author }} · {{ formatTime(thread.createdAt) }} · {{ thread.replyCount }} {{ thread.replyCount === 1 ? 'reply' : 'replies' }}
-              </p>
+          </v-expansion-panel-title>
+
+          <v-expansion-panel-text>
+            <p class="thread-body">{{ thread.body }}</p>
+
+            <div v-if="thread.donatorId === myDonatorId" class="thread-owner-actions">
+              <button class="btn-edit" @click="openMyThreadModal">Edit My Intro</button>
+              <button class="btn-delete" @click="deleteMyThread">Delete My Intro</button>
             </div>
-          </div>
-        </v-expansion-panel-title>
 
-        <v-expansion-panel-text>
-          <p class="thread-body">{{ thread.body }}</p>
+            <v-divider class="my-4"></v-divider>
 
-          <div v-if="thread.donatorId === myDonatorId" class="thread-owner-actions">
-            <button class="btn-edit" @click="openMyThreadModal">Edit Intro</button>
-            <button class="btn-delete" @click="deleteMyThread">Delete Intro</button>
-          </div>
-
-          <v-divider class="my-4"></v-divider>
-
-          <div class="replies-section">
-            <div v-if="!repliesState[thread.id] || repliesState[thread.id].loading" class="empty-state small"><p>Loading replies…</p></div>
-            <template v-else>
-              <div v-if="repliesState[thread.id].items.length === 0" class="empty-state small"><p>No replies yet.</p></div>
-                            <div v-else class="reply-list">
-                <div v-for="reply in repliesState[thread.id].items" :key="reply.id" class="reply-item">
-                  <div class="reply-avatar" :style="reply.authorPicture ? {} : { background: colorForUser(reply.donatorId) }">
-                    <img v-if="reply.authorPicture" :src="`${API_BASE_URL}${reply.authorPicture}`" alt="" />
-                    <template v-else>{{ initialsForName(reply.author) }}</template>
-                  </div>
-                  <div class="reply-body">
-                    <span class="reply-author">{{ reply.author }}</span>
-                    <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
-                    <span v-if="reply.editedAt" class="reply-edited-tag">(edited)</span>
-
-                    <div v-if="editingReplyId === reply.id" class="reply-edit-row">
-                      <input
-                        v-model="editingReplyDraft"
-                        class="reply-edit-input"
-                        @keyup.enter="saveReplyEdit(thread.id, reply.id)"
-                        @keyup.escape="cancelReplyEdit"
-                      />
-                      <button class="reply-edit-save" @click="saveReplyEdit(thread.id, reply.id)">Save</button>
-                      <button class="reply-edit-cancel" @click="cancelReplyEdit">Cancel</button>
+            <div class="replies-section">
+              <div v-if="!repliesState[thread.id] || repliesState[thread.id].loading" class="empty-state small"><p>Loading replies…</p></div>
+              <template v-else>
+                <div v-if="repliesState[thread.id].items.length === 0" class="empty-state small"><p>No replies yet.</p></div>
+                <div v-else class="reply-list">
+                  <div v-for="reply in repliesState[thread.id].items" :key="reply.id" class="reply-item">
+                    <div class="reply-avatar" :style="reply.authorPicture ? {} : { background: colorForUser(reply.donatorId) }">
+                      <img v-if="reply.authorPicture" :src="`${API_BASE_URL}${reply.authorPicture}`" alt="" />
+                      <template v-else>{{ initialsForName(reply.author) }}</template>
                     </div>
-                    <p v-else>{{ reply.message }}</p>
-                  </div>
-                  <div v-if="reply.donatorId === myDonatorId" class="reply-owner-actions">
-                    <button class="btn-edit-small" @click="startReplyEdit(reply)">Edit</button>
-                    <button class="btn-delete-small" @click="deleteReply(thread.id, reply.id)">Delete</button>
+                    <div class="reply-body">
+                      <span class="reply-author">{{ reply.author }}</span>
+                      <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
+                      <span v-if="reply.editedAt" class="reply-edited-tag">(edited)</span>
+
+                      <div v-if="editingReplyId === reply.id" class="reply-edit-row">
+                        <input
+                          v-model="editingReplyDraft"
+                          class="reply-edit-input"
+                          @keyup.enter="saveReplyEdit(thread.id, reply.id)"
+                          @keyup.escape="cancelReplyEdit"
+                        />
+                        <button class="reply-edit-save" @click="saveReplyEdit(thread.id, reply.id)">Save</button>
+                        <button class="reply-edit-cancel" @click="cancelReplyEdit">Cancel</button>
+                      </div>
+                      <p v-else>{{ reply.message }}</p>
+                    </div>
+                    <div v-if="reply.donatorId === myDonatorId" class="reply-owner-actions">
+                      <button class="btn-edit-small" @click="startReplyEdit(reply)">Edit</button>
+                      <button class="btn-delete-small" @click="deleteReply(thread.id, reply.id)">Delete</button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div v-if="repliesState[thread.id].totalPages > 1" class="d-flex justify-center mt-3">
-                <v-pagination
-                  :model-value="repliesState[thread.id].page"
-                  @update:model-value="(p) => loadReplies(thread.id, p)"
-                  :length="repliesState[thread.id].totalPages"
-                  density="comfortable"
-                  color="#4fd1c5"
-                ></v-pagination>
-              </div>
-            </template>
+                <div v-if="repliesState[thread.id].totalPages > 1" class="d-flex justify-center mt-3">
+                  <v-pagination
+                    :model-value="repliesState[thread.id].page"
+                    @update:model-value="(p) => loadReplies(thread.id, p)"
+                    :length="repliesState[thread.id].totalPages"
+                    density="comfortable"
+                    color="#4fd1c5"
+                  ></v-pagination>
+                </div>
+              </template>
 
-            <div class="reply-composer">
-              <input v-model="replyDrafts[thread.id]" @keyup.enter="sendReply(thread.id)" placeholder="Say hi…" />
-              <button @click="sendReply(thread.id)">Send</button>
+              <div class="reply-composer">
+                <input v-model="replyDrafts[thread.id]" @keyup.enter="sendReply(thread.id)" placeholder="Say hi…" />
+                <button @click="sendReply(thread.id)">Send</button>
+              </div>
             </div>
-          </div>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
-    <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
-      <v-pagination v-model="threadPage" :length="totalPages" color="#4fd1c5" density="comfortable"></v-pagination>
+      <div v-if="loadingMoreThreads" class="empty-state small"><p>Loading more…</p></div>
+      <div v-else-if="!hasMoreThreads" class="end-of-list"><p>You've reached the end.</p></div>
     </div>
 
     <div v-if="showModal" class="modal-backdrop" @click.self="closeModal">
@@ -123,9 +124,11 @@ import { authState } from '@/services/authStore'
 import { colorForUser, initialsForName } from '../../utils/userColor'
 
 const threads = ref([])
-const threadPage = ref(1)
-const totalPages = ref(1)
+const currentPage = ref(1)
+const hasMoreThreads = ref(true)
 const loadingThreads = ref(true)
+const loadingMoreThreads = ref(false)
+const threadScrollEl = ref(null)
 
 const myThread = ref(null)
 const myDonatorId = computed(() => authState.donator_id)
@@ -134,56 +137,43 @@ const openPanel = ref(null)
 const repliesState = ref({})
 const replyDrafts = ref({})
 
+const editingReplyId = ref(null)
+const editingReplyDraft = ref('')
+
 const showModal = ref(false)
 const draftTitle = ref('')
 const draftBody = ref('')
-
-const editingReplyId = ref(null)
-const editingReplyDraft = ref('')
 
 function formatTime(ts) {
   return new Date(ts).toLocaleString()
 }
 
-function startReplyEdit(reply) {
-  editingReplyId.value = reply.id
-  editingReplyDraft.value = reply.message
-}
-
-function cancelReplyEdit() {
-  editingReplyId.value = null
-  editingReplyDraft.value = ''
-}
-
-async function saveReplyEdit(threadId, replyId) {
-  const text = editingReplyDraft.value.trim()
-  if (!text) return
-  try {
-    await apiService.editIntroReply(replyId, text)
-    const state = repliesState.value[threadId]
-    const target = state?.items.find((r) => r.id === replyId)
-    if (target) {
-      target.message = text
-      target.editedAt = new Date().toISOString()
-    }
-    cancelReplyEdit()
-  } catch (e) {
-    console.error('Failed to edit reply:', e)
+async function loadThreads(page = 1, append = false) {
+  if (append) {
+    loadingMoreThreads.value = true
+  } else {
+    loadingThreads.value = true
   }
-}
-
-
-async function loadThreads(page = 1) {
-  loadingThreads.value = true
   try {
     const data = await apiService.fetchIntroThreads(page)
-    threads.value = data.threads
-    threadPage.value = data.page
-    totalPages.value = data.totalPages
+    threads.value = append ? [...threads.value, ...data.threads] : data.threads
+    currentPage.value = data.page
+    hasMoreThreads.value = data.page < data.totalPages
   } catch (e) {
     console.error('Failed to load intro threads:', e)
   } finally {
     loadingThreads.value = false
+    loadingMoreThreads.value = false
+  }
+}
+
+function handleThreadScroll() {
+  const el = threadScrollEl.value
+  if (!el || loadingMoreThreads.value || !hasMoreThreads.value) return
+
+  const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150
+  if (nearBottom) {
+    loadThreads(currentPage.value + 1, true)
   }
 }
 
@@ -210,8 +200,6 @@ watch(openPanel, (threadId) => {
   if (threadId != null && !repliesState.value[threadId]) loadReplies(threadId, 1)
 })
 
-watch(threadPage, (page) => loadThreads(page))
-
 function openMyThreadModal() {
   draftTitle.value = myThread.value?.title || ''
   draftBody.value = myThread.value?.body || ''
@@ -232,7 +220,7 @@ async function submitMyThread() {
     await apiService.saveIntroThread({ title, body })
     closeModal()
     await loadMyThread()
-    await loadThreads(threadPage.value)
+    await loadThreads()
   } catch (e) {
     console.error('Failed to save your intro:', e)
   }
@@ -245,7 +233,7 @@ async function deleteMyThread() {
     await apiService.deleteIntroThread(myThread.value.id)
     myThread.value = null
     openPanel.value = null
-    await loadThreads(threadPage.value)
+    await loadThreads()
   } catch (e) {
     console.error('Failed to delete your intro:', e)
   }
@@ -284,8 +272,35 @@ async function deleteReply(threadId, replyId) {
   }
 }
 
+function startReplyEdit(reply) {
+  editingReplyId.value = reply.id
+  editingReplyDraft.value = reply.message
+}
+
+function cancelReplyEdit() {
+  editingReplyId.value = null
+  editingReplyDraft.value = ''
+}
+
+async function saveReplyEdit(threadId, replyId) {
+  const text = editingReplyDraft.value.trim()
+  if (!text) return
+  try {
+    await apiService.editIntroReply(replyId, text)
+    const state = repliesState.value[threadId]
+    const target = state?.items.find((r) => r.id === replyId)
+    if (target) {
+      target.message = text
+      target.editedAt = new Date().toISOString()
+    }
+    cancelReplyEdit()
+  } catch (e) {
+    console.error('Failed to edit reply:', e)
+  }
+}
+
 onMounted(() => {
-  loadThreads(1)
+  loadThreads()
   loadMyThread()
 })
 </script>
@@ -306,6 +321,19 @@ onMounted(() => {
 .empty-state p { color: #6b7c80; font-size: 16px; }
 .empty-state.small { padding: 16px; }
 
+.thread-scroll-window {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.end-of-list {
+  text-align: center;
+  color: #6b7c80;
+  font-size: 13px;
+  padding: 16px;
+}
+
 .thread-panels :deep(.v-expansion-panel) { background: #1e2b30 !important; color: #dce6e8; margin-bottom: 8px; border-radius: 8px !important; }
 .thread-panels :deep(.v-expansion-panel-title) { color: #fff; }
 .thread-panels :deep(.v-expansion-panel-title__icon) { color: #4fd1c5; }
@@ -323,12 +351,25 @@ onMounted(() => {
 .reply-author { color: #4fd1c5; font-weight: 600; font-size: 13px; margin-right: 8px; }
 .reply-time { color: #6b7c80; font-size: 12px; }
 .reply-body p { color: #dce6e8; font-size: 14px; margin-top: 4px; white-space: pre-wrap; }
+.reply-edited-tag { font-size: 10px; color: #6b7c80; font-style: italic; margin-left: 6px; }
+
+.reply-edit-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.reply-edit-input { flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid #4fd1c5; background: #1e2b30; color: #fff; font-size: 13px; }
+.reply-edit-save, .reply-edit-cancel { border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.reply-edit-save { background: #4fd1c5; color: #103948; }
+.reply-edit-cancel { background: transparent; color: #8a9a9e; }
+
+.reply-owner-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.btn-edit-small { border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; }
+.btn-edit-small:hover { background: rgba(79, 209, 197, 0.3); }
 
 .reply-composer { display: flex; gap: 10px; margin-top: 14px; }
 .reply-composer input { flex: 1; padding: 10px 14px; border-radius: 8px; border: none; background: #2a3a3f; color: #fff; }
 .reply-composer input::placeholder { color: #6b7c80; }
 .reply-composer button { background: #4fd1c5; color: #103948; border: none; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: 700; }
 
+.btn-edit { border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; margin-right: 8px; }
+.btn-edit:hover { background: rgba(79, 209, 197, 0.3); }
 .btn-delete { border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(255, 99, 99, 0.15); color: #ff6363; }
 .btn-delete:hover { background: rgba(255, 99, 99, 0.3); }
 .btn-delete-small { border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(255, 99, 99, 0.15); color: #ff6363; flex-shrink: 0; }
@@ -356,20 +397,4 @@ onMounted(() => {
   flex-shrink: 0; overflow: hidden;
 }
 .reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.btn-edit { border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; margin-right: 8px; }
-.btn-edit:hover { background: rgba(79, 209, 197, 0.3); }
-
-.reply-edited-tag { font-size: 10px; color: #6b7c80; font-style: italic; margin-left: 6px; }
-
-.reply-edit-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-.reply-edit-input { flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid #4fd1c5; background: #1e2b30; color: #fff; font-size: 13px; }
-.reply-edit-save, .reply-edit-cancel { border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-.reply-edit-save { background: #4fd1c5; color: #103948; }
-.reply-edit-cancel { background: transparent; color: #8a9a9e; }
-
-.reply-owner-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
-.btn-edit-small { border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(79, 209, 197, 0.15); color: #4fd1c5; }
-.btn-edit-small:hover { background: rgba(79, 209, 197, 0.3); }
-
 </style>
