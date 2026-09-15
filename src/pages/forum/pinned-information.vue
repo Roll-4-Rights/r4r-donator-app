@@ -1,9 +1,12 @@
 <template>
   <div class="subforum-page">
+    <div class="construction-tape">
+      <span>🚧UNDER CONSTRUCTION 🚧</span>
+    </div>
     <div class="welcome-blurb">
       <h2>Introduce Yourself 👋</h2>
       <p>
-        Post a little bit about yourself so the community can get to know you! Socials welcome!
+        
       </p>
     </div>
 

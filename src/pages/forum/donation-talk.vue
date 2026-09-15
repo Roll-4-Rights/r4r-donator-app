@@ -1,4 +1,7 @@
 <template>
+    <div class="construction-tape">
+      <span>🚧 UNDER CONSTRUCTION 🚧</span>
+    </div>
   <ChannelChat channel="donation-talk" />
 </template>
 

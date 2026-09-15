@@ -1,21 +1,23 @@
 <template>
   <div class="subforum-page">
+    <div class="construction-tape">
+      <span>🚧 CHAT UNDER CONSTRUCTION 🚧</span>
+    </div>
+
     <div class="welcome-blurb">
       <h2>Welcome to the Roll4Rights chat!</h2>
       <p>
-        This is our community hub! Browse the channels on the left to chat with
-        other members, talk about donations, discuss your craft, or just anything in general — or head over to
-        <strong>Introduce Yourself</strong> to say hello. We're glad you're here!
+        This eventually will become our community hub! Please be patient as we continue to build it.
       </p>
     </div>
 
     <div class="rules-card">
       <h1>Chat Rules</h1>
       <ol class="rules-list">
-        <li>Be respectful, no harassment, hate speech, or personal attacks.</li>
-        <li>Keep it civil, even in disagreements.</li>
-        <li>No sharing of personal contact information of yourself or others in any channel.</li>
-        <li>Moderators may remove messages or threads that break these rules.</li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
       </ol>
     </div>
   </div>
@@ -26,6 +28,43 @@
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.construction-tape {
+  background: repeating-linear-gradient(
+    45deg,
+    #f7d000,
+    #f7d000 20px,
+    #1a1a1a 20px,
+    #1a1a1a 40px
+  );
+  color: #1a1a1a;
+  text-align: center;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 10px 0;
+  margin-bottom: 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  animation: tape-blink 1.4s ease-in-out infinite;
+}
+
+.construction-tape span {
+  display: inline-block;
+  background: #1a1a1a;
+  color: #f7d000;
+  padding: 4px 14px;
+  border-radius: 3px;
+}
+
+@keyframes tape-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .welcome-blurb {
