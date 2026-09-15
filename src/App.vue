@@ -99,28 +99,10 @@
           @click="closeDrawerOnMobile"
         >
           <v-list-item to="/" exact prepend-icon="mdi-view-dashboard" title="Home"></v-list-item>
-          
-          
           <v-list-item to="/forum" prepend-icon="mdi-forum" title="Chat"></v-list-item>
-          
           <v-list-item to="/guides-faq" prepend-icon="mdi-help-circle-outline" title="Guides/FAQs"></v-list-item>
-          <!-- <v-list-item to="/current-campaign" prepend-icon="mdi-sword-cross" title="Current Campaign"></v-list-item> -->
-
           <v-list-item to="/messages" prepend-icon="mdi-email-outline" title="Messages"></v-list-item>
-
-          
-          <!-- DONATE ITEMS TAB: Automatically clears alert dots when navigating to shipping information updates -->
-          <v-list-item to="/donate-items" prepend-icon="mdi-creation-outline" title="Donate Items and View Winner Info">
-            <template v-slot:append v-if="hasNewWinnerUpdates">
-              <v-badge
-                color="warning"
-                dot
-                inline
-                class="custom-sidebar-dot"
-              ></v-badge>
-            </template>
-          </v-list-item>
-          
+          <v-list-item to="/donate-items" prepend-icon="mdi-creation-outline" title="Donate Items and View Winner Info"></v-list-item>
           <v-list-item to="/donator-information" prepend-icon="mdi-earth" title="Submit Donator Information"></v-list-item>
           <v-list-item to="/account" prepend-icon="mdi-account-circle-outline" title="Account"></v-list-item>
           <v-list-item v-if="authState.is_admin" to="/admin" prepend-icon="mdi-shield-crown-outline" title="Admin"></v-list-item>
@@ -169,16 +151,6 @@ function closeDrawerOnMobile() {
 
 const isForumRoute = computed(() => route.path.startsWith('/forum'))
 const isAuthPage = computed(() => route.path === '/login' || route.path === '/register')
-
-const hasNewWinnerUpdates = ref(false)
-
-socket.on('item-status-updated', (data) => {
-  console.log('📦 Item status updated:', data)
-
-  if (data.donatorId === authState.donator_id) {
-    hasNewWinnerUpdates.value = true
-  }
-})
 
 onMounted(() => {
   if (authState.isLoggedIn) {

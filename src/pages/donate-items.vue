@@ -7,21 +7,19 @@
       <p class="page-sub">Submit items, manage your donations, view winner info, and add tracking.</p>
     </div>
 
-    <!-- SUBMISSION GUIDELINES INFO DRAWER -->
-    <v-expansion-panels class="guidelines mb-8" variant="accordion">
-      <v-expansion-panel elevation="0">
-        <v-expansion-panel-title class="guidelines-title">Submission guidelines and info:</v-expansion-panel-title>
-        <v-expansion-panel-text class="guidelines-text">
-          Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
-          <br>
-          ● Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
-          <br>
-          ● Under Review: this means the item has been sent to the admin team and is being looked over, items can still be edited or deleted at this time. If there is an issue, a team member will reach out.
-          <br>
-          ● Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit or delete items after their status changes to "Accepted".
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <!-- SUBMISSION GUIDELINES INFO -->
+    <div class="guidelines mb-8">
+      <div class="guidelines-title mb-2">Submission guidelines and info:</div>
+      <div class="guidelines-text">
+        Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
+        <br>
+        ● Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
+        <br>
+        ● Under Review: this means the item has been sent to the admin team and is being looked over, items can still be edited or deleted at this time. If there is an issue, a team member will reach out.
+        <br>
+        ● Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit or delete items after their status changes to "Accepted".
+      </div>
+    </div>
 
     <!-- LIVE DYNAMIC STATUS LEDGER STRIP -->
     <div class="ledger-strip mb-10">
@@ -96,18 +94,21 @@
                   </div>
                 </div>
 
-                <!-- PHOTO UPLOAD — this form's own state, NOT the edit modal's -->
+                <!-- PHOTO AND VIDEO UPLOAD — this form's own state, NOT the edit modal's -->
                 <label class="field-label">Photos</label>
                 <div class="edit-photo-grid mb-3">
                   <div v-for="(photo, index) in selectedPhotos" :key="'new-submit-' + index" class="edit-photo-thumb">
-                    <img :src="photoPreviewUrl(photo)" alt="Selected photo">
+                    <img v-if="photo.type && photo.type.startsWith('image/')" :src="photoPreviewUrl(photo)" alt="Selected photo">
+                    <video v-if="photo.type && photo.type.startsWith('video/')" :src="photoPreviewUrl(photo)" controls></video>
+                    <p v-if="photo.type && photo.type.startsWith('video/')">{{ photo.name }}</p>
+                    <p v-if="photo.type && photo.type.startsWith('image/')">{{ photo.name }}</p>  
                     <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeSelectedPhoto(index)"></v-btn>
                   </div>
                 </div>
                 <div class="dropzone dropzone-compact mb-2" @click="fileInput.click()" v-if="selectedPhotos.length < 6">
                   <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
                   <div class="dropzone-text">Add photos</div>
-                  <input type="file" ref="fileInput" multiple accept="image/*" class="d-none" @change="handlePhotoSelection">
+                  <input type="file" ref="fileInput" multiple accept="image/*,video/*" class="d-none" @change="handlePhotoSelection">
                 </div>
                 <div class="dropzone-hint mb-4">{{ selectedPhotos.length }}/6 photos</div>
 
@@ -271,20 +272,22 @@
           <label class="field-label">Photos</label>
           <div class="edit-photo-grid mb-3">
             <div v-for="(photo, index) in existingPhotos" :key="'existing-' + index" class="edit-photo-thumb">
-              <img :src="photo.url || photo.signedUrl" :alt="photo.title || 'Photo'">
+              <img v-if="!(photo.mimetype && photo.mimetype.startsWith('video/'))" :src="photo.url || photo.signedUrl" :alt="photo.title || 'Photo'">
+              <video v-if="photo.mimetype && photo.mimetype.startsWith('video/')" :src="photo.url || photo.signedUrl" controls></video>
               <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeExistingPhoto(index)"></v-btn>
             </div>
             <div v-for="(photo, index) in newEditPhotos" :key="'new-' + index" class="edit-photo-thumb">
-              <img :src="photoPreviewUrl(photo)" alt="New photo">
+              <img v-if="photo.type && photo.type.startsWith('image/')" :src="photoPreviewUrl(photo)" alt="New photo">
+              <video v-if="photo.type && photo.type.startsWith('video/')" :src="photoPreviewUrl(photo)" controls></video>
               <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeNewPhoto(index)"></v-btn>
             </div>
           </div>
           <div class="dropzone dropzone-compact mb-2" @click="$refs.editFileInput.click()" v-if="totalEditPhotoCount < 10">
             <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
             <div class="dropzone-text">Add photos</div>
-            <input type="file" ref="editFileInput" multiple accept="image/*" class="d-none" @change="handleEditPhotoSelection">
+            <input type="file" ref="editFileInput" multiple accept="image/*,video/*" class="d-none" @change="handleEditPhotoSelection">
           </div>
-          <div class="dropzone-hint mb-4">{{ totalEditPhotoCount }}/please upload 1-6 photos</div>
+          <div class="dropzone-hint mb-4">{{ totalEditPhotoCount }}/please upload 1-6 photos and 1-2 videos</div>
         </v-card-text>
         <v-card-actions class="justify-end ga-2 pt-2 px-4 pb-4">
           <v-btn variant="text" color="grey-darken-1" @click="closeEditModal">Cancel</v-btn>
@@ -332,21 +335,19 @@
 }
 
 /* Guidelines */
-.guidelines :deep(.v-expansion-panel) {
-  background: transparent;
+.guidelines {
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--line);
 }
 .guidelines-title {
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--ink-deep);
-  padding: 0 !important;
-  min-height: 44px;
 }
 .guidelines-text {
-  padding: 0 0 1rem !important;
   font-size: 0.875rem;
   color: var(--ink-soft);
+  line-height: 1.6;
 }
 
 /* Ledger stat strip */

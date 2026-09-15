@@ -66,9 +66,10 @@
           ></v-text-field>
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Description of yourself and your wares*</div>
+          <p class="text-caption text-medium-emphasis mb-2 pl-1">Just put a little bit about you and what you sell, create, or provide. This will show in your blurb on the creator page.</p>
           <v-textarea
             v-model="form.waresDescription"
-            placeholder="e.g. a little bit about you and what you sell, create, or provide. This will show in your blurb on the creator globe!"
+            placeholder="e.g. I create handmade jewelry and accessories."
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -81,9 +82,10 @@
           ></v-textarea>
 
           <div class="text-subtitle-2 font-weight-bold text-black mb-2 pl-1">Where are you located?*</div>
+          <p class="text-caption text-medium-emphasis mb-2 pl-1">We only need your country, please do not put a full address. This will only be used to show your country shipping location will be displayed on your auction item(s)</p>
           <v-text-field
             v-model="form.location"
-            placeholder="be as detailed as you want without giving your full address, this will be used to place you on the donator globe! Only our country shipping location will be displayed on your auction item(s)."
+            placeholder="e.g. Canada"
             variant="outlined"
             density="comfortable"
             class="mb-4"
@@ -147,7 +149,7 @@
           <div class="text-left mb-4 pl-1">
             <div class="text-subtitle-2 font-weight-bold text-black"><strong>Please read carefully:</strong>
             Select what countries you *DO* you ship to, selecting <em>all that apply</em>*</div>
-            <p class="text-caption text-medium-emphasis mt-1">If you ship worldwide, just select "Worldwide" at the top of the list.</p>
+            <p class="text-caption text-medium-emphasis mt-1">There are preset buttons to the ???, but please double check the list for accuracy.</p>
           </div>
 
           <v-text-field
