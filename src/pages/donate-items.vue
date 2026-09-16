@@ -110,10 +110,11 @@
                 </div>
                 <div class="dropzone dropzone-compact mb-2" @click="fileInput.click()" v-if="selectedPhotos.length < 6">
                   <v-icon size="20" icon="mdi-tray-arrow-up" class="mb-1"></v-icon>
-                  <div class="dropzone-text">Add photos</div>
+                  <div class="dropzone-text">Add photos and videos</div>
                   <input type="file" ref="fileInput" multiple accept="image/*,video/*" class="d-none" @change="handlePhotoSelection">
                 </div>
                 <div class="dropzone-hint mb-4">{{ selectedPhotos.length }}/6 photos</div>
+                <div class="dropzone-hint mb-4">{{ selectedVideos.length }}/2 videos</div>
 
                 <v-btn type="submit" block size="large" flat color="#0A3C46" class="submit-btn" :loading="isSubmitting">
                   Submit donation

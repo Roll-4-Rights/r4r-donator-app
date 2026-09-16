@@ -26,7 +26,7 @@
               <v-card variant="dashed" class="pa-6 text-center bg-grey-lighten-4 rounded-lg cursor-pointer mb-6" @click="$refs.fileInput.click()">
                 <v-icon size="large" icon="mdi-upload" class="mb-2"></v-icon>
                 <div class="text-body-2 font-weight-medium">Upload</div>
-                <div class="text-caption mt-1" style="font-style: italic;">please upload 1-6 photos</div>
+                <div class="text-caption mt-1" style="font-style: italic;">please upload 1-6 photos and 1-2 videos if you want</div>
                 <input type="file" ref="fileInput" multiple accept="image/*" class="d-none">
               </v-card>
 
