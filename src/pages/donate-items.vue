@@ -247,10 +247,9 @@
           <v-text-field v-model="trackingInput" placeholder="Enter tracking number" variant="outlined" density="comfortable" hide-details></v-text-field>
         </v-card-text>
         <v-card-actions class="dialog-actions">
-          <v-btn variant="text" color="#ff6363" @click="deleteDonation" :disabled="isSavingEdit">Delete</v-btn>
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="closeEditModal">Cancel</v-btn>
-          <v-btn variant="flat" color="#0A3C46" class="text-white" @click="saveEditInfo" :loading="isSavingEdit">Save</v-btn>
+          <v-btn variant="text" @click="closeTrackingModal">Cancel</v-btn>
+          <v-btn variant="flat" color="#0A3C46" class="text-white" @click="saveTrackingInfo" :loading="isSavingTracking">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
