@@ -1,10 +1,16 @@
 <!-- filepath: c:\Users\gamer\Documents\Roll4Rights\r4r-donator-app\src\pages\messages.vue -->
 <template>
   <v-container class="py-10 px-6" max-width="900">
-    <h1 class="text-h4 font-weight-black text-black mb-2">Messages</h1>
-    <p class="text-body-2 text-medium-emphasis mb-8">
-      Have a question for the team? Send it here and check back for an answer.
-    </p>
+    <!-- Section 1: Dynamic Welcome Step Grid Overview -->
+    <div class="page-header mb-8">
+      <h1 class="page-title">Messages</h1>
+      <p class="page-sub">
+        Have a question for the admin team, but couldn't find it in the FAQ on the Guides & FAQ page? Send it here and we'll get back to you with the answer as quickly as we can!
+        <br>
+        <br>
+        (Please keep in mind that communication may be a bit slower during the donation verification process immediately following the end of an auction. We're working hard, and we appreciate your patience!)
+      </p>
+    </div>    
 
     <!-- Submit box -->
     <v-card class="rounded-2xl mb-10 pa-2" variant="flat" border>
@@ -166,3 +172,31 @@ onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer)
 })
 </script>
+
+<style scoped>
+.page-header {
+  padding-left: 4px;
+}
+.page-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.72);
+  margin-bottom: 0.5rem;
+}
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+.page-sub {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.72);
+  max-width: 70ch;
+  margin: 0;
+}
+</style>

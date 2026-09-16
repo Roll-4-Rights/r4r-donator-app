@@ -94,7 +94,7 @@
     </div>
 
     <template v-else>
-      <!-- Toggleable Navigation Tabs -->
+      <!-- Toggleable Navigation Tabs
       <div class="d-flex justify-center mb-8">
         <v-tabs v-model="activeTab" color="#0B4F6C" align-tabs="center" class="border-b-0">
           <v-tab
@@ -106,7 +106,7 @@
             {{ topic }}
           </v-tab>
         </v-tabs>
-      </div>
+      </div> -->
 
       <!-- Flattened Non-Dropdown Dynamic Loop Matrix -->
       <v-window v-model="activeTab">
