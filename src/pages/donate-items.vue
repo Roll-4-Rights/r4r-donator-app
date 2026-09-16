@@ -119,6 +119,7 @@
                 <v-btn type="submit" block size="large" flat color="#0A3C46" class="submit-btn" :loading="isSubmitting">
                   Submit donation
                 </v-btn>
+                <p v-if="isSubmitting" class="upload-status-text">Uploading, this may take a moment...</p>
               </v-form>
             </v-card>
           </v-col>
@@ -139,25 +140,32 @@
           <table class="ledger-table">
             <thead>
               <tr>
+                <th class="col-thumb"></th>
                 <th class="col-lot">Lot</th>
                 <th>Item</th>
                 <th>Category</th>
                 <th class="text-center">Status</th>
-                <th class="text-right">Starting bid</th>
-                <th class="text-right">Actions</th>
+                <th class="text-center">Starting bid</th>
+                <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="isLoadingTables">
-                <td colspan="6" class="text-center py-8">
+                <td colspan="7" class="text-center py-8">
                   <v-progress-circular indeterminate size="20" width="2" color="#0A3C46" class="mr-2"></v-progress-circular>
                   Loading donations…
                 </td>
               </tr>
               <tr v-else-if="filteredDonations.length === 0">
-                <td colspan="6" class="text-center py-8 empty-text">No donations submitted yet.</td>
+                <td colspan="7" class="text-center py-8 empty-text">No donations submitted yet.</td>
               </tr>
               <tr v-else v-for="(item, index) in filteredDonations" :key="item.Id">
+                <td class="col-thumb">
+                  <img v-if="firstItemPhotoUrl(item)" :src="firstItemPhotoUrl(item)" class="item-thumb" alt="">
+                  <div v-else class="item-thumb item-thumb-placeholder">
+                    <v-icon icon="mdi-image-off-outline" size="18"></v-icon>
+                  </div>
+                </td>
                 <td class="col-lot mono">№{{ item['Lot Number'] ? pad3(item['Lot Number']) : '—' }}</td>
                 <td>
                   <div class="item-name">{{ item['Item Name'] }}</div>
@@ -169,9 +177,12 @@
                     {{ item['Item Status'] || 'Submitted' }}
                   </v-chip>
                 </td>
-                <td class="text-right mono">${{ item['Starting Bid Price'] || 0 }}</td>
-                <td class="text-right">
-                  <v-btn size="small" variant="text" color="#0A3C46" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
+                <td class="text-center mono">${{ item['Starting Bid Price'] || 0 }}</td>
+                <td class="text-center">
+                  <div class="d-flex justify-center ga-1">
+                    <v-btn size="small" variant="text" color="#1565C0" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
+                    <v-btn size="small" variant="text" color="#ff6363" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="deleteDonationRow(item)">Delete</v-btn>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -466,6 +477,13 @@
   letter-spacing: 0.02em;
   border-radius: 10px;
 }
+.upload-status-text {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-align: center;
+  font-style: italic;
+}
 
 /* Ledger card / table */
 .ledger-card {
@@ -488,15 +506,35 @@
   border-bottom: 1px solid var(--line);
   padding: 0.75rem;
 }
+.ledger-table thead th.text-center { text-align: center; }
+.ledger-table thead th.text-right { text-align: right; }
 .ledger-table tbody td {
   padding: 0.9rem 0.75rem;
   border-bottom: 1px solid var(--line);
   font-size: 0.9rem;
   color: var(--ink-deep);
 }
+.ledger-table tbody td.text-center { text-align: center; }
+.ledger-table tbody td.text-right { text-align: right; }
 .ledger-table tbody tr:last-child td { border-bottom: none; }
 .ledger-table tbody tr:hover { background: rgba(10, 60, 70, 0.025); }
 .col-lot { width: 70px; color: var(--ink-soft); }
+.col-thumb { width: 64px; }
+.item-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--line);
+}
+.item-thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 60, 70, 0.05);
+  color: var(--ink-soft);
+}
 .mono { font-family: 'Roboto Mono', monospace; font-weight: 700; }
 .item-name { font-weight: 700; color: var(--ink-deep); }
 .item-donator { font-size: 0.75rem; color: var(--ink-soft); margin-top: 2px; }
@@ -587,6 +625,13 @@ const selectedVideos = computed(() =>
 
 const photoPreviewUrl = (file) => URL.createObjectURL(file)
 const pad3 = (num) => String(num).padStart(3, '0')
+
+// Returns the first non-video attachment's URL for a donation row, or null if none exists
+const firstItemPhotoUrl = (item) => {
+  const attachments = Array.isArray(item['Photos']) ? item['Photos'] : []
+  const firstPhoto = attachments.find(p => !(p.mimetype && p.mimetype.startsWith('video/')))
+  return firstPhoto ? (firstPhoto.url || firstPhoto.signedUrl) : null
+}
 
 const removeExistingPhoto = (index) => {
   existingPhotos.value.splice(index, 1)
@@ -734,6 +779,18 @@ const deleteDonation = async () => {
   }
 }
 
+// Row-level delete for the "My Donations" list — independent of the edit modal's open state
+const deleteDonationRow = async (item) => {
+  if (!confirm(`Delete "${item['Item Name']}"? This cannot be undone.`)) return
+  try {
+    await apiService.deleteDonation(item.Id)
+    await loadDashboardData()
+  } catch (err) {
+    console.error('Delete Donation Row Bug Trace:', err)
+    alert(err.message || 'Delete failed.')
+  }
+}
+
 // Tracking Modal Actions
 const openTrackingModal = (winner) => {
   selectedWinner.value = winner
@@ -782,5 +839,7 @@ const filteredDonations = computed(() => {
 })
 
 // Automatically sync grid entries when the viewport mounts onto browser tabs
-onMounted(() => { loadDashboardData() })
+onMounted(() => {
+  loadDashboardData()
+})
 </script>
