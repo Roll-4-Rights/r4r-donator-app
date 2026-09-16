@@ -286,8 +286,8 @@
           <label class="field-label">Photos</label>
           <div class="edit-photo-grid mb-3">
             <div v-for="(photo, index) in existingPhotos" :key="'existing-' + index" class="edit-photo-thumb">
-              <img v-if="!(photo.mimetype && photo.mimetype.startsWith('video/'))" :src="photo.url || photo.signedUrl" :alt="photo.title || 'Photo'">
-              <video v-if="photo.mimetype && photo.mimetype.startsWith('video/')" :src="photo.url || photo.signedUrl" controls></video>
+              <img v-if="!(photo.mimetype && photo.mimetype.startsWith('video/'))" :src="resolveAttachmentUrl(photo)" :alt="photo.title || 'Photo'">
+              <video v-if="photo.mimetype && photo.mimetype.startsWith('video/')" :src="resolveAttachmentUrl(photo)" controls></video>
               <v-btn icon="mdi-close" size="x-small" density="comfortable" class="edit-photo-remove" @click="removeExistingPhoto(index)"></v-btn>
             </div>
             <div v-for="(photo, index) in newEditPhotos" :key="'new-' + index" class="edit-photo-thumb">
@@ -560,7 +560,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { apiService } from '@/services/api' // Unified REST data logic routing manager
+import { apiService, API_BASE_URL } from '@/services/api' // Unified REST data logic routing manager
 
 // Tab & Navigation Controllers
 const activeTab = ref('submit')
@@ -625,11 +625,23 @@ const selectedVideos = computed(() =>
 const photoPreviewUrl = (file) => URL.createObjectURL(file)
 const pad3 = (num) => String(num).padStart(3, '0')
 
+// Resolves a NocoDB attachment object into a usable URL.
+// Real NocoDB attachments only give us a relative `path` (e.g. "download/2026/.../file.jpg"),
+// which we proxy through our own /api/media/<path> route. Fake/test data (or any attachment
+// that already has a full external URL) is passed through directly, unchanged.
+const resolveAttachmentUrl = (photo) => {
+  if (!photo) return null
+  if (photo.url && /^https?:\/\//.test(photo.url)) return photo.url
+  const relative = photo.signedPath || photo.path
+  if (!relative) return null
+  return `${API_BASE_URL.replace(/\/$/, '')}/media/${relative.replace(/^\//, '')}`
+}
+
 // Returns the first non-video attachment's URL for a donation row, or null if none exists
 const firstItemPhotoUrl = (item) => {
   const attachments = Array.isArray(item['Photos']) ? item['Photos'] : []
   const firstPhoto = attachments.find(p => !(p.mimetype && p.mimetype.startsWith('video/')))
-  return firstPhoto ? (firstPhoto.url || firstPhoto.signedUrl) : null
+  return firstPhoto ? resolveAttachmentUrl(firstPhoto) : null
 }
 
 const removeExistingPhoto = (index) => {
