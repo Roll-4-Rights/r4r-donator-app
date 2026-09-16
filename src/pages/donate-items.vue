@@ -173,7 +173,7 @@
                 </td>
                 <td>{{ item['Category'] || 'Unassigned' }}</td>
                 <td class="text-center">
-                  <v-chip :class="item['Item Status'] === 'Accepted' ? 'chip-accepted' : 'chip-pending'" size="small" variant="flat">
+                  <v-chip :class="statusChipClass(item['Item Status'])" size="small" variant="flat">
                     {{ item['Item Status'] || 'Submitted' }}
                   </v-chip>
                 </td>
@@ -542,8 +542,9 @@
 .tracking-cell { letter-spacing: 0.03em; }
 .edit-btn { text-transform: none; font-weight: 700; }
 
-.chip-accepted { background: var(--brass) !important; color: #fff !important; font-weight: 700; letter-spacing: 0.02em; text-transform: capitalize; }
-.chip-pending { background: rgba(189, 138, 61, 0.12) !important; color: var(--amber) !important; font-weight: 700; border: 1px solid rgba(189, 138, 61, 0.35); text-transform: capitalize; }
+.chip-accepted { background: rgba(46, 125, 50, 0.12) !important; color: #2e7d32 !important; font-weight: 700; }
+.chip-pending { background: rgba(196, 130, 40, 0.12) !important; color: var(--brass) !important; font-weight: 700; }
+.chip-rejected { background: rgba(198, 40, 40, 0.12) !important; color: #c62828 !important; font-weight: 700; }
 
 /* Dialog */
 .dialog-card { border-radius: 18px; }
@@ -624,6 +625,12 @@ const selectedVideos = computed(() =>
 
 const photoPreviewUrl = (file) => URL.createObjectURL(file)
 const pad3 = (num) => String(num).padStart(3, '0')
+
+const statusChipClass = (status) => {
+  if (status === 'Accepted') return 'chip-accepted'
+  if (status === 'Rejected') return 'chip-rejected'
+  return 'chip-pending'
+}
 
 // Resolves a NocoDB attachment object into a usable URL.
 // Real NocoDB attachments only give us a relative `path` (e.g. "download/2026/.../file.jpg"),
