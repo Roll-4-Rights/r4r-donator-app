@@ -781,33 +781,6 @@ const saveEditInfo = async () => {
 }
 
 
-const deleteDonation = async () => {
-  if (!selectedEditItem.value) return
-  if (!confirm(`Delete "${selectedEditItem.value['Item Name']}"? This cannot be undone.`)) return
-  isSavingEdit.value = true
-  try {
-    await apiService.deleteDonation(selectedEditItem.value.Id)
-    closeEditModal()
-    await loadDashboardData()
-  } catch (err) {
-    console.error('Delete Donation Bug Trace:', err)
-    alert(err.message || 'Delete failed.')
-  } finally {
-    isSavingEdit.value = false
-  }
-}
-
-// Row-level delete for the "My Donations" list — independent of the edit modal's open state
-const deleteDonationRow = async (item) => {
-  if (!confirm(`Delete "${item['Item Name']}"? This cannot be undone.`)) return
-  try {
-    await apiService.deleteDonation(item.Id)
-    await loadDashboardData()
-  } catch (err) {
-    console.error('Delete Donation Row Bug Trace:', err)
-    alert(err.message || 'Delete failed.')
-  }
-}
 
 // Tracking Modal Actions
 const openTrackingModal = (winner) => {
