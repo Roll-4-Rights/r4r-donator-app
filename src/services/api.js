@@ -151,6 +151,18 @@ async deleteDonation(recordId) {
   return data;
 },
 
+async updateTrackingNumber(recordId, trackingNumber) {
+  const res = await fetch(`${API_BASE_URL}/donations/${recordId}/tracking`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ 'Tracking Number': trackingNumber })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Tracking update failed: ${res.status}`);
+  return data;
+},
+
   // ============= CALENDAR =============
 
   async fetchCalendar() {

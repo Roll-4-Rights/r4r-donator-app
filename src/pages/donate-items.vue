@@ -639,7 +639,7 @@ const statusChipClass = (status) => {
 const resolveAttachmentUrl = (photo) => {
   if (!photo) return null
   if (photo.url && /^https?:\/\//.test(photo.url)) return photo.url
-  const relative = photo.signedPath || photo.path
+  const relative = photo.path || photo.signedPath
   if (!relative) return null
   return `${API_BASE_URL.replace(/\/$/, '')}/media/${relative.replace(/^\//, '')}`
 }
@@ -799,9 +799,7 @@ const saveTrackingInfo = async () => {
   if (!selectedWinner.value) return
   isSavingTracking.value = true
   try {
-    await apiService.updateDonation(selectedWinner.value.Id, {
-      "Tracking Number": trackingInput.value
-    })
+    await apiService.updateTrackingNumber(selectedWinner.value.Id, trackingInput.value)
     selectedWinner.value['Tracking Number'] = trackingInput.value
     closeTrackingModal()
     await loadDashboardData()
