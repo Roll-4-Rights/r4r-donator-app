@@ -1,6 +1,6 @@
 <template>
   <v-container class="py-8" max-width="500px">
-    
+
     <!-- SYSTEM ALERT BANNER NOTIFICATION CONTEXT SLOT -->
     <v-fade-transition>
       <v-alert
@@ -18,20 +18,20 @@
     </v-fade-transition>
 
     <!-- UNIFIED ACCOUNT PROFILE WORKSPACE CARD -->
-    <v-card class="pa-6 rounded-xl border bg-white" variant="flat">
-      
+    <v-card class="pa-8 rounded-xl border bg-white" variant="flat">
+
       <!-- HEADER BLOCK SECTION -->
-      <div class="mb-6">
+      <div class="mb-8">
         <h2 class="text-h5 font-weight-black text-grey-darken-4 mb-1">Account Settings</h2>
         <p class="text-body-2 text-grey-darken-1 mb-0">Manage your user profile configuration settings.</p>
       </div>
 
-            <!-- SECTION 1: AVATAR DISPLAY + UPLOAD -->
-      <div class="mb-6 text-center">
+      <!-- SECTION 1: AVATAR DISPLAY + UPLOAD -->
+      <div class="mb-8 text-center">
         <div class="position-relative d-inline-block">
-          <v-avatar 
-            size="90" 
-            :style="{ backgroundColor: avatarPreview ? undefined : avatarBgColor }" 
+          <v-avatar
+            size="90"
+            :style="{ backgroundColor: avatarPreview ? undefined : avatarBgColor }"
             class="text-white text-h4 font-weight-black border rounded-circle elevation-1"
           >
             <v-img v-if="avatarPreview" :src="avatarPreview" alt="User Avatar" cover></v-img>
@@ -61,7 +61,7 @@
 
         <!-- Save/Cancel appear once a file is staged -->
         <v-expand-transition>
-          <div v-if="selectedFile" class="d-flex ga-3 justify-center mt-3">
+          <div v-if="selectedFile" class="d-flex ga-3 justify-center mt-4">
             <v-btn color="success" size="small" :loading="isUploading" @click="uploadAvatar">
               Save Photo
             </v-btn>
@@ -75,9 +75,9 @@
       <!-- MAIN FORM FIELDS BLOCK -->
       <v-form ref="profileFormRef" v-model="isProfileValid" @submit.prevent="saveProfile">
         <v-row dense>
-          
+
           <!-- EMAIL FIELD (READ-ONLY CLEAN OUTLINED DESIGN) -->
-          <v-col cols="12" class="mb-4">
+          <v-col cols="12" class="mb-5">
             <v-text-field
               v-model="profileForm.email"
               label="Email Address"
@@ -93,9 +93,9 @@
           </v-col>
 
           <!-- PASSWORD FIELD (CLEAN OUTLINED DESIGN WITH INNER CLICKABLE PENCIL) -->
-          <v-col cols="12" class="mb-4">
+          <v-col cols="12" class="mb-5">
             <v-text-field
-              value="••••••••••••"
+              model-value="••••••••••••"
               label="Password"
               variant="outlined"
               density="comfortable"
@@ -111,15 +111,15 @@
           </v-col>
 
           <!-- NAME FIELD -->
-          <v-col cols="12" class="mb-6">
-            <v-text-field 
-              v-model="profileForm.name" 
+          <v-col cols="12" class="mb-8">
+            <v-text-field
+              v-model="profileForm.name"
               label="Name *"
-              :rules="[rules.required]" 
-              variant="outlined" 
+              :rules="[rules.required]"
+              variant="outlined"
               density="comfortable"
               color="#0A3C46"
-              class="rounded-lg" 
+              class="rounded-lg"
               hide-details="auto"
               prepend-inner-icon="mdi-account-outline"
             ></v-text-field>
@@ -144,44 +144,44 @@
         </v-card-title>
         <v-card-text class="pt-3 px-4 pb-4">
           <v-form ref="passwordFormRef" v-model="isPasswordValid" @submit.prevent="updatePassword">
-            <v-text-field 
-              v-model="passwordForm.current" 
+            <v-text-field
+              v-model="passwordForm.current"
               label="Current Password *"
-              :type="showCurrent ? 'text' : 'password'" 
+              :type="showCurrent ? 'text' : 'password'"
               :append-inner-icon="showCurrent ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required]"
-              variant="outlined" 
+              variant="outlined"
               density="comfortable"
               color="#0A3C46"
-              class="rounded-lg mb-4" 
+              class="rounded-lg mb-4"
               hide-details="auto"
               @click:append-inner="showCurrent = !showCurrent"
             ></v-text-field>
 
-            <v-text-field 
-              v-model="passwordForm.new" 
+            <v-text-field
+              v-model="passwordForm.new"
               label="New Password *"
-              :type="showNew ? 'text' : 'password'" 
+              :type="showNew ? 'text' : 'password'"
               :append-inner-icon="showNew ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.minPassword]"
-              variant="outlined" 
+              variant="outlined"
               density="comfortable"
               color="#0A3C46"
-              class="rounded-lg mb-4" 
+              class="rounded-lg mb-4"
               hide-details="auto"
               @click:append-inner="showNew = !showNew"
             ></v-text-field>
 
-            <v-text-field 
-              v-model="passwordForm.confirm" 
+            <v-text-field
+              v-model="passwordForm.confirm"
               label="Confirm New Password *"
-              :type="showConfirm ? 'text' : 'password'" 
+              :type="showConfirm ? 'text' : 'password'"
               :append-inner-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.matchingPassword]"
-              variant="outlined" 
+              variant="outlined"
               density="comfortable"
               color="#0A3C46"
-              class="rounded-lg" 
+              class="rounded-lg"
               hide-details="auto"
               @click:append-inner="showConfirm = !showConfirm"
             ></v-text-field>

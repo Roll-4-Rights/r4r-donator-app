@@ -15,10 +15,10 @@
             <span>7/28/2026</span>
           </div>
           <h1 class="text-h4 text-sm-h3 text-md-h2 font-weight-black text-black mb-4 leading-none">
-            Hail and well met, {{ userName }}!
+            Hello, {{ userName }}! Welcome to the Roll4Rights Contributor Platform!
           </h1>
           <p class="text-body-1 text-medium-emphasis leading-relaxed max-w-3xl">
-            Thanks for supporting the auction! Here you will be able to submit and view your donations, join the chat, view the FAQ, as well as contact the team with any questions.
+            Here you'll be able to learn more about our auction process, make and edit your contributor profile, submit prizes and view your winner's info for our charity auctions, message the admin team, and chat with everyone involved. This is also where we'll post updates and communication about upcoming events on our calendar. 
           </p>
         </div>
       </v-card-text>

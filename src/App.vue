@@ -99,12 +99,12 @@
           @click="closeDrawerOnMobile"
         >
           <v-list-item to="/" exact prepend-icon="mdi-view-dashboard" title="Home"></v-list-item>
-          <v-list-item to="/forum" prepend-icon="mdi-forum" title="Chat"></v-list-item>
           <v-list-item to="/guides-faq" prepend-icon="mdi-help-circle-outline" title="Guides/FAQs"></v-list-item>
-          <v-list-item to="/messages" prepend-icon="mdi-email-outline" title="Messages"></v-list-item>
-          <v-list-item to="/donate-items" prepend-icon="mdi-creation-outline" title="Donate Items and View Winner Info"></v-list-item>
-          <v-list-item to="/donator-information" prepend-icon="mdi-earth" title="Submit Donator Information"></v-list-item>
+          <v-list-item to="/donator-information" prepend-icon="mdi-earth" title="Submit Contributor Information"></v-list-item>
+          <v-list-item to="/donate-items" prepend-icon="mdi-creation-outline" title="Contribute Items and View Winner Info"></v-list-item>
+          <v-list-item to="/forum" prepend-icon="mdi-forum" title="Chat"></v-list-item>
           <v-list-item to="/account" prepend-icon="mdi-account-circle-outline" title="Account"></v-list-item>
+          <v-list-item to="/messages" prepend-icon="mdi-email-outline" title="Messages"></v-list-item>
           <v-list-item v-if="authState.is_admin" to="/admin" prepend-icon="mdi-shield-crown-outline" title="Admin"></v-list-item>
         </v-list>
 

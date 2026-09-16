@@ -3,9 +3,9 @@
   <v-container class="py-10 px-6" max-width="1200">
     
     <!-- Section 1: Dynamic Welcome Step Grid Overview -->
-    <div class="mb-4 pl-2 text-left">
-      <span class="text-subtitle-2 font-weight-bold text-medium-emphasis uppercase tracking-wider">Start Here!</span>
-      <h1 class="text-h3 font-weight-black text-black mt-1 mb-8">submission guide</h1>
+    <div class="page-header mb-8">
+      <h1 class="page-title">Submission Guide</h1>
+      <p class="page-sub">Start here! Complete the steps below to set up your contributor profile and submit your prizes for auction.</p>
     </div>
 
     <v-row class="mb-12">
@@ -15,12 +15,15 @@
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
             <!-- Styled Icon Step Indicator Badge -->
-            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
-              <v-icon icon="mdi-check" size="18"></v-icon>
-            </v-avatar>
-            <h2 class="text-h6 font-weight-black text-black mb-2">Step 1</h2>
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+              <v-avatar color="#0B4F6C" size="36" class="text-white" style="margin-right: 12px;">
+                <v-icon icon="mdi-check" size="18"></v-icon>
+              </v-avatar>
+              <h2 class="text-h6 font-weight-black text-black" style="margin: 0;">Step 1</h2>
+            </div>
             <p class="text-body-2 text-medium-emphasis leading-relaxed">
-              Complete your Donator Information form on the Submit Donator Information page located in the navigation to the left. This form only needs to be submitted once.
+              Head to the Submit Contributor Information page and complete the form. 
+              This is the information that will be displayed with your prizes on the auction website, so that bidders can know a bit about you. It will also determine where your listings can be shipped, so please take care with filling it out correctly!
             </p>
           </v-card-text>
         </v-card>
@@ -31,15 +34,21 @@
         <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
-            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
-              <v-icon icon="mdi-check" size="18"></v-icon>
-            </v-avatar>
-            <h2 class="text-h6 font-weight-black text-black mb-2">Step 2</h2>
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+              <v-avatar color="#0B4F6C" size="36" class="text-white" style="margin-right: 12px;">
+                <v-icon icon="mdi-check" size="18"></v-icon>
+              </v-avatar>
+              <h2 class="text-h6 font-weight-black text-black" style="margin: 0;">Step 2</h2>
+            </div>
             <p class="text-body-2 text-medium-emphasis leading-relaxed mb-4">
-              Donate an item! Or multiple items! Click the "Donate an Item" page in the navigation pane to the left!
+              Submit your prize(s) on the Contribute Prizes & View Winner Info page.
             </p>
             <p class="text-body-2 text-medium-emphasis font-weight-bold mt-auto">
-              For each item you'll submit a new form on this page. There, you will be able to see and edit what you've submitted and view its status.
+              After you've filled out the form on the Submit A Donation tab, you'll be able to view your prizes' listing information under the My Donations tab.
+            </p>
+            <br>
+            <p class="text-body-2 text-medium-emphasis font-weight-bold mt-auto">
+              Once the auction you submitted a prize for has finished and your winning bidder's donation has been verified, you'll find their information under the Winner And Shipping Info tab. This is also where you'll add tracking information when you've shipped your prize.
             </p>
           </v-card-text>
         </v-card>
@@ -50,12 +59,18 @@
         <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
-            <v-avatar color="#0B4F6C" size="36" class="text-white mb-4">
-              <v-icon icon="mdi-check" size="18"></v-icon>
-            </v-avatar>
-            <h2 class="text-h6 font-weight-black text-black mb-2">Step 3</h2>
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+              <v-avatar color="#0B4F6C" size="36" class="text-white" style="margin-right: 12px;">
+                <v-icon icon="mdi-check" size="18"></v-icon>
+              </v-avatar>
+              <h2 class="text-h6 font-weight-black text-black" style="margin: 0;">Step 3</h2>
+            </div>
             <p class="text-body-2 text-medium-emphasis leading-relaxed">
-              Keep an eye on the portal main page for any announcements. Check the FAQ below for any answers you may need. Join the chat! If you still have questions, send a team member a message.
+              You're all done!
+              </p>
+              <br>
+              <p>
+              Keep an eye on the Home page for announcements or to see what's up next on the calendar. If you have any questions that aren't answered in the FAQ below, feel free to ask the admin team on the Messages page.
             </p>
           </v-card-text>
         </v-card>
@@ -66,8 +81,8 @@
     <v-divider class="mb-12 border-divider opacity-50"></v-divider>
 
     <!-- Section 2: Non-Dropdown FAQ Grid Block -->
-    <div class="text-center mb-8">
-      <h2 class="text-h4 font-weight-black text-black mb-2">FAQ and Guides</h2>
+    <div class="page-header mb-8 text-center">
+      <h1 class="page-title">FAQ</h1>
     </div>
 
     <div v-if="loading" class="text-center py-8">
@@ -180,5 +195,27 @@ onMounted(async () => {
 <style scoped>
 .border-divider {
   border-color: rgba(0, 0, 0, 0.08) !important;
+}
+.page-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.72);
+  margin-bottom: 0.5rem;
+}
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+.page-sub {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.72);
+  max-width: 46ch;
+  margin: 0;
 }
 </style>

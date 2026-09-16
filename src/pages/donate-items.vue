@@ -1,25 +1,28 @@
 <template>
-  <v-container class="donate-page pa-6 mx-auto" style="max-width: 1200px;">
+  <v-container class="donate-page py-10 px-6 mx-auto" style="max-width: 1200px;">
 
     <!-- PAGE HEADER -->
-    <div class="page-head mb-8">
-      <h1 class="page-title">Donate an Item</h1>
-      <p class="page-sub">Submit items, manage your donations, view winner info, and add tracking.</p>
+    <div class="page-header mb-8">
+      <h1 class="page-title">Contribute a Prize</h1>
+      <p class="page-sub">Use the three tabs below to submit and manage your contributions, view your winner's shipping information, and add tracking information.</p>
     </div>
 
     <!-- SUBMISSION GUIDELINES INFO -->
     <div class="guidelines mb-8">
-      <div class="guidelines-title mb-2">Submission guidelines and info:</div>
+      <div class="guidelines-line mb-3"></div>
       <div class="guidelines-text">
-        Please use the form under "Submit a Donation" below to submit an item. Donationed items or wares must be submitted seperately.
+        ● When you've submitted a prize, it will be reviewed and accepted by the admin team.
         <br>
-        ● Items Submitted: this is the total number of items you have submitted, they can be viewed in the tab below.
+        ● While your prizes are under review, their information can still be edited or deleted. Once your item is marked accepted, it is considered ready to be listed on the auction site and no longer able to be edited or deleted.
         <br>
-        ● Under Review: this means the item has been sent to the admin team and is being looked over, items can still be edited or deleted at this time. If there is an issue, a team member will reach out.
+        ● You can check where each of your contributions is in the submission process in the table below.
         <br>
-        ● Items Accepted: this is the number of items that have been accepted and are ready for listing. Note: you cannot edit or delete items after their status changes to "Accepted".
+        <br>
+        Thank you again for your generosity!
       </div>
     </div>
+
+    
 
     <!-- LIVE DYNAMIC STATUS LEDGER STRIP -->
     <div class="ledger-strip mb-10">
@@ -311,26 +314,29 @@
 }
 
 /* Header */
-.eyebrow {
+.page-header {
+  padding-left: 4px;
+}
+.page-eyebrow {
   display: block;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: rgba(0, 0, 0, 0.72);
   margin-bottom: 0.5rem;
 }
 .page-title {
   font-size: 2.25rem;
   font-weight: 900;
-  color: var(--ink-deep);
+  color: #000000;
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem;
 }
 .page-sub {
   font-size: 0.95rem;
-  color: var(--ink-soft);
-  max-width: 46ch;
+  color: rgba(0, 0, 0, 0.72);
+  max-width: 70ch;
   margin: 0;
 }
 
@@ -340,14 +346,22 @@
   border-bottom: 1px solid var(--line);
 }
 .guidelines-title {
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--ink-deep);
 }
 .guidelines-text {
   font-size: 0.875rem;
+  font-weight: 400;
   color: var(--ink-soft);
   line-height: 1.6;
+}
+.guidelines-line {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
 }
 
 /* Ledger stat strip */
