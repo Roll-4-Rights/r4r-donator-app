@@ -1,14 +1,18 @@
+<!-- starting point for the WHOLE APP, DO NOT DELETE -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <!-- global stylesheet, applied before the app renders -->
     <link rel="stylesheet" href="/layers.css">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R4R Donator App</title>
+    <link rel="icon" href="/favicon.ico"> <!-- browser tab icon -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- makes the page responsive on mobile -->
+    <title>R4R Contributor App</title> <!-- text shown in the browser tab -->
   </head>
   <body>
+    <!-- empty container the vue app mounts into -->
     <div id="app"></div>
+    <!-- entry point vite bundles from; boots the app and mounts it into #app above -->
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
