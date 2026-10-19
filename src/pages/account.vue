@@ -143,6 +143,9 @@
           Change Password
         </v-card-title>
         <v-card-text class="pt-3 px-4 pb-4">
+          <v-alert v-if="passwordError" type="error" variant="tonal" density="compact" class="mb-4">
+            {{ passwordError }}
+          </v-alert>
           <v-form ref="passwordFormRef" v-model="isPasswordValid" @submit.prevent="updatePassword">
             <v-text-field
               v-model="passwordForm.current"
@@ -191,7 +194,7 @@
           <v-btn variant="text" class="text-capitalize rounded-lg font-weight-bold" color="grey-darken-1" @click="closePasswordModal">
             Cancel
           </v-btn>
-          <v-btn :disabled="!isPasswordValid" variant="flat" class="text-white text-capitalize rounded-lg font-weight-bold px-5" color="#0A3C46" @click="updatePassword">
+          <v-btn :disabled="!isPasswordValid" variant="flat" class="text-white text-capitalize rounded-lg font-weight-bold px-5" color="#0A3C46" @click="updatePassword" :loading="isSavingPassword">
             Save Password
           </v-btn>
         </v-card-actions>
@@ -213,6 +216,8 @@ const profileFormRef = ref(null)
 const passwordFormRef = ref(null)
 const isProfileValid = ref(false)
 const isPasswordValid = ref(false)
+const passwordError = ref('')
+const isSavingPassword = ref(false)
 
 // UI Feedback States
 const showSuccessAlert = ref(false)
@@ -268,9 +273,10 @@ onMounted(async () => {
     if (data.profile_picture) {
       avatarPreview.value = `${API_BASE_URL}${data.profile_picture}`
     }
-  } catch (e) {
-    // surface e.message to the user
-  }
+} catch (e) {
+  console.error(e)
+  alert(e.message || 'Something went wrong.')
+}
 })
 
 function triggerFileSelect() {
@@ -306,9 +312,10 @@ async function uploadAvatar() {
     selectedFile.value = null
     fileInputModel.value = null
     showSuccessAlert.value = true
-  } catch (e) {
-    // surface e.message to the user
-  } finally {
+} catch (e) {
+  console.error(e)
+  alert(e.message || 'Something went wrong.')
+} finally {
     isUploading.value = false
   }
 }
@@ -328,6 +335,7 @@ const closePasswordModal = () => {
   passwordForm.value.current = ''
   passwordForm.value.new = ''
   passwordForm.value.confirm = ''
+  passwordError.value = ''
   if (passwordFormRef.value) passwordFormRef.value.resetValidation()
 }
 
@@ -339,14 +347,17 @@ const saveProfile = async () => {
     await apiService.updateName(profileForm.value.name)
     showSuccessAlert.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  } catch (e) {
-    // surface e.message to the user
-  }
+} catch (e) {
+  console.error(e)
+  alert(e.message || 'Something went wrong.')
+}
 }
 
 const updatePassword = async () => {
   const { valid } = await passwordFormRef.value.validate()
   if (!valid) return
+  passwordError.value = ''
+  isSavingPassword.value = true
   try {
     await apiService.changePassword({
       current_password: passwordForm.value.current,
@@ -356,7 +367,10 @@ const updatePassword = async () => {
     showSuccessAlert.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (e) {
-    // surface e.message to the user
+    console.error('Password change failed:', e)
+    passwordError.value = e.message || 'Password update failed.'
+  } finally {
+    isSavingPassword.value = false
   }
 }
 
