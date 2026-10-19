@@ -159,7 +159,7 @@
               <tr v-else-if="filteredDonations.length === 0">
                 <td colspan="7" class="text-center py-8 empty-text">No donations submitted yet.</td>
               </tr>
-              <tr v-else v-for="(item, index) in filteredDonations" :key="item.Id">
+              <tr v-else v-for="item in filteredDonations" :key="item.Id">
                 <td class="col-thumb">
                   <img v-if="firstItemPhotoUrl(item)" :src="firstItemPhotoUrl(item)" class="item-thumb" alt="">
                   <div v-else class="item-thumb item-thumb-placeholder">
@@ -181,7 +181,7 @@
                 <td class="text-center">
                   <div class="d-flex justify-center ga-1">
                     <v-btn size="small" variant="text" color="#1565C0" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
-                    <v-btn size="small" variant="text" color="#ff6363" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="deleteDonationRow(item)">Delete</v-btn>
+                    <v-btn size="small" variant="text" color="#ff6363" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" :loading="isDeletingId === item.Id" @click="deleteDonationRow(item)">Delete</v-btn>
                   </div>
                 </td>
               </tr>
@@ -777,6 +777,23 @@ const saveEditInfo = async () => {
     alert(err.message || 'Update failed.')
   } finally {
     isSavingEdit.value = false
+  }
+}
+
+ // Delete Actions
+const isDeletingId = ref(null)
+
+const deleteDonationRow = async (item) => {
+  if (!confirm(`Delete "${item['Item Name']}"? This can't be undone.`)) return
+  isDeletingId.value = item.Id
+  try {
+    await apiService.deleteDonation(item.Id)
+    await loadDashboardData()
+  } catch (err) {
+    console.error('Delete Bug Trace:', err)
+    alert(err.message || 'Delete failed.')
+  } finally {
+    isDeletingId.value = null
   }
 }
 
