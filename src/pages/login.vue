@@ -12,8 +12,10 @@
       <v-text-field
         v-model="password"
         label="Password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
+        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         required
+        @click:append-inner="showPassword = !showPassword"
       />
 
       <v-alert v-if="errorMessage" type="error" density="compact" class="mb-4">
@@ -24,6 +26,12 @@
         Log In
       </v-btn>
     </v-form>
+
+    <div class="mt-2 text-right">
+      <router-link to="/forgot-password" class="text-body-2">
+        Forgot password?
+      </router-link>
+    </div>
 
     <p class="mt-4 text-body-2">
       Don't have an account?
@@ -40,6 +48,7 @@ import { login } from '@/services/authStore';
 const router = useRouter();
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false);
 const errorMessage = ref('');
 const submitting = ref(false);
 

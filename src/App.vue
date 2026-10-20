@@ -171,7 +171,7 @@ import { useRoute, useRouter, RouterView } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { socket } from '@/socket'
 import { authState, logout } from '@/services/authStore'
-import { API_BASE_URL } from '@/services/api'
+import { apiService, API_BASE_URL } from '@/services/api'
 
 // initializes the live path monitor to track browser address location adjustments continuously
 // assigns the active router function to push users across different page layouts programmatically
@@ -216,7 +216,12 @@ onMounted(() => {
 // handles active authorization token erasure and sends the viewport back to login views immediately
 // clears local session memory caches and access credentials safely from data storage files
 // redirects the active browser view to the user login interface block immediately
-const handleSignOut = () => {
+const handleSignOut = async () => {
+  try {
+    await apiService.logout()
+  } catch (e) {
+    // Backend session may already be gone; clear local state regardless.
+  }
   logout()
   router.push('/login')
 }

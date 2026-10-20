@@ -100,6 +100,39 @@ async register({ name, email, password, invite_code, passcode }) {
     return data;
   },
 
+  async forgotPassword(email) {
+    const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Request failed: ${res.status}`);
+    return data;
+  },
+
+  async validateResetToken(token) {
+    const res = await fetch(
+      `${API_BASE_URL}/auth/reset-password/validate?token=${encodeURIComponent(token)}`,
+      { credentials: 'include' }
+    );
+    const data = await res.json().catch(() => ({}));
+    return data; // { valid: boolean }
+  },
+
+  async resetPassword({ token, new_password }) {
+    const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ token, new_password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Password reset failed: ${res.status}`);
+    return data;
+  },
+
   // ============= DONATIONS =============
 
   async fetchDonations() {

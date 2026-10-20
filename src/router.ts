@@ -11,6 +11,8 @@ import DonateItems from './pages/donate-items.vue'
 import Account from './pages/account.vue'
 import Login from './pages/login.vue'
 import Register from './pages/register.vue'
+import ForgotPassword from './pages/forgot-password.vue'
+import ResetPassword from './pages/reset-password.vue'
 import Messages from './pages/messages.vue'
 import Admin from './pages/admin.vue'
 
@@ -32,6 +34,8 @@ import { authState, waitForAuthReady } from './services/authStore'
 const routes: Array<RouteRecordRaw> = [
   { path: '/login', name: 'Login', component: Login, meta: { public: true } },
   { path: '/register', name: 'Register', component: Register, meta: { public: true } },
+  { path: '/forgot-password', name: 'ForgotPassword', component: ForgotPassword, meta: { public: true } },
+  { path: '/reset-password', name: 'ResetPassword', component: ResetPassword, meta: { public: true } },
   { path: '/', name: 'Home', component: Home },    
   { path: '/donator-information', name: 'DonatorInformation', component: DonatorInformation },
   { path: '/guides-faq', name: 'GuidesFaq', component: GuidesFaq },

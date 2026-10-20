@@ -32,9 +32,11 @@
         <v-text-field
           v-model="password"
           label="Password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           hint="At least 8 characters"
           required
+          @click:append-inner="showPassword = !showPassword"
         />
         <v-text-field
           v-if="!hasInviteParam"
@@ -74,6 +76,7 @@ const route = useRoute();
 const name = ref('');
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false);
 const passcode = ref('');
 const errorMessage = ref('');
 const submitting = ref(false);
