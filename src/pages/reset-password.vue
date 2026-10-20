@@ -22,6 +22,7 @@
         <v-text-field
           v-model="password"
           label="New Password"
+          autocomplete="new-password"
           :type="showPassword ? 'text' : 'password'"
           :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           hint="At least 8 characters"
@@ -31,6 +32,7 @@
         <v-text-field
           v-model="confirm"
           label="Confirm New Password"
+          autocomplete="new-password"
           :type="showConfirm ? 'text' : 'password'"
           :append-inner-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
           required

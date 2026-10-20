@@ -150,6 +150,7 @@
             <v-text-field
               v-model="passwordForm.current"
               label="Current Password *"
+              autocomplete="current-password"
               :type="showCurrent ? 'text' : 'password'"
               :append-inner-icon="showCurrent ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required]"
@@ -164,6 +165,7 @@
             <v-text-field
               v-model="passwordForm.new"
               label="New Password *"
+              autocomplete="new-password"
               :type="showNew ? 'text' : 'password'"
               :append-inner-icon="showNew ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.minPassword]"
@@ -178,6 +180,7 @@
             <v-text-field
               v-model="passwordForm.confirm"
               label="Confirm New Password *"
+              autocomplete="new-password"
               :type="showConfirm ? 'text' : 'password'"
               :append-inner-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.matchingPassword]"
