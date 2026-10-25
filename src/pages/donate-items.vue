@@ -146,18 +146,19 @@
                 <th>Category</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Starting bid</th>
+                <th class="text-center">Listing Review</th>
                 <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="isLoadingTables">
-                <td colspan="7" class="text-center py-8">
+                <td colspan="8" class="text-center py-8">
                   <v-progress-circular indeterminate size="20" width="2" color="#0A3C46" class="mr-2"></v-progress-circular>
                   Loading donations…
                 </td>
               </tr>
               <tr v-else-if="filteredDonations.length === 0">
-                <td colspan="7" class="text-center py-8 empty-text">No donations submitted yet.</td>
+                <td colspan="8" class="text-center py-8 empty-text">No donations submitted yet.</td>
               </tr>
               <tr v-else v-for="item in filteredDonations" :key="item.Id">
                 <td class="col-thumb">
@@ -178,6 +179,19 @@
                   </v-chip>
                 </td>
                 <td class="text-center mono">${{ item['Starting Bid Price'] || 0 }}</td>
+                <td class="text-center">
+                  <v-chip v-if="item['Listing Verified']" class="chip-accepted" size="small" variant="flat">Verified</v-chip>
+                  <v-btn
+                    v-else-if="item['Send Listing for Verification']"
+                    size="small"
+                    variant="text"
+                    color="#0A3C46"
+                    class="edit-btn review-btn"
+                    prepend-icon="mdi-eye-outline"
+                    @click="openReviewModal(item)"
+                  >Review</v-btn>
+                  <span v-else class="listing-muted">—</span>
+                </td>
                 <td class="text-center">
                   <div class="d-flex justify-center ga-1">
                     <v-btn size="small" variant="text" color="#1565C0" class="edit-btn" :disabled="item['Item Status'] === 'Accepted'" @click="openEditModal(item)">Edit</v-btn>
@@ -250,6 +264,59 @@
           <v-spacer></v-spacer>
           <v-btn variant="text" @click="closeTrackingModal">Cancel</v-btn>
           <v-btn variant="flat" color="#0A3C46" class="text-white" @click="saveTrackingInfo" :loading="isSavingTracking">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+    <!-- LISTING REVIEW DIALOG — donator approves the listing or asks for a fix -->
+    <v-dialog v-model="reviewDialog" max-width="520px" persistent>
+      <v-card class="dialog-card pa-2">
+        <v-card-title class="dialog-title">Review your listing
+        <v-spacer></v-spacer>
+        <v-btn variant="text" @click="closeReviewModal" class="">Cancel</v-btn>
+        </v-card-title>
+      
+        <v-card-text class="pt-2">
+          <p class="dialog-copy mb-4">
+            Look over <strong>{{ selectedReviewItem ? selectedReviewItem['Item Name'] : '' }}'s</strong> listing to ensure it is correct. Then either click Approve Listing or request changes in the box below. 
+          </p>
+          <a
+            v-if="selectedReviewItem && selectedReviewItem['Listing URL']"
+            :href="selectedReviewItem['Listing URL']"
+            target="_blank"
+            rel="noopener"
+            class="listing-link d-inline-block mb-5"
+          >             
+          Open the listing in a new tab</a>
+          <v-divider class="mt-2 mb-4"></v-divider> 
+
+          <v-textarea
+            v-model="reviewNotes"
+            label="Changes needed"
+            placeholder="Tell us what needs to be fixed?"
+            variant="outlined"
+            density="comfortable"
+            rows="3"
+            hide-details
+          ></v-textarea>
+        </v-card-text>
+        <v-card-actions class="dialog-actions flex-wrap ga-2">
+          <v-btn
+            variant="outlined"
+            color="#BD8A3D"
+            :disabled="!reviewNotes.trim()"
+            :loading="isSavingReview"
+            @click="sendListingFixNotes"
+          >Send change request</v-btn>
+          <span class="text-caption text-medium-emphasis mx-2"><strong>Or</strong></span>
+          <v-btn
+            variant="flat"
+            color="#0A3C46"
+            class="text-white"
+            :loading="isSavingReview"
+            @click="approveListing"
+          >Approve Listing</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -541,6 +608,11 @@
 .winner-info { white-space: pre-line; font-size: 0.85rem; }
 .tracking-cell { letter-spacing: 0.03em; }
 .edit-btn { text-transform: none; font-weight: 700; }
+.review-btn { text-decoration: none; }
+.review-btn:hover { text-decoration: underline; }
+.listing-link { color: #1565C0; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.listing-link:hover { color: #0D47A1; }
+.listing-muted { color: var(--ink-soft); font-size: 0.8rem; font-style: italic; }
 
 .chip-accepted { background: rgba(46, 125, 50, 0.12) !important; color: #2e7d32 !important; font-weight: 700; }
 .chip-pending { background: rgba(196, 130, 40, 0.12) !important; color: var(--brass) !important; font-weight: 700; }
@@ -550,6 +622,7 @@
 .dialog-card { border-radius: 18px; }
 .dialog-title { font-size: 1.05rem; font-weight: 800; color: var(--ink-deep); }
 .dialog-copy { font-size: 0.9rem; color: var(--ink-soft); }
+.display { display: flex; align-items: center; }
 
 @media (max-width: 600px) {
   .ledger-strip { flex-direction: column; }
@@ -575,6 +648,13 @@ const trackingDialog = ref(false)
 const trackingInput = ref('')
 const selectedWinner = ref(null)
 const isSavingTracking = ref(false)
+
+// Listing Review Modal Controller States
+const reviewDialog = ref(false)
+const reviewNotes = ref('')
+const selectedReviewItem = ref(null)
+const isSavingReview = ref(false)
+
 
 // Photo Memory Buffers
 const fileInput = ref(null)
@@ -825,6 +905,57 @@ const saveTrackingInfo = async () => {
     alert('Update failed.')
   } finally {
     isSavingTracking.value = false
+  }
+}
+
+// Listing Review Modal Actions
+const openReviewModal = (item) => {
+  selectedReviewItem.value = item
+  reviewNotes.value = item['Fix Notes'] || ''
+  reviewDialog.value = true
+}
+
+const closeReviewModal = () => {
+  reviewDialog.value = false
+  selectedReviewItem.value = null
+  reviewNotes.value = ''
+}
+
+// Donator says the listing is correct — mirrors the editor's "Listing Verified" checkbox
+const approveListing = async () => {
+  if (!selectedReviewItem.value) return
+  isSavingReview.value = true
+  try {
+    await apiService.updateListingReview(selectedReviewItem.value.Id, {
+      'Listing Verified': true,
+      'Fix Notes': ''
+    })
+    closeReviewModal()
+    await loadDashboardData()
+  } catch (err) {
+    console.error('Listing Approve Bug Trace:', err)
+    alert(err.message || 'Update failed.')
+  } finally {
+    isSavingReview.value = false
+  }
+}
+
+// Donator sends short notes about what needs fixing; clears the verified flag if it was set
+const sendListingFixNotes = async () => {
+  if (!selectedReviewItem.value) return
+  isSavingReview.value = true
+  try {
+    await apiService.updateListingReview(selectedReviewItem.value.Id, {
+      'Fix Notes': reviewNotes.value.trim(),
+      'Listing Verified': false
+    })
+    closeReviewModal()
+    await loadDashboardData()
+  } catch (err) {
+    console.error('Listing Fix Notes Bug Trace:', err)
+    alert(err.message || 'Update failed.')
+  } finally {
+    isSavingReview.value = false
   }
 }
 

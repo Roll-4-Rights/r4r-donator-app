@@ -196,6 +196,20 @@ async updateTrackingNumber(recordId, trackingNumber) {
   return data;
 },
 
+// Donator-side listing review: approve the listing or send fix notes back.
+// Payload accepts { 'Listing Verified': true } and/or { 'Fix Notes': '...' }
+async updateListingReview(recordId, payload) {
+  const res = await fetch(`${API_BASE_URL}/donations/${recordId}/listing-review`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Listing review failed: ${res.status}`);
+  return data;
+},
+
   // ============= CALENDAR =============
 
   async fetchCalendar() {
