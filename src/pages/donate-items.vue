@@ -137,6 +137,7 @@
             </div>
           </div>
 
+          <div class="table-scroll-wrapper">
           <table class="ledger-table">
             <thead>
               <tr>
@@ -182,14 +183,8 @@
                 <td class="text-center">
                   <v-chip v-if="item['Listing Verified']" class="chip-accepted" size="small" variant="flat">Verified</v-chip>
                   <v-btn
-                    v-else-if="item['Send Listing for Verification']"
-                    size="small"
-                    variant="text"
-                    color="#0A3C46"
-                    class="edit-btn review-btn"
-                    prepend-icon="mdi-eye-outline"
-                    @click="openReviewModal(item)"
-                  >Review</v-btn>
+                    v-else-if="item['Send Listing for Verification']" size="small" variant="text" color="#0A3C46" class="edit-btn review-btn" prepend-icon="mdi-eye-outline" @click="openReviewModal(item)" >Review</v-btn>
+                  <v-chip v-else-if="!item['Send Listing for Verification'] && item['Fix Notes']" class="chip-pending" size="small" variant="flat">Changes Pending</v-chip>
                   <span v-else class="listing-muted">—</span>
                 </td>
                 <td class="text-center">
@@ -201,6 +196,7 @@
               </tr>
             </tbody>
           </table>
+          </div>
         </v-card>
       </v-window-item>
 
@@ -212,6 +208,7 @@
             <p class="ledger-sub">Add a tracking number once you have shipped an item.</p>
           </div>
 
+          <div class="table-scroll-wrapper">
           <table class="ledger-table">
             <thead>
               <tr>
@@ -247,6 +244,7 @@
               </tr>
             </tbody>
           </table>
+          </div>
         </v-card>
       </v-window-item>
     </v-window>
@@ -273,7 +271,6 @@
     <v-dialog v-model="reviewDialog" max-width="520px" persistent>
       <v-card class="dialog-card pa-2">
         <v-card-title class="dialog-title">Review your listing
-        <v-spacer></v-spacer>
         <v-btn variant="text" @click="closeReviewModal" class="">Cancel</v-btn>
         </v-card-title>
       
@@ -561,7 +558,18 @@
 .ledger-heading { font-size: 1.1rem; font-weight: 800; color: var(--ink-deep); }
 .ledger-sub { font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
 
-.ledger-table { width: 100%; border-collapse: collapse; }
+.table-scroll-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ledger-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+}
+
 .ledger-table thead th {
   text-align: left;
   font-size: 0.7rem;
