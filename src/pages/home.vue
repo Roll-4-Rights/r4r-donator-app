@@ -71,7 +71,7 @@
             </v-expansion-panel-title>
                         
             <v-expansion-panel-text class="pa-6">
-              <div class="text-body-2 text-small-emphasis leading-relaxed" style="white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
+              <div class="text-body-2 text-small-emphasis leading-relaxed" style="white-space: pre-line !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
                 {{ item.content }}
               </div>
             </v-expansion-panel-text>
@@ -253,6 +253,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
 import { authState } from '@/services/authStore'
+import DOMPurify from 'dompurify'
 
 // Messages Preview
 interface MessageItem {
@@ -356,7 +357,7 @@ const fetchAnnouncements = async () => {
             timeStyle: 'short'
           })
         : '',
-      content: row['Body'],
+      content: DOMPurify.sanitize(String(row['Body'] ?? '')),
       priority: row['Priority'] || null
     }))
   } catch (error) {
@@ -495,7 +496,6 @@ onMounted(() => {
   transition: all 0.2s ease-in-out !important;
   width: 100% !important;
   display: flex !important;
-  align-center: true;
 }
 
 .custom-event-pill span {
