@@ -71,9 +71,11 @@
             </v-expansion-panel-title>
                         
             <v-expansion-panel-text class="pa-6">
-              <div class="text-body-2 text-small-emphasis leading-relaxed" style="white-space: pre-wrap !important; overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;">
-                {{ item.content }}
-              </div>
+              <div
+                class="text-body-2 text-small-emphasis leading-relaxed announcement-body"
+                style="overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;"
+                v-html="item.content"
+              ></div>
             </v-expansion-panel-text>
         
           </v-expansion-panel>
@@ -253,6 +255,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
 import { authState } from '@/services/authStore'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 
 // Messages Preview
 interface MessageItem {
@@ -344,6 +348,28 @@ const totalAnnouncementPages = computed(() =>
   Math.max(1, Math.ceil(announcements.value.length / ANNOUNCEMENTS_PER_PAGE))
 )
 
+// NocoDB's Rich Text field is Markdown-based. Some NocoDB versions return line
+// breaks as escaped `<br>` text, so normalize those before parsing.
+function renderAnnouncementBody(raw: unknown): string {
+  const text = String(raw ?? '')
+    .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+    .replace(/&amp;lt;br\s*\/?&amp;gt;/gi, '<br>')
+
+  const html = marked.parse(text, { async: false, breaks: true, gfm: true })
+
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'p', 'br', 'div', 'span',
+      'strong', 'b', 'em', 'i', 'u', 's', 'del',
+      'ul', 'ol', 'li',
+      'blockquote', 'a', 'hr',
+      'code', 'pre',
+      'h1', 'h2', 'h3', 'h4'
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+  })
+}
+
 const fetchAnnouncements = async () => {
   try {
     const rows = await apiService.fetchAnnouncements()
@@ -356,7 +382,7 @@ const fetchAnnouncements = async () => {
             timeStyle: 'short'
           })
         : '',
-      content: String(row['Body'] ?? ''),
+      content: renderAnnouncementBody(row['Body']),
       priority: row['Priority'] || null
     }))
   } catch (error) {
@@ -502,6 +528,55 @@ onMounted(() => {
   line-height: 1.2 !important;
   font-weight: 600 !important;
   display: inline-block;
+}
+
+.announcement-body :deep(p) {
+  margin: 0 0 1em;
+}
+
+.announcement-body :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.announcement-body :deep(ul),
+.announcement-body :deep(ol) {
+  padding-left: 1.5em;
+  margin: 0 0 1em;
+}
+
+.announcement-body :deep(li) {
+  margin-bottom: 0.25em;
+}
+
+.announcement-body :deep(hr) {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  margin: 1.5em 0;
+}
+
+.announcement-body :deep(a) {
+  color: #0B4F6C;
+  text-decoration: underline;
+}
+
+.announcement-body :deep(blockquote) {
+  border-left: 3px solid #d0d7de;
+  margin: 0 0 1em;
+  padding-left: 1em;
+  color: #57606a;
+}
+
+.announcement-body :deep(pre) {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 0.75em 1em;
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+
+.announcement-body :deep(code) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9em;
 }
 </style>
 
