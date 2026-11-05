@@ -253,7 +253,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiService } from '@/services/api'
 import { authState } from '@/services/authStore'
-import DOMPurify from 'dompurify'
 
 // Messages Preview
 interface MessageItem {
@@ -357,7 +356,7 @@ const fetchAnnouncements = async () => {
             timeStyle: 'short'
           })
         : '',
-      content: DOMPurify.sanitize(String(row['Body'] ?? '')),
+      content: String(row['Body'] ?? ''),
       priority: row['Priority'] || null
     }))
   } catch (error) {
