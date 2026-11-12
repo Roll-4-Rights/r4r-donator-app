@@ -97,6 +97,54 @@
                   </div>
                 </div>
 
+
+                    <!-- SECTION: Shipping Details -->
+                <div class="section-heading">
+                  <v-icon icon="mdi-truck-outline" size="20"></v-icon>
+                  <span>Shipping Details</span>
+                </div>
+
+                <div class="field-block">
+                  <label class="field-label">Shipping<span class="req">*</span></label>
+                  <v-radio-group v-model="form.shippingType" color="#0B4F6C" hide-details class="mt-1">
+                    <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
+                    <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
+                    <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
+                  </v-radio-group>
+                </div>
+
+                <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
+                  <label class="field-label">Estimated shipping cost</label>
+                  <v-textarea
+                    v-model="form.shippingCost"
+                    :disabled="isNoShipping"
+                    placeholder="e.g. United States: $7, Australia: $30, etc."
+                    variant="outlined"
+                    density="compact"
+                    color="#0B4F6C"
+                    rounded="lg"
+                    rows="2"
+                    auto-grow
+                    persistent-placeholder
+                  ></v-textarea>
+                </div>
+
+                <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
+                  <label class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
+                  <v-text-field
+                    v-model="form.winnerPaymentMethod"
+                    :disabled="isNoShipping"
+                    placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
+                    variant="outlined"
+                    density="compact"
+                    color="#0B4F6C"
+                    rounded="lg"
+                    persistent-placeholder
+                  ></v-text-field>
+                </div>
+
+                <v-divider class="section-divider"></v-divider>
+
                 <!-- PHOTO AND VIDEO UPLOAD — this form's own state, NOT the edit modal's -->
                 <label class="field-label">Photos</label>
                 <div class="edit-photo-grid mb-3">
@@ -502,6 +550,30 @@
   font-weight: 800;
   color: var(--ink-deep);
 }
+/* Section headings + field spacing for the Shipping Details block */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0B4F6C;
+  margin-bottom: 20px;
+}
+.section-divider {
+  margin: 32px 0;
+  opacity: 0.5;
+}
+.field-block {
+  margin-bottom: 24px;
+}
+.field-block-last {
+  margin-bottom: 0;
+}
+/* Kept visible but inert when the no-shipping option is selected */
+.field-block-disabled .field-label {
+  color: rgba(0, 0, 0, 0.38);
+}
 .field-label {
   display: block;
   font-size: 0.75rem;
@@ -510,6 +582,10 @@
   text-transform: uppercase;
   color: var(--ink-soft);
   margin-bottom: 0.4rem;
+}
+.field-label .req {
+  color: #C0392B;
+  margin-left: 2px;
 }
 .price-row {
   display: flex;
@@ -675,8 +751,14 @@ const form = ref({
   description: '',
   category: null,
   recPrice: null,
-  startPrice: null
+  startPrice: null,
+  shippingType: '',
+  shippingCost: '',
+  winnerPaymentMethod: ''
 })
+
+// True when the donator picked the no-shipping option; used to grey out the shipping fields.
+const isNoShipping = computed(() => form.value.shippingType === 'Other/Emailed (no shipping cost)')
 
 // Local records array downloaded from NocoDB
 const userDonations = ref([])
@@ -801,7 +883,10 @@ const submitForm = async () => {
       "Recommended Price": Number(form.value.recPrice) || 0,
       "Starting Bid Price": Number(form.value.startPrice) || 0,
       "Photos": uploadedPhotos,
-      "Submitted At": new Date().toISOString()
+      "Submitted At": new Date().toISOString(),
+      "Shipping Type": form.value.shippingType,
+      "Estimated Shipping Cost": form.value.shippingCost,
+      "Winner Payment Method": form.value.winnerPaymentMethod
     })
 
     // 3. Clear local states on success

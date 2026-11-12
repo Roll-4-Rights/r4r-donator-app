@@ -98,21 +98,6 @@
               ></v-textarea>
             </div>
 
-            <div class="field-block">
-              <label class="field-label">The country you are shipping from?<span class="req">*</span></label>
-              <small class="field-note">This will be used to display your country shipping location on your auction item(s).</small>
-              <v-text-field
-                v-model="form.location"
-                placeholder="e.g. Canada"
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                persistent-placeholder
-                required
-              ></v-text-field>
-            </div>
-
             <div class="field-block field-block-last">
               <label class="field-label">Website URL<span class="req">*</span></label>
               <small class="field-note">or social media link if you don't have a website/store</small>
@@ -128,51 +113,24 @@
               ></v-text-field>
             </div>
 
-            <v-divider class="section-divider"></v-divider>
-
-            <!-- SECTION: Shipping Details -->
-            <div class="section-heading">
-              <v-icon icon="mdi-truck-outline" size="20"></v-icon>
-              <span>Shipping Details</span>
-            </div>
-
             <div class="field-block">
-              <label class="field-label">Shipping<span class="req">*</span></label>
-              <v-radio-group v-model="form.shippingType" color="#0B4F6C" hide-details class="mt-1">
-                <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
-                <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
-              </v-radio-group>
-            </div>
-
-            <div class="field-block">
-              <label class="field-label">Estimated shipping cost</label>
-              <v-textarea
-                v-model="form.shippingCost"
-                placeholder="e.g. United States: $7, Australia: $30, etc."
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                rows="2"
-                auto-grow
-                persistent-placeholder
-              ></v-textarea>
-            </div>
-
-            <div class="field-block field-block-last">
-              <label class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
+              <label class="field-label">The country you are shipping from?<span class="req">*</span></label>
+              <small class="field-note">This will be used to display your country shipping location on your auction item(s).</small>
               <v-text-field
-                v-model="form.winnerPaymentMethod"
-                placeholder="e.g. PayPal, Venmo, Ko-fi"
+                v-model="form.location"
+                placeholder="e.g. Canada"
                 variant="outlined"
                 density="compact"
                 color="#0B4F6C"
                 rounded="lg"
                 persistent-placeholder
+                required
               ></v-text-field>
             </div>
 
             <v-divider class="section-divider"></v-divider>
+
+            
 
             <!-- SECTION: Country Shipping Locations -->
             <div class="section-heading">
