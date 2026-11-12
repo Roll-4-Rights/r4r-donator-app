@@ -394,6 +394,50 @@
             </div>
           </div>
 
+          <div class="section-heading">
+            <v-icon icon="mdi-truck-outline" size="20"></v-icon>
+            <span>Shipping Details</span>
+          </div>
+
+          <div class="field-block">
+            <label class="field-label">Shipping<span class="req">*</span></label>
+            <v-radio-group v-model="editForm.shippingType" color="#0B4F6C" hide-details class="mt-1">
+              <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
+              <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
+              <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
+            </v-radio-group>
+          </div>
+
+          <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
+            <label class="field-label">Estimated shipping cost</label>
+            <v-textarea
+              v-model="editForm.estimatedShippingCost"
+              :disabled="isEditNoShipping"
+              placeholder="e.g. United States: $7, Australia: $30, etc."
+              variant="outlined"
+              density="compact"
+              color="#0B4F6C"
+              rounded="lg"
+              rows="2"
+              auto-grow
+              persistent-placeholder
+            ></v-textarea>
+          </div>
+
+          <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
+            <label class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
+            <v-text-field
+              v-model="editForm.winnerPaymentMethod"
+              :disabled="isEditNoShipping"
+              placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
+              variant="outlined"
+              density="compact"
+              color="#0B4F6C"
+              rounded="lg"
+              persistent-placeholder
+            ></v-text-field>
+          </div>
+
           <!-- PHOTO MANAGEMENT: existing + newly added photos -->
           <label class="field-label">Photos</label>
           <div class="edit-photo-grid mb-3">
@@ -757,8 +801,8 @@ const form = ref({
   winnerPaymentMethod: ''
 })
 
-// True when the donator picked the no-shipping option; used to grey out the shipping fields.
-const isNoShipping = computed(() => form.value.shippingType === 'Other/Emailed (no shipping cost)')
+// True when the donator picked the no-shipping option in the edit dialog.
+const isEditNoShipping = computed(() => editForm.value.shippingType === 'Other/Emailed (no shipping cost)')
 
 // Local records array downloaded from NocoDB
 const userDonations = ref([])
@@ -779,7 +823,10 @@ const editForm = ref({
   description: '',
   category: null,
   recPrice: null,
-  startPrice: null
+  startPrice: null,
+  shippingType: '',
+  estimatedShippingCost: '',
+  winnerPaymentMethod: ''
 })
 
 // Edit Modal Photo States
@@ -891,8 +938,17 @@ const submitForm = async () => {
 
     // 3. Clear local states on success
     showNotificationToast.value = true
-    form.value = { name: '', donatorName: '', description: '', category: null, recPrice: null, startPrice: null }
-    selectedPhotos.value = []
+    form.value = {
+      name: '',
+      donatorName: '',
+      description: '',
+      category: null,
+      recPrice: null,
+      startPrice: null,
+      shippingType: '',
+      shippingCost: '',
+      winnerPaymentMethod: ''
+    }
 
     await loadDashboardData()
   } catch (error) {
@@ -912,7 +968,10 @@ const openEditModal = (item) => {
     description: item['Item Description'] || '',
     category: item['Category'] || null,
     recPrice: item['Recommended Price'] ?? null,
-    startPrice: item['Starting Bid Price'] ?? null
+    startPrice: item['Starting Bid Price'] ?? null,
+    shippingType: item['Shipping Type'] || '',
+    estimatedShippingCost: item['Estimated Shipping Cost'] || '',
+    winnerPaymentMethod: item['Winner Payment Method'] || ''
   }
   existingPhotos.value = Array.isArray(item['Photos']) ? [...item['Photos']] : []
   newEditPhotos.value = []
@@ -941,6 +1000,9 @@ const saveEditInfo = async () => {
       "Category": editForm.value.category,
       "Recommended Price": Number(editForm.value.recPrice) || 0,
       "Starting Bid Price": Number(editForm.value.startPrice) || 0,
+      "Shipping Type": editForm.value.shippingType,
+      "Estimated Shipping Cost": editForm.value.estimatedShippingCost,
+      "Winner Payment Method": editForm.value.winnerPaymentMethod,
       "Photos": finalPhotos
     })
     closeEditModal()

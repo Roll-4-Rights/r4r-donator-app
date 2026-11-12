@@ -4,7 +4,7 @@
     <!-- PAGE HEADER — lives outside the card/form, always visible -->
     <div class="page-header mb-6">
       <h1 class="page-title">Submit Contributor Information</h1>
-      <p class="page-sub">Tell us about yourself and your shipping preferences so bidders know what to expect.</p>
+      <p class="page-sub">Tell us about yourself and your shipping location so bidders know what to expect.</p>
     </div>
 
     <div class="mx-auto" style="max-width: 900px;">
@@ -275,9 +275,6 @@ const form = ref({
   waresDescription: '',
   location: '',
   website: '',
-  shippingType: 'Donator pays shipping',
-  shippingCost: '',
-  winnerPaymentMethod: '',
   shippingCountries: [] as string[]
 })
 
@@ -297,9 +294,6 @@ const handleSubmitDonatorInfo = async () => {
       "Wares Description": form.value.waresDescription,
       "Location": form.value.location,
       "Website": form.value.website,
-      "Shipping Type": form.value.shippingType,
-      "Estimated Shipping Cost": form.value.shippingCost,
-      "Winner Payment Method": form.value.winnerPaymentMethod,
       "Shipping Countries": form.value.shippingCountries.join(','),
       "Submitted At": new Date().toISOString()
     })
@@ -429,9 +423,6 @@ onMounted(async () => {
       form.value.waresDescription = profile['Wares Description'] || ''
       form.value.location = profile['Location'] || ''
       form.value.website = profile['Website'] || ''
-      form.value.shippingType = profile['Shipping Type'] || 'Donator pays shipping'
-      form.value.shippingCost = profile['Estimated Shipping Cost'] || ''
-      form.value.winnerPaymentMethod = profile['Winner Payment Method'] || ''
       form.value.shippingCountries = parseCountriesField(profile['Shipping Countries'])
       showForm.value = false // they've already submitted before — show the confirmation screen, not the form
     }
