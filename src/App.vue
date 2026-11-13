@@ -200,7 +200,7 @@ function closeDrawerOnMobile() {
 // sets user display names to profile settings or default mail addresses
 // assigns the default visitor role profile inside the active room records
 const isForumRoute = computed(() => route.path.startsWith('/forum'))
-const isAuthPage = computed(() => route.path === '/login' || route.path === '/register')
+const isAuthPage = computed(() => Boolean(route.meta.public)) // checks if the current route is marked as public (login/register)
 
 onMounted(() => {
   if (authState.isLoggedIn) {
