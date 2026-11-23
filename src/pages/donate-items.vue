@@ -404,7 +404,7 @@
           </div>
 
           <div class="section-heading">
-            <v-icon icon="mdi-truck-outline" size="20"></v-icon>
+            <!-- <v-icon icon="mdi-truck-outline" size="20"></v-icon> -->
             <span>Shipping Details</span>
           </div>
 
