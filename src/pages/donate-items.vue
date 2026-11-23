@@ -209,7 +209,7 @@
               <tr v-else-if="filteredDonations.length === 0">
                 <td colspan="8" class="text-center py-8 empty-text">No donations submitted yet.</td>
               </tr>
-              <tr v-else v-for="item in filteredDonations" :key="item.Id">
+              <tr v-else v-for="item in pagedDonations" :key="item.Id">
                 <td class="col-thumb">
                   <img v-if="firstItemPhotoUrl(item)" :src="firstItemPhotoUrl(item)" class="item-thumb" alt="">
                   <div v-else class="item-thumb item-thumb-placeholder">
@@ -244,6 +244,15 @@
               </tr>
             </tbody>
           </table>
+          </div>
+          <div v-if="totalPages > 1" class="d-flex justify-center mt-4">
+            <v-pagination
+              v-model="page"
+              :length="totalPages"
+              :total-visible="5"
+              color="#0A3C46"
+              density="comfortable"
+            ></v-pagination>
           </div>
         </v-card>
       </v-window-item>
@@ -761,12 +770,14 @@
 </style>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { apiService, API_BASE_URL } from '@/services/api' // Unified REST data logic routing manager
 
 // Tab & Navigation Controllers
 const activeTab = ref('submit')
 const search = ref('')
+const page = ref(1)
+const perPage = 25
 const isSubmitting = ref(false)
 const isLoadingTables = ref(false)
 const showNotificationToast = ref(false)
@@ -1128,6 +1139,24 @@ const filteredDonations = computed(() => {
   return userDonations.value.filter(item =>
     item['Item Name']?.toLowerCase().includes(search.value.toLowerCase())
   )
+})
+
+// Pagination logic
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredDonations.value.length / perPage))
+)
+
+const pagedDonations = computed(() => {
+  const start = (page.value - 1) * perPage
+  return filteredDonations.value.slice(start, start + perPage)
+})
+
+// A new search starts back on page 1
+watch(search, () => { page.value = 1 })
+
+// Deleting the last row on the last page must not leave a blank table
+watch(totalPages, (n) => {
+  if (page.value > n) page.value = n
 })
 
 // Automatically sync grid entries when the viewport mounts onto browser tabs
