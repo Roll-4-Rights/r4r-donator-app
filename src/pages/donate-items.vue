@@ -43,7 +43,7 @@
     </div>
 
     <!-- MASTER WORKSPACE TABS NAVIGATION CONTROL BAR -->
-    <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8">
+      <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8" show-arrows>
       <v-tab value="submit">Submit a Donation</v-tab>
       <v-tab value="list">My Donations</v-tab>
       <v-tab value="shipping">Winner and Shipping Info</v-tab>
@@ -590,6 +590,11 @@
   margin-right: 0.5rem;
 }
 .ledger-tabs :deep(.v-tab--selected) { color: var(--ink-deep); }
+
+/* Momentum scrolling for the tab strip on touch devices */
+.ledger-tabs :deep(.v-slide-group__container) {
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Form card */
 .form-card {
