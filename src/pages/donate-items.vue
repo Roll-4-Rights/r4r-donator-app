@@ -138,9 +138,10 @@
                 </div>
 
                 <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
+                  <label for="shipping-cost" class="field-label">Estimated shipping cost</label>
                   <v-textarea
+                    id="shipping-cost"
                     v-model="form.shippingCost"
-                    label="Estimated shipping cost"
                     :disabled="isNoShipping"
                     placeholder="e.g. United States: $7, Australia: $30, etc."
                     variant="outlined"
@@ -154,9 +155,10 @@
                 </div>
 
                 <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
+                  <label for="winner-payment-method" class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
                   <v-text-field
+                    id="winner-payment-method"
                     v-model="form.winnerPaymentMethod"
-                    label="If applicable, how would you like your item winner to pay for shipping?"
                     :disabled="isNoShipping"
                     placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
                     variant="outlined"
@@ -440,9 +442,10 @@
           </div>
 
           <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
+            <label for="edit-shipping-cost" class="field-label">Estimated shipping cost</label>
             <v-textarea
+              id="edit-shipping-cost"
               v-model="editForm.estimatedShippingCost"
-              label="Estimated shipping cost"
               :disabled="isEditNoShipping"
               placeholder="e.g. United States: $7, Australia: $30, etc."
               variant="outlined"
@@ -456,9 +459,10 @@
           </div>
 
           <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
+            <label for="edit-winner-payment-method" class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
             <v-text-field
+              id="edit-winner-payment-method"
               v-model="editForm.winnerPaymentMethod"
-              label="If applicable, how would you like your item winner to pay for shipping?"
               :disabled="isEditNoShipping"
               placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
               variant="outlined"
