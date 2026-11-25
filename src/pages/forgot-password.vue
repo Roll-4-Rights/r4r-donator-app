@@ -12,7 +12,7 @@
     <main class="register-panel">
       <div class="register-card">
         <h1 class="text-h5 mb-2">Forgot Password</h1>
-        <p class="text-body-2 text-grey-darken-1 mb-4">
+        <p class="text-body-2 text-grey-darken-3 mb-4">
           Enter the email address tied to your account and we'll send you a link to reset your password.
         </p>
 

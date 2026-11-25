@@ -163,11 +163,11 @@ const formattedRemaining = computed(() =>
 }
 .milestone-sub {
   font-size: 0.85rem;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(0, 0, 0, 0.65);
   margin-top: 2px;
 }
 .milestone-sub.awake {
-  color: #d9822b;
+  color: #9a5b16;
   font-weight: 600;
 }
 </style>

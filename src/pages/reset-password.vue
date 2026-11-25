@@ -25,7 +25,7 @@
 
         <template v-else>
           <h1 class="text-h5 mb-2">Choose a New Password</h1>
-          <p class="text-body-2 text-grey-darken-1 mb-4">
+          <p class="text-body-2 text-grey-darken-3 mb-4">
             Your new password must be at least 8 characters.
           </p>
 

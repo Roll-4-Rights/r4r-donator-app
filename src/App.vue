@@ -77,7 +77,7 @@
                 {{ authState.name || 'Donator' }}
               </div>
               <!-- displays the login email address associated with the active session profile -->
-              <div class="text-caption text-grey-darken-1 mb-2">
+              <div class="text-caption text-grey-darken-3 mb-2">
                 {{ authState.email }}
               </div>
               <!-- draws a clean gray divider line across the card menu item list -->

@@ -166,11 +166,11 @@
       </div>
 
       <div class="d-flex align-center justify-space-between mx-8 my-2 px-4 py-2 border rounded-xl bg-grey-lighten-5" style="border-color: #EEEEEE !important;">
-        <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="calendarRef.prev()" class="text-grey-darken-2"></v-btn>
+        <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="calendarRef.prev()" class="text-grey-darken-3"></v-btn>
         <span class="text-subtitle-1 font-weight-bold text-grey-darken-3" style="font-family: 'Inter', sans-serif; letter-spacing: -0.01em;">
           {{ currentMonthTitle }}
         </span>
-        <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="calendarRef.next()" class="text-grey-darken-2"></v-btn>
+        <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="calendarRef.next()" class="text-grey-darken-3"></v-btn>
       </div>
 
       <v-card-text class="px-6 pt-4 pb-8 bg-white">
@@ -210,17 +210,17 @@
       <v-card-text class="pt-5 text-body-1">
         <!-- 2. Clean Time Display (Explicitly tracking individual Start and End Days) -->
         <div class="d-flex align-start text-subtitle-2 font-weight-bold text-medium-emphasis mb-5">
-          <v-icon icon="mdi-clock-outline" size="18" class="mr-2 mt-05 text-grey-darken-1"></v-icon>
+          <v-icon icon="mdi-clock-outline" size="18" class="mr-2 mt-05 text-grey-darken-3"></v-icon>
           <div class="d-flex flex-column" style="gap: 6px;">
             <!-- Start Point -->
             <div>
-              <span class="text-grey-darken-1 font-weight-medium">Starts:</span> 
+              <span class="text-grey-darken-3 font-weight-medium">Starts:</span> 
               {{ new Date(selectedEvent.start).toLocaleDateString([], { dateStyle: 'medium' }) }} 
               • {{ new Date(selectedEvent.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
             </div>
             <!-- End Point (Shows the distinct closing day cleanly) -->
             <div>
-              <span class="text-grey-darken-1 font-weight-medium">Ends:</span> 
+              <span class="text-grey-darken-3 font-weight-medium">Ends:</span> 
               {{ new Date(selectedEvent.end).toLocaleDateString([], { dateStyle: 'medium' }) }} 
               • {{ new Date(selectedEvent.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
             </div>
@@ -233,7 +233,7 @@
         </v-chip>
 
         <!-- 3. Details Label & Description Text Box -->
-        <div class="text-subtitle-2 text-grey-darken-2 mb-1 font-weight-bold">Details</div>
+        <div class="text-subtitle-2 text-grey-darken-3 mb-1 font-weight-bold">Details</div>
         <p class="text-high-emphasis font-weight-medium bg-grey-lighten-4 pa-4 rounded-xl border border-faint" style="line-height: 1.5;">
           {{ selectedEvent.description }}
         </p>

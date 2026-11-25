@@ -481,7 +481,7 @@
 .donate-page {
   --ink: #0A3C46;
   --ink-deep: #062830;
-  --ink-soft: rgba(10, 60, 70, 0.62);
+  --ink-soft: rgba(10, 60, 70, 0.80);
   --paper: #F5F7F6;
   --paper-warm: #EFF4F2;
   --brass: #A9824C;
@@ -630,7 +630,7 @@
 }
 /* Kept visible but inert when the no-shipping option is selected */
 .field-block-disabled .field-label {
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(0, 0, 0, 0.65);
 }
 .field-label {
   display: block;
@@ -757,7 +757,7 @@
 .listing-muted { color: var(--ink-soft); font-size: 0.8rem; font-style: italic; }
 
 .chip-accepted { background: rgba(46, 125, 50, 0.12) !important; color: #2e7d32 !important; font-weight: 700; }
-.chip-pending { background: rgba(196, 130, 40, 0.12) !important; color: var(--brass) !important; font-weight: 700; }
+.chip-pending { background: rgba(196, 130, 40, 0.12) !important; color: #8A6536 !important; font-weight: 700; }
 .chip-rejected { background: rgba(198, 40, 40, 0.12) !important; color: #c62828 !important; font-weight: 700; }
 
 /* Dialog */
