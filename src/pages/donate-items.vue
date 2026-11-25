@@ -28,7 +28,7 @@
     <div class="ledger-strip mb-10">
       <div class="ledger-item">
         <div class="ledger-value">{{ stats.submitted }}</div>
-        <div class="ledger-label">Items submitted</div>
+        <div class="ledger-label">Prizes submitted</div>
       </div>
     <div class="ledger-divider"></div>
       <div class="ledger-item">
@@ -38,14 +38,14 @@
       <div class="ledger-divider"></div>
       <div class="ledger-item">
         <div class="ledger-value accent-brass">{{ stats.accepted }}</div>
-        <div class="ledger-label">Items accepted</div>
+        <div class="ledger-label">Prizes accepted</div>
       </div>
     </div>
 
     <!-- MASTER WORKSPACE TABS NAVIGATION CONTROL BAR -->
       <v-tabs v-model="activeTab" color="#0A3C46" align-tabs="start" class="ledger-tabs mb-8" show-arrows>
-      <v-tab value="submit">Submit a Donation</v-tab>
-      <v-tab value="list">My Donations</v-tab>
+      <v-tab value="submit">Submit a Prize</v-tab>
+      <v-tab value="list">My Contributions</v-tab>
       <v-tab value="shipping">Winner and Shipping Info</v-tab>
     </v-tabs>
 
@@ -57,21 +57,21 @@
         <v-row justify="center">
           <v-col cols="12" md="8" lg="6">
             <v-card class="form-card pa-8" variant="flat">
-              <h2 class="form-title mb-6">Item details</h2>
+              <h2 class="form-title mb-6">Prize Details</h2>
 
               <v-fade-transition>
                 <v-alert v-if="showNotificationToast" type="success" variant="tonal" closable class="mb-6" @click:close="showNotificationToast = false">
-                  Your donation was submitted successfully.
+                  Your prize was submitted successfully.
                 </v-alert>
               </v-fade-transition>
 
               <v-form @submit.prevent="submitForm">
 
-                <v-text-field v-model="form.name" label="Item name *" placeholder="The name of your item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.name" label="Prize name *" placeholder="The name of your contribution" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-                <v-text-field v-model="form.donatorName" label="Donator name *" placeholder="The name or creator handle of the one donating the item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.donatorName" label="Donator name *" placeholder="The name or handle of the one contributing the prize" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-                <v-textarea v-model="form.description" label="Item description *" placeholder="This will be in the item description on the auction page" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
+                <v-textarea v-model="form.description" label="Prize description *" placeholder="This will be in the  description on the auction page" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
 
                 <v-select v-model="form.category" :items="categoryOptions" label="Category *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
 
@@ -127,7 +127,6 @@
                 <div class="field-block">
                   <v-radio-group
                     v-model="form.shippingType"
-                    label="Shipping *"
                     color="#0B4F6C"
                     hide-details
                     class="mt-1"
@@ -138,32 +137,34 @@
                   </v-radio-group>
                 </div>
 
-                <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
-                  <v-textarea
-                    v-model="form.shippingCost"
-                    label="Estimated shipping cost"
-                    :disabled="isNoShipping"
-                    placeholder="e.g. United States: $7, Australia: $30, etc."
-                    variant="outlined"
-                    density="comfortable"
-                    color="#0B4F6C"
-                    rounded="lg"
-                    rows="2"
-                    auto-grow
-                  ></v-textarea>
-                </div>
+                <div v-if="isWinnerPayingShipping" class="winner-shipping-fields">
+                  <div class="field-block">
+                    <v-textarea
+                      v-model="form.shippingCost"
+                      label="Estimated shipping cost"
+                      placeholder="e.g. United States: $7, Australia: $30, etc."
+                      variant="outlined"
+                      density="comfortable"
+                      color="#0B4F6C"
+                      rounded="lg"
+                      rows="2"
+                      auto-grow
+                      class="shipping-field"
+                    ></v-textarea>
+                  </div>
 
-                <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
-                  <v-text-field
-                    v-model="form.winnerPaymentMethod"
-                    label="If applicable, how would you like your item winner to pay for shipping?"
-                    :disabled="isNoShipping"
-                    placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
-                    variant="outlined"
-                    density="comfortable"
-                    color="#0B4F6C"
-                    rounded="lg"
-                  ></v-text-field>
+                  <div class="field-block">
+                    <v-text-field
+                      v-model="form.winnerPaymentMethod"
+                      label="If applicable, how would you like your item winner to pay for shipping?"
+                      placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
+                      variant="outlined"
+                      density="comfortable"
+                      color="#0B4F6C"
+                      rounded="lg"
+                      class="shipping-field"
+                    ></v-text-field>
+                  </div>
                 </div>
 
                 <v-divider class="section-divider"></v-divider>
@@ -419,8 +420,6 @@
             </div>
           </div>
 
-          <v-divider class="section-divider"></v-divider>
-
           <div class="section-heading">
             <!-- <v-icon icon="mdi-truck-outline" size="20"></v-icon> -->
             <span>Shipping Details</span>
@@ -429,7 +428,6 @@
           <div class="field-block">
             <v-radio-group
               v-model="editForm.shippingType"
-              label="Shipping *"
               color="#0B4F6C"
               hide-details
               class="mt-1"
@@ -440,32 +438,34 @@
             </v-radio-group>
           </div>
 
-          <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
-            <v-textarea
-              v-model="editForm.estimatedShippingCost"
-              label="Estimated shipping cost"
-              :disabled="isEditNoShipping"
-              placeholder="e.g. United States: $7, Australia: $30, etc."
-              variant="outlined"
-              density="comfortable"
-              color="#0B4F6C"
-              rounded="lg"
-              rows="2"
-              auto-grow
-            ></v-textarea>
-          </div>
+          <div v-if="isEditWinnerPayingShipping" class="winner-shipping-fields">
+            <div class="field-block">
+              <v-textarea
+                v-model="editForm.estimatedShippingCost"
+                label="Estimated shipping cost"
+                placeholder="e.g. United States: $7, Australia: $30, etc."
+                variant="outlined"
+                density="comfortable"
+                color="#0B4F6C"
+                rounded="lg"
+                rows="2"
+                auto-grow
+                class="shipping-field"
+              ></v-textarea>
+            </div>
 
-          <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
-            <v-text-field
-              v-model="editForm.winnerPaymentMethod"
-              label="If applicable, how would you like your item winner to pay for shipping?"
-              :disabled="isEditNoShipping"
-              placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
-              variant="outlined"
-              density="comfortable"
-              color="#0B4F6C"
-              rounded="lg"
-            ></v-text-field>
+            <div class="field-block">
+              <v-text-field
+                v-model="editForm.winnerPaymentMethod"
+                label="If applicable, how would you like your item winner to pay for shipping?"
+                placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
+                variant="outlined"
+                density="comfortable"
+                color="#0B4F6C"
+                rounded="lg"
+                class="shipping-field"
+              ></v-text-field>
+            </div>
           </div>
 
           <!-- PHOTO MANAGEMENT: existing + newly added photos -->
@@ -649,6 +649,18 @@
 .field-block-last {
   margin-bottom: 0;
 }
+/* Winner-pays fields are tucked under the selected radio option. */
+.winner-shipping-fields {
+  padding-left: 32px;
+  margin-top: 8px;
+}
+
+/* Keep Vuetify's floating field labels black while the outline stays blue. */
+.shipping-field :deep(.v-label.v-field-label) {
+  color: #000000;
+  opacity: 1;
+}
+
 /* Kept visible but inert when the no-shipping option is selected */
 .field-block-disabled .field-label {
   color: rgba(0, 0, 0, 0.65);
@@ -843,8 +855,11 @@ const form = ref({
   winnerPaymentMethod: ''
 })
 
-// True when the donator picked the no-shipping option in the edit dialog.
-const isEditNoShipping = computed(() => editForm.value.shippingType === 'Other/Emailed (no shipping cost)')
+// The extra shipping fields only apply when the winner is paying.
+const isWinnerPayingShipping = computed(() => form.value.shippingType === 'Winner pays shipping')
+
+// Same rule for the edit dialog.
+const isEditWinnerPayingShipping = computed(() => editForm.value.shippingType === 'Winner pays shipping')
 
 // Local records array downloaded from NocoDB
 const userDonations = ref([])
@@ -869,6 +884,21 @@ const editForm = ref({
   shippingType: '',
   estimatedShippingCost: '',
   winnerPaymentMethod: ''
+})
+
+// Clear hidden shipping details so stale values are never submitted or saved.
+watch(isWinnerPayingShipping, (winnerPays) => {
+  if (!winnerPays) {
+    form.value.shippingCost = ''
+    form.value.winnerPaymentMethod = ''
+  }
+})
+
+watch(isEditWinnerPayingShipping, (winnerPays) => {
+  if (!winnerPays) {
+    editForm.value.estimatedShippingCost = ''
+    editForm.value.winnerPaymentMethod = ''
+  }
 })
 
 // Edit Modal Photo States
