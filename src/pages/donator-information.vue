@@ -70,9 +70,9 @@
             </div>
 
             <div class="field-block">
-              <label class="field-label">Social media name<span class="req">*</span></label>
               <v-text-field
                 v-model="form.socialName"
+                label="Social media name *"
                 placeholder="e.g. @yourinstagramhandle"
                 variant="outlined"
                 density="compact"
@@ -84,9 +84,9 @@
             </div>
 
             <div class="field-block">
-              <label class="field-label">Description of yourself and your wares<span class="req">*</span></label>
               <v-textarea
                 v-model="form.waresDescription"
+                label="Description of yourself and your wares *"
                 placeholder="e.g. I create artisan polyhedral dice and other tabletop gaming accessories."
                 variant="outlined"
                 density="compact"
@@ -100,10 +100,10 @@
             </div>
 
             <div class="field-block field-block-last">
-              <label class="field-label">Website URL<span class="req">*</span></label>
               <small class="field-note">or social media link if you don't have a website/store</small>
               <v-text-field
                 v-model="form.website"
+                label="Website URL *"
                 placeholder="e.g. https://yourshop.com"
                 variant="outlined"
                 density="compact"
@@ -115,10 +115,10 @@
             </div>
 
             <div class="field-block">
-              <label class="field-label">The country you are shipping from?<span class="req">*</span></label>
               <small class="field-note">This will be used to display your country shipping location on your auction item(s).</small>
               <v-text-field
                 v-model="form.location"
+                label="The country you are shipping from? *"
                 placeholder="e.g. Canada"
                 variant="outlined"
                 density="compact"
@@ -195,7 +195,7 @@
               <div class="country-search-wrap">
                 <v-text-field
                   v-model="countrySearch"
-                  placeholder="Search countries..."
+                  label="Search countries"
                   variant="solo"
                   flat
                   density="compact"
