@@ -23,7 +23,7 @@
       <!-- HEADER BLOCK SECTION -->
       <div class="mb-8">
         <h2 class="text-h5 font-weight-black text-grey-darken-4 mb-1">Account Settings</h2>
-        <p class="text-body-2 text-grey-darken-1 mb-0">Manage your user profile configuration settings.</p>
+        <p class="text-body-2 text-grey-darken-3 mb-0">Manage your user profile configuration settings.</p>
       </div>
 
       <!-- SECTION 1: AVATAR DISPLAY + UPLOAD -->

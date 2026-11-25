@@ -18,16 +18,24 @@ export default createVuetify({
     themes: {
       myCustomTheme: {
         dark: false,
+
+        // Theme-wide text emphasis variables
+        variables: {
+          'high-emphasis-opacity': 1,
+          'medium-emphasis-opacity': 0.75,
+          'disabled-opacity': 0.55,
+        },
+
         colors: {
           // Off-white/gray for the master app background wrapper
-          background: '#1d1717', 
-          
+          background: '#1d1717',
+
           // Crisp clean white for your main layout boxes
-          surface: '#ffffff',    
-          
+          surface: '#ffffff',
+
           // Dark teal blue for the sidebar/navbar items
-          primary: '#103948',   
-          secondary: '#103948'
+          primary: '#103948',
+          secondary: '#103948',
         },
       },
     },

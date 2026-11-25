@@ -50,10 +50,11 @@
             variant="tonal"
             density="comfortable"
             rounded="lg"
-            class="mb-8 text-body-2 font-weight-medium"
+            class="mb-8 text-body-2 font-weight-medium submit-once-alert"
             icon="mdi-alert-circle-outline"
           >
-            Please submit this form only once! You will be able to make edits to your contributor profile afterward if needed.
+            <strong>Important — please submit this form only once.</strong>
+            You can edit your contributor profile afterward if needed.
           </v-alert>
 
           <v-alert v-if="submitError" type="error" variant="tonal" class="mb-6" closable @click:close="submitError = ''">
@@ -472,6 +473,34 @@ onMounted(async () => {
   margin: 0;
 }
 
+/* Submit-once warning: keep the warm alert, darken only the readable text. */
+.submit-once-alert {
+  color: #6D3F00;
+}
+
+/* Tonal alerts use currentColor for the wash, so pin it back to orange. */
+.submit-once-alert :deep(.v-alert__underlay) {
+  background-color: #FB8C00 !important;
+}
+
+.submit-once-alert :deep(.v-alert__prepend > .v-icon) {
+  color: #A05F00;
+}
+
+/* Country info: keep the blue info wash, darken only the readable text. */
+.country-info-alert {
+  color: #0D47A1;
+}
+
+/* Tonal alerts use currentColor for the wash, so pin it back to blue. */
+.country-info-alert :deep(.v-alert__underlay) {
+  background-color: #2196F3 !important;
+}
+
+.country-info-alert :deep(.v-alert__prepend > .v-icon) {
+  color: #1565C0;
+}
+
 /* Section group headings inside the form */
 .section-heading {
   display: flex;
@@ -509,7 +538,7 @@ onMounted(async () => {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.65);
   margin-bottom: 8px;
 }
 .field-label .req {
@@ -520,14 +549,14 @@ onMounted(async () => {
 .field-note {
   display: block;
   font-size: 0.85rem;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(0, 0, 0, 0.65);
   margin-bottom: 6px;
 }
 
 .preset-label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .preset-btn-row {
@@ -580,7 +609,7 @@ onMounted(async () => {
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.65);
   padding: 6px 4px 4px;
   margin-top: 4px;
 }
