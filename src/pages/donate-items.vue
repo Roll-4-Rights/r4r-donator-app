@@ -84,7 +84,7 @@
                       variant="outlined"
                       density="comfortable"
                       class="mono-input"
-                      hint="This is the price you would usually sell this item at"
+                      hint="This is the price you would usually sell this at"
                       persistent-hint
                     >
                       <template #message="{ message }">
@@ -131,17 +131,21 @@
                     hide-details
                     class="mt-1"
                   >
+                    <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mb-2"></v-radio>
                     <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
-                    <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
-                    <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
+                    <v-radio label="The prize winner will pay for shipping" value="Winner pays shipping"></v-radio>
                   </v-radio-group>
                 </div>
 
                 <div v-if="isWinnerPayingShipping" class="winner-shipping-fields">
                   <div class="field-block">
+                    <label id="shipping-cost-label" for="shipping-cost" class="field-label">
+                      Estimated shipping cost
+                      <span class="field-label-hint">(so the winner can know what to expect)</span>
+                    </label>
                     <v-textarea
+                      id="shipping-cost"
                       v-model="form.shippingCost"
-                      label="Estimated shipping cost"
                       placeholder="e.g. United States: $7, Australia: $30, etc."
                       variant="outlined"
                       density="comfortable"
@@ -149,20 +153,19 @@
                       rounded="lg"
                       rows="2"
                       auto-grow
-                      class="shipping-field"
                     ></v-textarea>
                   </div>
 
                   <div class="field-block">
+                    <label id="winner-payment-method-label" for="winner-payment-method" class="field-label">How would you like your prize winner to pay for shipping?</label>
                     <v-text-field
+                      id="winner-payment-method"
                       v-model="form.winnerPaymentMethod"
-                      label="If applicable, how would you like your item winner to pay for shipping?"
                       placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
                       variant="outlined"
                       density="comfortable"
                       color="#0B4F6C"
                       rounded="lg"
-                      class="shipping-field"
                     ></v-text-field>
                   </div>
                 </div>
@@ -215,7 +218,7 @@
               <tr>
                 <th class="col-thumb"></th>
                 <th class="col-lot">Lot</th>
-                <th>Item</th>
+                <th>Prize</th>
                 <th>Category</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Starting bid</th>
@@ -227,11 +230,11 @@
               <tr v-if="isLoadingTables">
                 <td colspan="8" class="text-center py-8">
                   <v-progress-circular indeterminate size="20" width="2" color="#0A3C46" class="mr-2"></v-progress-circular>
-                  Loading donations…
+                  Loading contributions…
                 </td>
               </tr>
               <tr v-else-if="filteredDonations.length === 0">
-                <td colspan="8" class="text-center py-8 empty-text">No donations submitted yet.</td>
+                <td colspan="8" class="text-center py-8 empty-text">No prizes submitted yet.</td>
               </tr>
               <tr v-else v-for="item in pagedDonations" :key="item.Id">
                 <td class="col-thumb">
@@ -286,14 +289,14 @@
         <v-card variant="flat" class="ledger-card pa-8">
           <div class="mb-6">
             <h2 class="ledger-heading mb-1">Winner and shipping info</h2>
-            <p class="ledger-sub">Add a tracking number once you have shipped an item.</p>
+            <p class="ledger-sub">Add a tracking number once you have shipped a prize.</p>
           </div>
 
           <div class="table-scroll-wrapper">
           <table class="ledger-table">
             <thead>
               <tr>
-                <th>Item</th>
+                <th>Prize</th>
                 <th>Winner information</th>
                 <th>Tracking</th>
                 <th>Shipping status</th>
@@ -401,13 +404,13 @@
     <!-- ITEM EDIT DIALOG -->
     <v-dialog v-model="editDialog" max-width="560px" persistent>
       <v-card class="dialog-card pa-2">
-        <v-card-title class="dialog-title">Edit donation</v-card-title>
+        <v-card-title class="dialog-title">Edit contribution</v-card-title>
         <v-card-text class="pt-2">
-          <v-text-field v-model="editForm.name" label="Item name *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+          <v-text-field v-model="editForm.name" label="Prize name *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
           <v-text-field v-model="editForm.donatorName" label="Donator name *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-          <v-textarea v-model="editForm.description" label="Item description *" variant="outlined" density="comfortable" rows="3" class="mb-5" hide-details></v-textarea>
+          <v-textarea v-model="editForm.description" label="Prize description *" variant="outlined" density="comfortable" rows="3" class="mb-5" hide-details></v-textarea>
 
           <v-select v-model="editForm.category" :items="categoryOptions" label="Category *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
 
@@ -432,17 +435,21 @@
               hide-details
               class="mt-1"
             >
+              <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mb-2"></v-radio>
               <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
-              <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
-              <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
+              <v-radio label="The prize winner will pay for shipping" value="Winner pays shipping"></v-radio>
             </v-radio-group>
           </div>
 
           <div v-if="isEditWinnerPayingShipping" class="winner-shipping-fields">
             <div class="field-block">
+              <label id="edit-shipping-cost-label" for="edit-shipping-cost" class="field-label">
+                Estimated shipping cost
+                <span class="field-label-hint">(so the winner can know what to expect)</span>
+              </label>
               <v-textarea
+                id="edit-shipping-cost"
                 v-model="editForm.estimatedShippingCost"
-                label="Estimated shipping cost"
                 placeholder="e.g. United States: $7, Australia: $30, etc."
                 variant="outlined"
                 density="comfortable"
@@ -450,20 +457,19 @@
                 rounded="lg"
                 rows="2"
                 auto-grow
-                class="shipping-field"
               ></v-textarea>
             </div>
 
             <div class="field-block">
+              <label id="edit-winner-payment-method-label" for="edit-winner-payment-method" class="field-label">How would you like your prize winner to pay for shipping?</label>
               <v-text-field
+                id="edit-winner-payment-method"
                 v-model="editForm.winnerPaymentMethod"
-                label="If applicable, how would you like your item winner to pay for shipping?"
                 placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
                 variant="outlined"
                 density="comfortable"
                 color="#0B4F6C"
                 rounded="lg"
-                class="shipping-field"
               ></v-text-field>
             </div>
           </div>
@@ -649,16 +655,24 @@
 .field-block-last {
   margin-bottom: 0;
 }
-/* Winner-pays fields are tucked under the selected radio option. */
+/* Winner-pays fields sit directly under the winner-pays radio option. */
 .winner-shipping-fields {
   padding-left: 32px;
   margin-top: 8px;
 }
+.winner-shipping-fields .field-block:last-child {
+  margin-bottom: 0;
+}
 
-/* Keep Vuetify's floating field labels black while the outline stays blue. */
-.shipping-field :deep(.v-label.v-field-label) {
-  color: #000000;
-  opacity: 1;
+/* Plain-language hint under an above-field label. */
+.field-label-hint {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.78);
 }
 
 /* Kept visible but inert when the no-shipping option is selected */
