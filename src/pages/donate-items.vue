@@ -77,18 +77,42 @@
 
                 <div class="price-row mb-6">
                   <div class="price-field">
-                    <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
-                    <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
-                    This is the price you would usually sell this item at
-                  </p>
-                    <v-text-field v-model="form.recPrice" label="Recommended price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field
+                      v-model="form.recPrice"
+                      label="Recommended price *"
+                      prefix="$"
+                      variant="outlined"
+                      density="comfortable"
+                      class="mono-input"
+                      hint="This is the price you would usually sell this item at"
+                      persistent-hint
+                    >
+                      <template #message="{ message }">
+                        <p class="price-hint mb-0">
+                          <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
+                          {{ message }}
+                        </p>
+                      </template>
+                    </v-text-field>
                   </div>
                   <div class="price-field">
-                    <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
-                    <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
-                    This is the price you would like the bids to start at
-                  </p>
-                    <v-text-field v-model="form.startPrice" label="Starting bid price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field
+                      v-model="form.startPrice"
+                      label="Starting bid price *"
+                      prefix="$"
+                      variant="outlined"
+                      density="comfortable"
+                      class="mono-input"
+                      hint="This is the price you would like the bids to start at"
+                      persistent-hint
+                    >
+                      <template #message="{ message }">
+                        <p class="price-hint mb-0">
+                          <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
+                          {{ message }}
+                        </p>
+                      </template>
+                    </v-text-field>
                   </div>
                 </div>
 
@@ -120,7 +144,7 @@
                     :disabled="isNoShipping"
                     placeholder="e.g. United States: $7, Australia: $30, etc."
                     variant="outlined"
-                    density="compact"
+                    density="comfortable"
                     color="#0B4F6C"
                     rounded="lg"
                     rows="2"
@@ -136,7 +160,7 @@
                     :disabled="isNoShipping"
                     placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
                     variant="outlined"
-                    density="compact"
+                    density="comfortable"
                     color="#0B4F6C"
                     rounded="lg"
                     persistent-placeholder
@@ -422,7 +446,7 @@
               :disabled="isEditNoShipping"
               placeholder="e.g. United States: $7, Australia: $30, etc."
               variant="outlined"
-              density="compact"
+              density="comfortable"
               color="#0B4F6C"
               rounded="lg"
               rows="2"
@@ -438,7 +462,7 @@
               :disabled="isEditNoShipping"
               placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
               variant="outlined"
-              density="compact"
+              density="comfortable"
               color="#0B4F6C"
               rounded="lg"
               persistent-placeholder
@@ -604,7 +628,7 @@
 .form-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--ink-deep);
+  color: #0B4F6C;
 }
 /* Section headings + field spacing for the Shipping Details block */
 .section-heading {
@@ -648,6 +672,11 @@
   gap: 1rem;
 }
 .price-field { flex: 1; }
+.price-hint {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #8A5A00;
+}
 .mono-input :deep(input) {
   font-family: 'Roboto Mono', monospace;
   font-weight: 700;
