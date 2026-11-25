@@ -66,34 +66,29 @@
               </v-fade-transition>
 
               <v-form @submit.prevent="submitForm">
-                <label class="field-label">Item name *</label>
-                <v-text-field v-model="form.name" placeholder="The name of your item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-                <label class="field-label">Donator name *</label>
-                <v-text-field v-model="form.donatorName" placeholder="The name or creator handle of the one donating the item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+                <v-text-field v-model="form.name" label="Item name *" placeholder="The name of your item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-                <label class="field-label">Item description *</label>
-                <v-textarea v-model="form.description" placeholder="This will be in the item description on the auction page" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
+                <v-text-field v-model="form.donatorName" label="Donator name *" placeholder="The name or creator handle of the one donating the item" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-                <label class="field-label">Category *</label>
-                <v-select v-model="form.category" :items="categoryOptions" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
+                <v-textarea v-model="form.description" label="Item description *" placeholder="This will be in the item description on the auction page" variant="outlined" density="comfortable" rows="4" class="mb-5" hide-details></v-textarea>
+
+                <v-select v-model="form.category" :items="categoryOptions" label="Category *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
 
                 <div class="price-row mb-6">
                   <div class="price-field">
-                    <label class="field-label">Recommended price *</label> 
                     <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
                     <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
                     This is the price you would usually sell this item at
                   </p>
-                    <v-text-field v-model="form.recPrice"  prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field v-model="form.recPrice" label="Recommended price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                   <div class="price-field">
-                    <label class="field-label">Starting bid price *</label> 
                     <p class="text-subtitle-2 font-weight-bold text-amber-darken-3">
                     <v-icon icon="mdi-alert-circle-outline" size="16" class="mr-1"></v-icon>
                     This is the price you would like the bids to start at
                   </p>
-                    <v-text-field v-model="form.startPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+                    <v-text-field v-model="form.startPrice" label="Starting bid price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
                   </div>
                 </div>
 
@@ -105,8 +100,13 @@
                 </div>
 
                 <div class="field-block">
-                  <label class="field-label">Shipping<span class="req">*</span></label>
-                  <v-radio-group v-model="form.shippingType" color="#0B4F6C" hide-details class="mt-1">
+                  <v-radio-group
+                    v-model="form.shippingType"
+                    label="Shipping *"
+                    color="#0B4F6C"
+                    hide-details
+                    class="mt-1"
+                  >
                     <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
                     <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
                     <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
@@ -114,9 +114,9 @@
                 </div>
 
                 <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
-                  <label class="field-label">Estimated shipping cost</label>
                   <v-textarea
                     v-model="form.shippingCost"
+                    label="Estimated shipping cost"
                     :disabled="isNoShipping"
                     placeholder="e.g. United States: $7, Australia: $30, etc."
                     variant="outlined"
@@ -130,9 +130,9 @@
                 </div>
 
                 <div class="field-block" :class="{ 'field-block-disabled': isNoShipping }">
-                  <label class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
                   <v-text-field
                     v-model="form.winnerPaymentMethod"
+                    label="If applicable, how would you like your item winner to pay for shipping?"
                     :disabled="isNoShipping"
                     placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
                     variant="outlined"
@@ -146,7 +146,7 @@
                 <v-divider class="section-divider"></v-divider>
 
                 <!-- PHOTO AND VIDEO UPLOAD — this form's own state, NOT the edit modal's -->
-                <label class="field-label">Photos</label>
+                <h3 class="field-label mt-0">Photos</h3>
                 <div class="edit-photo-grid mb-3">
                   <div v-for="(photo, index) in selectedPhotos" :key="'new-submit-' + index" class="edit-photo-thumb">
                     <img v-if="photo.type && photo.type.startsWith('image/')" :src="photoPreviewUrl(photo)" alt="Selected photo">
@@ -180,7 +180,7 @@
           <div class="d-flex justify-space-between align-center flex-wrap ga-4 mb-6">
             <h2 class="ledger-heading">Your donation submissions</h2>
             <div class="d-flex align-center ga-3" style="width: 100%; max-width: 360px;">
-              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Search donations" variant="outlined" density="compact" hide-details></v-text-field>
+              <v-text-field v-model="search" label="Search donations" prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" hide-details></v-text-field>
               <v-btn icon="mdi-refresh" variant="outlined" color="#0A3C46" density="comfortable" @click="loadDashboardData" :loading="isLoadingTables"></v-btn>
             </div>
           </div>
@@ -312,8 +312,7 @@
         <v-card-title class="dialog-title">Update tracking information</v-card-title>
         <v-card-text class="pt-2">
           <p class="dialog-copy mb-4">Add or update tracking details for <strong>{{ selectedWinner ? selectedWinner['Item Name'] : '' }}</strong>.</p>
-          <label class="field-label">Tracking number</label>
-          <v-text-field v-model="trackingInput" placeholder="Enter tracking number" variant="outlined" density="comfortable" hide-details></v-text-field>
+          <v-text-field v-model="trackingInput" label="Tracking number" placeholder="Enter tracking number" variant="outlined" density="comfortable" hide-details></v-text-field>
         </v-card-text>
         <v-card-actions class="dialog-actions">
           <v-spacer></v-spacer>
@@ -380,26 +379,20 @@
       <v-card class="dialog-card pa-2">
         <v-card-title class="dialog-title">Edit donation</v-card-title>
         <v-card-text class="pt-2">
-          <label class="field-label">Item name *</label>
-          <v-text-field v-model="editForm.name" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+          <v-text-field v-model="editForm.name" label="Item name *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-          <label class="field-label">Donator name *</label>
-          <v-text-field v-model="editForm.donatorName" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
+          <v-text-field v-model="editForm.donatorName" label="Donator name *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-text-field>
 
-          <label class="field-label">Item description *</label>
-          <v-textarea v-model="editForm.description" variant="outlined" density="comfortable" rows="3" class="mb-5" hide-details></v-textarea>
+          <v-textarea v-model="editForm.description" label="Item description *" variant="outlined" density="comfortable" rows="3" class="mb-5" hide-details></v-textarea>
 
-          <label class="field-label">Category *</label>
-          <v-select v-model="editForm.category" :items="categoryOptions" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
+          <v-select v-model="editForm.category" :items="categoryOptions" label="Category *" variant="outlined" density="comfortable" class="mb-5" hide-details></v-select>
 
           <div class="price-row">
             <div class="price-field">
-              <label class="field-label">Recommended price *</label>
-              <v-text-field v-model="editForm.recPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+              <v-text-field v-model="editForm.recPrice" label="Recommended price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
             </div>
             <div class="price-field">
-              <label class="field-label">Starting bid price *</label>
-              <v-text-field v-model="editForm.startPrice" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
+              <v-text-field v-model="editForm.startPrice" label="Starting bid price *" prefix="$" variant="outlined" density="comfortable" class="mono-input" hide-details></v-text-field>
             </div>
           </div>
 
@@ -409,8 +402,13 @@
           </div>
 
           <div class="field-block">
-            <label class="field-label">Shipping<span class="req">*</span></label>
-            <v-radio-group v-model="editForm.shippingType" color="#0B4F6C" hide-details class="mt-1">
+            <v-radio-group
+              v-model="editForm.shippingType"
+              label="Shipping *"
+              color="#0B4F6C"
+              hide-details
+              class="mt-1"
+            >
               <v-radio label="I will pay for shipping" value="Donator pays shipping" class="mb-2"></v-radio>
               <v-radio label="The item winner will pay for shipping" value="Winner pays shipping"></v-radio>
               <v-radio label="Other/Emailed (no shipping cost)" value="Other/Emailed (no shipping cost)" class="mt-2"></v-radio>
@@ -418,9 +416,9 @@
           </div>
 
           <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
-            <label class="field-label">Estimated shipping cost</label>
             <v-textarea
               v-model="editForm.estimatedShippingCost"
+              label="Estimated shipping cost"
               :disabled="isEditNoShipping"
               placeholder="e.g. United States: $7, Australia: $30, etc."
               variant="outlined"
@@ -434,9 +432,9 @@
           </div>
 
           <div class="field-block" :class="{ 'field-block-disabled': isEditNoShipping }">
-            <label class="field-label">If applicable, how would you like your item winner to pay for shipping?</label>
             <v-text-field
               v-model="editForm.winnerPaymentMethod"
+              label="If applicable, how would you like your item winner to pay for shipping?"
               :disabled="isEditNoShipping"
               placeholder="e.g. PayPal, Venmo, Ko-fi Link, etc."
               variant="outlined"
@@ -448,7 +446,7 @@
           </div>
 
           <!-- PHOTO MANAGEMENT: existing + newly added photos -->
-          <label class="field-label">Photos</label>
+          <h3 class="field-label mt-0">Photos</h3>
           <div class="edit-photo-grid mb-3">
             <div v-for="(photo, index) in existingPhotos" :key="'existing-' + index" class="edit-photo-thumb">
               <img v-if="!(photo.mimetype && photo.mimetype.startsWith('video/'))" :src="resolveAttachmentUrl(photo)" :alt="photo.title || 'Photo'">
