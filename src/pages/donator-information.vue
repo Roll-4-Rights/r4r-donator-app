@@ -51,7 +51,7 @@
             class="mb-8 text-body-2 font-weight-medium submit-once-alert"
             icon="mdi-alert-circle-outline"
           >
-            <strong>Important — please submit this form only once.</strong>
+            <strong>Important: please submit this form only once.</strong>
             You can edit your contributor profile afterward if needed.
           </v-alert>
 
@@ -294,6 +294,7 @@ const handleSubmitDonatorInfo = async () => {
       "Location": form.value.location,
       "Website": form.value.website,
       "Shipping Countries": form.value.shippingCountries.join(','),
+      "Shipping Countries (Grid)": formatCountriesForGrid(form.value.shippingCountries),
       "Submitted At": new Date().toISOString()
     })
     showForm.value = false // swap to the confirmation screen, fully replacing the form
@@ -383,6 +384,24 @@ const euNations = [
 ]
 
 const countriesList = computed(() => [...countries].sort((a, b) => a.localeCompare(b)))
+
+// Builds a Markdown pipe table for the NocoDB display field: three alphabetized
+// columns, with ✅ for selected countries and ☐ for the rest. The original
+// "Shipping Countries" field still carries the plain comma-separated values.
+const formatCountriesForGrid = (selected: string[]): string => {
+  const selectedSet = new Set(selected)
+  const cells = countriesList.value.map(country =>
+    `${selectedSet.has(country) ? '✅' : '☐'} ${country}`
+  )
+
+  const lines = ['| Country | Country | Country |', '| --- | --- | --- |']
+  for (let i = 0; i < cells.length; i += 3) {
+    const row = cells.slice(i, i + 3)
+    while (row.length < 3) row.push('')
+    lines.push(`| ${row.join(' | ')} |`)
+  }
+  return lines.join('\n')
+}
 
 const filteredCountries = computed(() => {
   const query = countrySearch.value.trim().toLowerCase()
