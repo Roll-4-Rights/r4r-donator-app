@@ -69,64 +69,67 @@
               <span>Basic Information</span>
             </div>
 
-            <div class="field-block">
-              <v-text-field
-                v-model="form.socialName"
-                label="Social media name *"
-                placeholder="e.g. @yourinstagramhandle"
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                persistent-placeholder
-                required
-              ></v-text-field>
-            </div>
+            <div class="basic-info">
+              <div class="field-block">
+                <v-text-field
+                  v-model="form.socialName"
+                  label="Social media name *"
+                  placeholder="e.g. @yourinstagramhandle"
+                  variant="outlined"
+                  density="comfortable"
+                  color="#0B4F6C"
+                  rounded="lg"
+                  required
+                ></v-text-field>
+              </div>
 
-            <div class="field-block">
-              <v-textarea
-                v-model="form.waresDescription"
-                label="Description of yourself and your wares *"
-                placeholder="e.g. I create artisan polyhedral dice and other tabletop gaming accessories."
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                rows="3"
-                auto-grow
-                persistent-placeholder
-                required
-              ></v-textarea>
-            </div>
+              <div class="field-block">
+                <label id="wares-description-label" for="wares-description" class="field-label">
+                  Description of yourself and your wares *
+                </label>
+                <v-textarea
+                  id="wares-description"
+                  v-model="form.waresDescription"
+                  placeholder="e.g. I create artisan polyhedral dice and other tabletop gaming accessories."
+                  variant="outlined"
+                  density="comfortable"
+                  color="#0B4F6C"
+                  rounded="lg"
+                  rows="3"
+                  auto-grow
+                  required
+                ></v-textarea>
+              </div>
 
-            <div class="field-block field-block-last">
-              <small class="field-note">or social media link if you don't have a website/store</small>
-              <v-text-field
-                v-model="form.website"
-                label="Website URL *"
-                placeholder="e.g. https://yourshop.com"
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                persistent-placeholder
-                required
-              ></v-text-field>
-            </div>
+              <div class="field-block">
+                <v-text-field
+                  v-model="form.website"
+                  label="Website URL *"
+                  placeholder="e.g. https://yourshop.com"
+                  variant="outlined"
+                  density="comfortable"
+                  color="#0B4F6C"
+                  rounded="lg"
+                  hint="Or a social media link if you don't have a website/store"
+                  persistent-hint
+                  required
+                ></v-text-field>
+              </div>
 
-            <div class="field-block">
-              <small class="field-note">This will be used to display your country shipping location on your auction item(s).</small>
-              <v-text-field
-                v-model="form.location"
-                label="The country you are shipping from? *"
-                placeholder="e.g. Canada"
-                variant="outlined"
-                density="compact"
-                color="#0B4F6C"
-                rounded="lg"
-                persistent-placeholder
-                required
-              ></v-text-field>
+              <div class="field-block field-block-last">
+                <v-text-field
+                  v-model="form.location"
+                  label="The country you are shipping from? *"
+                  placeholder="e.g. Canada"
+                  variant="outlined"
+                  density="comfortable"
+                  color="#0B4F6C"
+                  rounded="lg"
+                  hint="This will be used to display your country shipping location on your auction item(s)."
+                  persistent-hint
+                  required
+                ></v-text-field>
+              </div>
             </div>
 
             <v-divider class="section-divider"></v-divider>
@@ -551,6 +554,18 @@ onMounted(async () => {
   font-size: 0.85rem;
   color: rgba(0, 0, 0, 0.65);
   margin-bottom: 6px;
+}
+
+/* Basic Information only — Country Shipping Locations is intentionally untouched. */
+.basic-info .field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+.basic-info :deep(.v-messages__message) {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.78);
 }
 
 .preset-label {
