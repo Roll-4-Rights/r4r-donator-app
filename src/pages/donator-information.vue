@@ -385,14 +385,15 @@ const euNations = [
 
 const countriesList = computed(() => [...countries].sort((a, b) => a.localeCompare(b)))
 
-// NocoDB 2026.08's rich text editor has no table support, so a Markdown pipe
-// table gets flattened. An aligned code block renders reliably instead: three
-// columns with A-Z section headers, mirroring the form's country checklist.
+// NocoDB 2026.08's rich text editor has no table support, renders code blocks
+// with a proportional font, and rewrites runs of spaces when a cell is edited.
+// Explicit "|" separators survive all three, so rows stay readable as three
+// columns without depending on padding. "✅" supplies the green checkmark;
+// green text needs richer formatting support in a newer NocoDB.
 // The original "Shipping Countries" field still carries the plain CSV values.
 const formatCountriesForGrid = (selected: string[]): string => {
   const allCountries = countriesList.value
   const selectedSet = new Set(selected)
-  const columnWidth = Math.max(...allCountries.map(country => country.length)) + 4
 
   const groups: Record<string, string[]> = {}
   allCountries.forEach(country => {
@@ -401,15 +402,17 @@ const formatCountriesForGrid = (selected: string[]): string => {
     groups[letter].push(country)
   })
 
-  const lines = ['SHIPPING COUNTRIES', '☑ = selected    ☐ = not selected', '']
+  const lines = ['SHIPPING COUNTRIES', '✅ = selected    ☐ = not selected', '']
   for (const letter of Object.keys(groups).sort()) {
     lines.push(letter)
     const inGroup = groups[letter]
     for (let i = 0; i < inGroup.length; i += 3) {
-      const row = inGroup.slice(i, i + 3).map(country =>
-        `${selectedSet.has(country) ? '☑' : '☐'} ${country}`.padEnd(columnWidth)
+      lines.push(
+        inGroup
+          .slice(i, i + 3)
+          .map(country => `${selectedSet.has(country) ? '✅' : '☐'} ${country}`)
+          .join(' | ')
       )
-      lines.push(row.join('').trimEnd())
     }
     lines.push('')
   }
