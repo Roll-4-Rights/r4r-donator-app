@@ -71,9 +71,10 @@
 
             <div class="basic-info">
               <div class="field-block">
+                <label id="social-name-label" for="social-name" class="field-label">Social media name *</label>
                 <v-text-field
+                  id="social-name"
                   v-model="form.socialName"
-                  label="Social media name *"
                   placeholder="e.g. @yourinstagramhandle"
                   variant="outlined"
                   density="comfortable"
@@ -102,9 +103,10 @@
               </div>
 
               <div class="field-block">
+                <label id="website-label" for="website" class="field-label">Website URL *</label>
                 <v-text-field
+                  id="website"
                   v-model="form.website"
-                  label="Website URL *"
                   placeholder="e.g. https://yourshop.com"
                   variant="outlined"
                   density="comfortable"
@@ -117,9 +119,10 @@
               </div>
 
               <div class="field-block field-block-last">
+                <label id="location-label" for="location" class="field-label">The country you are shipping from? *</label>
                 <v-text-field
+                  id="location"
                   v-model="form.location"
-                  label="The country you are shipping from? *"
                   placeholder="e.g. Canada"
                   variant="outlined"
                   density="comfortable"
@@ -557,6 +560,12 @@ onMounted(async () => {
 }
 
 /* Basic Information only — Country Shipping Locations is intentionally untouched. */
+.basic-info .field-block {
+  margin-bottom: 16px;
+}
+.basic-info .field-block-last {
+  margin-bottom: 0;
+}
 .basic-info .field-label {
   font-size: 0.75rem;
   font-weight: 600;
