@@ -9,16 +9,15 @@
 
     <div class="mx-auto" style="max-width: 900px;">
       <!-- LOADING STATE (checking for existing profile on page load) -->
-      <v-card v-if="isCheckingProfile" class="rounded-2xl border-0 mb-12 pa-8 text-center" elevation="0">
+      <v-card v-if="isCheckingProfile" class="form-card mb-12 pa-8 text-center" elevation="0">
         <v-progress-circular indeterminate color="#0B4F6C"></v-progress-circular>
       </v-card>
 
       <!-- SUBMITTED / CONFIRMATION STATE — fully replaces the form -->
       <v-card
         v-else-if="!showForm"
-        class="rounded-2xl border-0 mb-12 pa-8"
+        class="form-card mb-12 pa-8"
         elevation="0"
-        style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;"
       >
         <v-icon icon="mdi-check-circle" color="green-darken-1" size="40" class="mb-3"></v-icon>
         <h2 class="text-h5 font-weight-black text-black mb-2">Form submitted</h2>
@@ -39,8 +38,7 @@
       <!-- FORM STATE -->
       <v-card
         v-else
-        class="rounded-2xl border-0 mb-12"
-        style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;"
+        class="form-card mb-12"
         elevation="0"
       >
         <v-card-text class="pa-6 pa-md-10">
@@ -71,30 +69,26 @@
 
             <div class="basic-info">
               <div class="field-block">
-                <label id="social-name-label" for="social-name" class="field-label">Social media name *</label>
                 <v-text-field
                   id="social-name"
                   v-model="form.socialName"
+                  label="Social media name *"
                   placeholder="e.g. @yourinstagramhandle"
                   variant="outlined"
                   density="comfortable"
-                  color="#0B4F6C"
                   rounded="lg"
                   required
                 ></v-text-field>
               </div>
 
               <div class="field-block">
-                <label id="wares-description-label" for="wares-description" class="field-label">
-                  Description of yourself and your wares *
-                </label>
                 <v-textarea
                   id="wares-description"
                   v-model="form.waresDescription"
+                  label="Description of yourself and your wares *"
                   placeholder="e.g. I create artisan polyhedral dice and other tabletop gaming accessories."
                   variant="outlined"
                   density="comfortable"
-                  color="#0B4F6C"
                   rounded="lg"
                   rows="3"
                   auto-grow
@@ -103,14 +97,13 @@
               </div>
 
               <div class="field-block">
-                <label id="website-label" for="website" class="field-label">Website URL *</label>
                 <v-text-field
                   id="website"
                   v-model="form.website"
+                  label="Website URL *"
                   placeholder="e.g. https://yourshop.com"
                   variant="outlined"
                   density="comfortable"
-                  color="#0B4F6C"
                   rounded="lg"
                   hint="Or a social media link if you don't have a website/store"
                   persistent-hint
@@ -119,14 +112,13 @@
               </div>
 
               <div class="field-block field-block-last">
-                <label id="location-label" for="location" class="field-label">The country you are shipping from? *</label>
                 <v-text-field
                   id="location"
                   v-model="form.location"
+                  label="The country you are shipping from? *"
                   placeholder="e.g. Canada"
                   variant="outlined"
                   density="comfortable"
-                  color="#0B4F6C"
                   rounded="lg"
                   hint="This will be used to display your country shipping location on your auction item(s)."
                   persistent-hint
@@ -452,6 +444,13 @@ onMounted(async () => {
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
+/* Form card — matches the warm paper surface used on the prize form. */
+.form-card {
+  background: #EFF4F2;
+  border: 1px solid rgba(10, 60, 70, 0.14);
+  border-radius: 18px;
+}
+
 /* Page header — sits outside the card entirely */
 .page-header {
   padding-left: 4px;
@@ -560,18 +559,6 @@ onMounted(async () => {
 }
 
 /* Basic Information only — Country Shipping Locations is intentionally untouched. */
-.basic-info .field-block {
-  margin-bottom: 16px;
-}
-.basic-info .field-block-last {
-  margin-bottom: 0;
-}
-.basic-info .field-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.4rem;
-}
 .basic-info :deep(.v-messages__message) {
   font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.78);
