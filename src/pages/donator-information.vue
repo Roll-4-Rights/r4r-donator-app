@@ -385,22 +385,36 @@ const euNations = [
 
 const countriesList = computed(() => [...countries].sort((a, b) => a.localeCompare(b)))
 
-// Builds a Markdown pipe table for the NocoDB display field: three alphabetized
-// columns, with ✅ for selected countries and ☐ for the rest. The original
-// "Shipping Countries" field still carries the plain comma-separated values.
+// NocoDB 2026.08's rich text editor has no table support, so a Markdown pipe
+// table gets flattened. An aligned code block renders reliably instead: three
+// columns with A-Z section headers, mirroring the form's country checklist.
+// The original "Shipping Countries" field still carries the plain CSV values.
 const formatCountriesForGrid = (selected: string[]): string => {
+  const allCountries = countriesList.value
   const selectedSet = new Set(selected)
-  const cells = countriesList.value.map(country =>
-    `${selectedSet.has(country) ? '✅' : '☐'} ${country}`
-  )
+  const columnWidth = Math.max(...allCountries.map(country => country.length)) + 4
 
-  const lines = ['| Country | Country | Country |', '| --- | --- | --- |']
-  for (let i = 0; i < cells.length; i += 3) {
-    const row = cells.slice(i, i + 3)
-    while (row.length < 3) row.push('')
-    lines.push(`| ${row.join(' | ')} |`)
+  const groups: Record<string, string[]> = {}
+  allCountries.forEach(country => {
+    const letter = country[0].toUpperCase()
+    if (!groups[letter]) groups[letter] = []
+    groups[letter].push(country)
+  })
+
+  const lines = ['SHIPPING COUNTRIES', '☑ = selected    ☐ = not selected', '']
+  for (const letter of Object.keys(groups).sort()) {
+    lines.push(letter)
+    const inGroup = groups[letter]
+    for (let i = 0; i < inGroup.length; i += 3) {
+      const row = inGroup.slice(i, i + 3).map(country =>
+        `${selectedSet.has(country) ? '☑' : '☐'} ${country}`.padEnd(columnWidth)
+      )
+      lines.push(row.join('').trimEnd())
+    }
+    lines.push('')
   }
-  return lines.join('\n')
+
+  return ['```', ...lines, '```'].join('\n')
 }
 
 const filteredCountries = computed(() => {
