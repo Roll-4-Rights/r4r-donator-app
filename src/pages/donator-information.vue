@@ -77,6 +77,7 @@
                   variant="outlined"
                   density="comfortable"
                   rounded="lg"
+                  hide-details
                   required
                 ></v-text-field>
               </div>
@@ -92,6 +93,7 @@
                   rounded="lg"
                   rows="3"
                   auto-grow
+                  hide-details
                   required
                 ></v-textarea>
               </div>
@@ -100,13 +102,12 @@
                 <v-text-field
                   id="website"
                   v-model="form.website"
-                  label="Website URL *"
-                  placeholder="e.g. https://yourshop.com"
+                  label="Website URL or social media link *"
+                  placeholder="e.g. https://yourshop.com or https://instagram.com/yourhandle"
                   variant="outlined"
                   density="comfortable"
                   rounded="lg"
-                  hint="Or a social media link if you don't have a website/store"
-                  persistent-hint
+                  hide-details
                   required
                 ></v-text-field>
               </div>
@@ -116,12 +117,11 @@
                   id="location"
                   v-model="form.location"
                   label="The country you are shipping from? *"
-                  placeholder="e.g. Canada"
+                  placeholder="This will be used to display your country shipping location on your auction prize(s)."
                   variant="outlined"
                   density="comfortable"
                   rounded="lg"
-                  hint="This will be used to display your country shipping location on your auction item(s)."
-                  persistent-hint
+                  hide-details
                   required
                 ></v-text-field>
               </div>
@@ -474,7 +474,7 @@ onMounted(async () => {
 .page-sub {
   font-size: 0.95rem;
   color: rgba(0, 0, 0, 0.72);
-  max-width: 46ch;
+  max-width: 70ch;
   margin: 0;
 }
 
@@ -559,6 +559,12 @@ onMounted(async () => {
 }
 
 /* Basic Information only — Country Shipping Locations is intentionally untouched. */
+.basic-info .field-block {
+  margin-bottom: 20px;
+}
+.basic-info .field-block-last {
+  margin-bottom: 0;
+}
 .basic-info :deep(.v-messages__message) {
   font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.78);
