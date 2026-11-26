@@ -558,7 +558,7 @@
 .guidelines-text {
   font-size: 0.875rem;
   font-weight: 400;
-  color: var(--ink-soft);
+  color: var(--ink-deep);
   line-height: 1.6;
 }
 .guidelines-line {
