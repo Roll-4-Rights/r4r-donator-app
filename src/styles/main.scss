@@ -4,7 +4,8 @@
   }
 }
 
-/* Phase-one dark shell: dark app chrome, light content panels. */
+/* Shared semantic colour roles. The light values below are copied from the
+   original hardcoded page colours, so the default theme is visually unchanged. */
 :root {
   --shell-bg: #F4F6F8;
   --shell-header: #103948;
@@ -12,23 +13,115 @@
   --shell-on-dark: #E8F1F0;
   --shell-panel: #ffffff;
   --shell-panel-text: #062830;
+
+  --form-text: #000000;
+  --form-text-strong: #062830;
+  --form-muted: rgba(0, 0, 0, 0.72);
+  --form-muted-strong: rgba(0, 0, 0, 0.78);
+  --form-ink-soft: rgba(10, 60, 70, 0.80);
+  --form-label: rgba(0, 0, 0, 0.65);
+
+  --form-accent: #0B4F6C;
+  --form-accent-deep: #0A3C46;
+  --form-accent-button: #0A3C46;
+  --form-surface: #FFFFFF;
+  --form-surface-soft: #F5F7F6;
+  --form-card: #EFF4F2;
+  --form-border: rgba(0, 0, 0, 0.12);
+  --form-border-soft: rgba(10, 60, 70, 0.14);
+
+  --form-brass: #A9824C;
+  --form-amber: #BD8A3D;
+  --form-required: #C0392B;
+  --form-price-hint: #8A5A00;
+  --form-link: #1565C0;
+  --form-link-hover: #0D47A1;
+
+  --form-warning-text: #6D3F00;
+  --form-warning-wash: #FB8C00;
+  --form-warning-icon: #A05F00;
+  --form-info-text: #0D47A1;
+  --form-info-wash: #2196F3;
+  --form-info-icon: #1565C0;
+
+  --form-hover: rgba(11, 79, 108, 0.06);
+  --form-subtle: rgba(10, 60, 70, 0.03);
+  --form-subtle-hover: rgba(10, 60, 70, 0.06);
+  --form-table-hover: rgba(10, 60, 70, 0.025);
+  --form-thumb-bg: rgba(10, 60, 70, 0.05);
+
+  --form-chip-success-bg: rgba(46, 125, 50, 0.12);
+  --form-chip-success-text: #2e7d32;
+  --form-chip-pending-bg: rgba(196, 130, 40, 0.12);
+  --form-chip-pending-text: #8A6536;
+  --form-chip-rejected-bg: rgba(198, 40, 40, 0.12);
+  --form-chip-rejected-text: #c62828;
+
+  --scroll-track: rgba(0, 0, 0, 0.02);
+  --scroll-thumb: rgba(0, 0, 0, 0.15);
+  --scroll-thumb-hover: rgba(0, 0, 0, 0.25);
 }
 
-/* Scope shell values to the document theme, not every component that uses
-   Vuetify's dark theme (the sidebar has always used theme="dark"). */
+/* Dark values are applied to the document-level class only. Vuetify also gets
+   its own matching theme (r4rDark) so its controls follow these surfaces. */
 html.v-theme--dark {
   --shell-bg: #0F171A;
   --shell-header: #0A1216;
   --shell-sidebar: #0A1216;
   --shell-on-dark: #E8F1F0;
+  --shell-panel: #10191D;
+  --shell-panel-text: #E8F1F0;
+  --shell-danger: #8B1E18;
 
-  /* Deliberately keep content panels light in phase one. */
-  --shell-panel: #ffffff;
-  --shell-panel-text: #062830;
+  --form-text: #F2F7F7;
+  --form-text-strong: #F2F7F7;
+  --form-muted: #B9CCD1;
+  --form-muted-strong: #D2E0E3;
+  --form-ink-soft: #B9CCD1;
+  --form-label: #C6D6DA;
+
+  --form-accent: #7FCAD8;
+  --form-accent-deep: #8FD3DF;
+  --form-accent-button: #1D5A6B;
+  --form-surface: #10191D;
+  --form-surface-soft: #162126;
+  --form-card: #162126;
+  --form-border: #31434B;
+  --form-border-soft: #2E414A;
+
+  --form-brass: #D8B36A;
+  --form-amber: #F0B75C;
+  --form-required: #FF8A80;
+  --form-price-hint: #F0C074;
+  --form-link: #8CCBFF;
+  --form-link-hover: #B6DDFF;
+
+  --form-warning-text: #FFD79A;
+  --form-warning-wash: #6D3F00;
+  --form-warning-icon: #FFB74D;
+  --form-info-text: #B6DDFF;
+  --form-info-wash: #0D47A1;
+  --form-info-icon: #64B5F6;
+
+  --form-hover: rgba(127, 202, 216, 0.12);
+  --form-subtle: rgba(127, 202, 216, 0.06);
+  --form-subtle-hover: rgba(127, 202, 216, 0.1);
+  --form-table-hover: rgba(127, 202, 216, 0.08);
+  --form-thumb-bg: #24333A;
+
+  --form-chip-success-bg: rgba(129, 199, 132, 0.18);
+  --form-chip-success-text: #A5D6A7;
+  --form-chip-pending-bg: rgba(240, 183, 92, 0.18);
+  --form-chip-pending-text: #F0C074;
+  --form-chip-rejected-bg: rgba(255, 138, 128, 0.18);
+  --form-chip-rejected-text: #FFAB91;
+
+  --scroll-track: #10191D;
+  --scroll-thumb: #3B5059;
+  --scroll-thumb-hover: #58727C;
 }
 
-/* Dark-only overrides. Light mode intentionally keeps the original markup and
-   Vuetify styling, so nothing changes unless the user selects dark. */
+/* Dark-only overrides. Nothing here matches the default theme. */
 html.v-theme--dark,
 html.v-theme--dark body {
   background-color: var(--shell-bg);
@@ -42,4 +135,17 @@ html.v-theme--dark .app-header {
 html.v-theme--dark .content-panel {
   background-color: var(--shell-panel);
   color: var(--shell-panel-text);
+}
+
+/* Some pages use bg-white or a hardcoded card background. Those need one
+   dark-only override so cards cannot stay white while their text turns light. */
+html.v-theme--dark .content-panel .v-card {
+  background-color: var(--form-card) !important;
+  color: var(--shell-panel-text) !important;
+  border-color: var(--form-border-soft) !important;
+}
+
+html.v-theme--dark .logout-button {
+  background-color: var(--shell-danger) !important;
+  color: #ffffff !important;
 }

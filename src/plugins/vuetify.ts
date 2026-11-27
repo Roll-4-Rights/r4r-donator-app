@@ -11,17 +11,13 @@ import 'vuetify/styles'
 // Composables
 import { createVuetify } from 'vuetify'
 
-// Keep the saved choice across reloads. Light stays the default for anyone who
-// has never picked a theme. The name "dark" is important: Vuetify applies the
-// .v-theme--dark class that the rest of the app uses as its dark-mode hook.
+// The document class drives our CSS variables; the Vuetify theme drives all
+// component tokens. Both stay in sync so forms and boxes go dark together.
 const savedTheme = localStorage.getItem('r4r-theme')
-const initialTheme = savedTheme === 'dark' ? 'dark' : 'myCustomTheme'
+const initialTheme = savedTheme === 'dark' ? 'r4rDark' : 'myCustomTheme'
 
-// Vuetify applies theme classes to individual components, not necessarily to
-// an ancestor of App.vue's plain .app-shell div. Put the class on <html> too so
-// the shell CSS variables can inherit the selected theme everywhere.
 if (typeof document !== 'undefined') {
-  document.documentElement.classList.toggle('v-theme--dark', initialTheme === 'dark')
+  document.documentElement.classList.toggle('v-theme--dark', initialTheme === 'r4rDark')
 }
 
 // https://vuetifyjs.com
@@ -52,9 +48,9 @@ export default createVuetify({
         },
       },
 
-      // Phase-one "dark shell": dark chrome, with light content panels
-      // handled separately in styles/main.scss so forms stay readable.
-      dark: {
+      // Dark form theme. Surfaces are dark and text tokens are light so inputs,
+      // selects, chips, dialogs, and alerts stay readable together.
+      r4rDark: {
         dark: true,
 
         variables: {
@@ -65,9 +61,17 @@ export default createVuetify({
 
         colors: {
           background: '#0F171A',
-          surface: '#162024',
-          primary: '#5AA9B8',
-          secondary: '#5AA9B8',
+          surface: '#162126',
+          'surface-bright': '#1C292F',
+          'surface-light': '#24333A',
+          'surface-variant': '#1B272D',
+          'on-surface-variant': '#C6D6DA',
+          primary: '#7FCAD8',
+          secondary: '#7FCAD8',
+          error: '#FF8A80',
+          info: '#64B5F6',
+          success: '#A5D6A7',
+          warning: '#FFB74D',
         },
       },
     },
