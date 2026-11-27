@@ -240,6 +240,58 @@ html.v-theme--dark .content-panel .v-divider {
   border-color: var(--form-divider) !important;
 }
 
+/* The Account page uses this utility on its disabled email field. */
+html.v-theme--dark .content-panel .bg-grey-lighten-5 {
+  background-color: var(--form-surface-soft) !important;
+}
+
+/* Public auth pages (login, register, forgot/reset password) render outside
+   .content-panel, so they need their own dark-only counterparts for the same
+   hardcoded light surfaces. The light values remain exactly as authored. */
+html.v-theme--dark .register-shell {
+  background: var(--shell-bg) !important;
+}
+
+html.v-theme--dark .register-visual {
+  background-color: var(--shell-header) !important;
+  filter: drop-shadow(10px 0 28px rgba(0, 0, 0, 0.45)) !important;
+}
+
+html.v-theme--dark .register-panel {
+  color: var(--shell-panel-text) !important;
+}
+
+html.v-theme--dark .register-card {
+  background: var(--form-surface) !important;
+  color: var(--shell-panel-text) !important;
+  border: 1px solid var(--form-border-soft) !important;
+  box-shadow: var(--form-shadow-strong) !important;
+}
+
+html.v-theme--dark .register-card a:not(.v-btn),
+html.v-theme--dark .register-card a:not(.v-btn):hover {
+  color: var(--form-link) !important;
+}
+
+html.v-theme--dark .register-card .text-grey-darken-3,
+html.v-theme--dark .register-card .text-grey-darken-4 {
+  color: var(--form-muted) !important;
+}
+
+html.v-theme--dark .register-card .v-btn.bg-primary {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
+}
+
+/* Keep the original transparent mobile card treatment, but over the dark shell. */
+@media (max-width: 839px) {
+  html.v-theme--dark .register-card {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
 /* Dialogs are teleported outside .content-panel, so they need their own
    dark-only counterparts for the same light-only utility classes. */
 html.v-theme--dark .v-overlay__content .text-black {
