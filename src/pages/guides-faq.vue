@@ -11,7 +11,7 @@
     <v-row class="mb-12">
       <!-- Step 1 Card -->
       <v-col cols="12" md="4" class="d-flex">
-        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+        <v-card class="guide-card rounded-2xl border-0 flex-grow-1" elevation="0">
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
             <!-- Styled Icon Step Indicator Badge -->
@@ -31,7 +31,7 @@
 
       <!-- Step 2 Card -->
       <v-col cols="12" md="4" class="d-flex">
-        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+        <v-card class="guide-card rounded-2xl border-0 flex-grow-1" elevation="0">
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
             <div style="display: flex; align-items: center; margin-bottom: 16px;">
@@ -56,7 +56,7 @@
 
       <!-- Step 3 Card -->
       <v-col cols="12" md="4" class="d-flex">
-        <v-card class="rounded-2xl border-0 flex-grow-1" style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;" elevation="0">
+        <v-card class="guide-card rounded-2xl border-0 flex-grow-1" elevation="0">
           <!-- FIXED: Wrapped inside v-card-text with comfortable padding -->
           <v-card-text class="pa-6 d-flex flex-column align-start text-left h-100">
             <div style="display: flex; align-items: center; margin-bottom: 16px;">
@@ -119,8 +119,7 @@
               class="pb-4"
             >
               <v-card
-                class="rounded-xl border-0"
-                style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;"
+                class="guide-card rounded-xl border-0"
                 elevation="0"
               >
                 <v-card-text class="pa-6 pa-md-8 text-left">
@@ -193,8 +192,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.guide-card {
+  background-color: var(--form-surface) !important;
+  box-shadow: var(--form-shadow) !important;
+}
+
 .border-divider {
-  border-color: rgba(0, 0, 0, 0.08) !important;
+  border-color: var(--form-divider) !important;
 }
 .page-eyebrow {
   display: block;
@@ -202,19 +206,19 @@ onMounted(async () => {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   margin-bottom: 0.5rem;
 }
 .page-title {
   font-size: 2.25rem;
   font-weight: 900;
-  color: #000000;
+  color: var(--form-text);
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem;
 }
 .page-sub {
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   max-width: 46ch;
   margin: 0;
 }

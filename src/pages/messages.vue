@@ -28,7 +28,7 @@
         />
         <v-btn
           color="#0B4F6C"
-          class="text-white px-6"
+          class="dark-button text-white px-6"
           rounded="lg"
           :disabled="!newQuestion.trim() || sending"
           :loading="sending"
@@ -75,7 +75,7 @@
             <v-divider class="mb-4"></v-divider>
 
             <div class="text-overline text-medium-emphasis mb-1">Answer</div>
-            <div class="bg-grey-lighten-4 rounded-lg pa-4" v-if="msg.Answer">
+            <div class="dark-answer-box bg-grey-lighten-4 rounded-lg pa-4" v-if="msg.Answer">
               <p class="text-body-2 text-high-emphasis style-answer mb-0">
                 {{ msg.Answer }}
               </p>
@@ -183,19 +183,19 @@ onUnmounted(() => {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   margin-bottom: 0.5rem;
 }
 .page-title {
   font-size: 2.25rem;
   font-weight: 900;
-  color: #000000;
+  color: var(--form-text);
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem;
 }
 .page-sub {
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   max-width: 70ch;
   margin: 0;
 }

@@ -4,8 +4,7 @@
          
     <!-- Welcome Block Box -->
     <v-card 
-      class="mb-10 rounded-2xl border-0 elevation-hover position-relative overflow-visible" 
-      style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+      class="home-surface-card mb-10 rounded-2xl border-0 elevation-hover position-relative overflow-visible"
       elevation="0"
     >
       <v-card-text class="pa-6 pa-md-10 position-relative z-index-content">
@@ -50,8 +49,7 @@
           <v-expansion-panel
             v-for="item in pagedAnnouncements"
             :key="item.id"
-            class="mb-4 rounded-xl border-0 overflow-hidden elevation-hover"
-            style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+            class="home-surface-card mb-4 rounded-xl border-0 overflow-hidden elevation-hover"
             elevation="0"
           >
             <v-expansion-panel-title class="py-6 px-8">
@@ -72,7 +70,7 @@
                         
             <v-expansion-panel-text class="pa-6">
               <div
-                class="text-body-2 text-small-emphasis leading-relaxed announcement-body"
+                class="dark-text text-body-2 text-small-emphasis leading-relaxed announcement-body"
                 style="overflow-wrap: break-word !important; word-break: break-word !important; min-width: 0;"
                 v-html="item.content"
               ></div>
@@ -99,8 +97,7 @@
 
         <!-- Master Floating Container -->
         <v-card 
-          class="rounded-2xl border-0 elevation-hover"
-          style="background-color: #FFFFFF !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
+          class="home-surface-card rounded-2xl border-0 elevation-hover"
           elevation="0"
         >
           <v-card-text class="pa-6 pa-md-8 d-flex flex-column">
@@ -154,10 +151,10 @@
 <!-- START CALENDAR HTML -->
 <v-row class="mt-8">
   <v-col cols="12" md="10" class="mx-auto">
-    <v-card class="rounded-2xl border-0 overflow-hidden pb-6" style="box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.05) !important; background-color: #FFFFFF;">
+    <v-card class="home-calendar-card rounded-2xl border-0 overflow-hidden pb-6">
       
-      <div class="px-8 pt-8 pb-4 bg-white">
-        <h2 class="text-h4 font-weight-black text-grey-darken-4 tracking-tight" style="font-family: 'Inter', sans-serif; font-size: 2rem !important;">
+      <div class="home-calendar-section px-8 pt-8 pb-4">
+        <h2 class="dark-text text-h4 font-weight-black text-grey-darken-4 tracking-tight" style="font-family: 'Inter', sans-serif; font-size: 2rem !important;">
           Important Dates
         </h2>
         <p class="text-body-2 text-medium-emphasis mt-1 mb-0">
@@ -165,7 +162,7 @@
         </p>
       </div>
 
-      <div class="d-flex align-center justify-space-between mx-8 my-2 px-4 py-2 border rounded-xl bg-grey-lighten-5" style="border-color: #EEEEEE !important;">
+      <div class="home-calendar-nav d-flex align-center justify-space-between mx-8 my-2 px-4 py-2 border rounded-xl">
         <v-btn icon="mdi-chevron-left" variant="text" density="comfortable" @click="calendarRef.prev()" class="text-grey-darken-3"></v-btn>
         <span class="text-subtitle-1 font-weight-bold text-grey-darken-3" style="font-family: 'Inter', sans-serif; letter-spacing: -0.01em;">
           {{ currentMonthTitle }}
@@ -173,7 +170,7 @@
         <v-btn icon="mdi-chevron-right" variant="text" density="comfortable" @click="calendarRef.next()" class="text-grey-darken-3"></v-btn>
       </div>
 
-      <v-card-text class="px-6 pt-4 pb-8 bg-white">
+      <v-card-text class="home-calendar-section px-6 pt-4 pb-8">
         <v-calendar 
           ref="calendarRef"
           v-model="calendarValue"
@@ -234,7 +231,7 @@
 
         <!-- 3. Details Label & Description Text Box -->
         <div class="text-subtitle-2 text-grey-darken-3 mb-1 font-weight-bold">Details</div>
-        <p class="text-high-emphasis font-weight-medium bg-grey-lighten-4 pa-4 rounded-xl border border-faint" style="line-height: 1.5;">
+        <p class="home-detail-box text-high-emphasis font-weight-medium pa-4 rounded-xl border border-faint" style="line-height: 1.5;">
           {{ selectedEvent.description }}
         </p>
       </v-card-text>
@@ -439,9 +436,35 @@ onMounted(() => {
   max-width: 48rem;
 }
 
+/* These replace inline light-only backgrounds with semantic roles, so the
+   light values are identical and dark mode can override them centrally. */
+.home-surface-card {
+  background-color: var(--form-surface) !important;
+  box-shadow: var(--form-shadow) !important;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.home-calendar-card {
+  background-color: var(--form-surface) !important;
+  box-shadow: var(--form-calendar-shadow) !important;
+}
+
+.home-calendar-section {
+  background-color: var(--form-surface) !important;
+}
+
+.home-calendar-nav {
+  background-color: var(--form-calendar-nav) !important;
+  border-color: var(--form-nav-border) !important;
+}
+
+.home-detail-box {
+  background-color: var(--form-answer-bg) !important;
+}
+
 .elevation-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: var(--form-shadow-strong) !important;
 }
 
 .leading-none {
@@ -497,6 +520,7 @@ onMounted(() => {
 .custom-calendar-theme {
   min-height: 650px !important;
   font-family: 'Inter', sans-serif !important;
+  color: var(--form-text);
 }
 
 :deep(.custom-calendar-theme .v-calendar-month__week),
@@ -507,8 +531,8 @@ onMounted(() => {
 
 :deep(.custom-calendar-theme .v-calendar-month__header),
 :deep(.custom-calendar-theme .v-calendar-weekly__head) {
-  border-bottom: 2px solid #EAEAEA !important;
-  background-color: #FAFAFA !important;
+  border-bottom: 2px solid var(--form-calendar-border) !important;
+  background-color: var(--form-calendar-header) !important;
   padding-top: 6px !important;
   padding-bottom: 6px !important;
 }
@@ -550,24 +574,24 @@ onMounted(() => {
 
 .announcement-body :deep(hr) {
   border: 0;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--form-hr-border);
   margin: 1.5em 0;
 }
 
 .announcement-body :deep(a) {
-  color: #0B4F6C;
+  color: var(--form-accent);
   text-decoration: underline;
 }
 
 .announcement-body :deep(blockquote) {
-  border-left: 3px solid #d0d7de;
+  border-left: 3px solid var(--form-quote-border);
   margin: 0 0 1em;
   padding-left: 1em;
-  color: #57606a;
+  color: var(--form-quote-text);
 }
 
 .announcement-body :deep(pre) {
-  background: #f6f8fa;
+  background: var(--form-code-bg);
   border-radius: 6px;
   padding: 0.75em 1em;
   overflow-x: auto;
