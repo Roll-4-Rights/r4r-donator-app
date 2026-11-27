@@ -2,7 +2,7 @@
 
 <template>
   <!-- this is the main background layer, with minimum height set at fullscreen, enforced  -->
-  <div class="min-h-screen" style="background-color: #F4F6F8 !important;">
+  <div class="app-shell min-h-screen">
 
     <!-- checks if the current view is a login or register page -->
     <RouterView v-if="isAuthPage" />
@@ -11,7 +11,7 @@
     <v-layout v-else style="background-color: transparent !important;">
       
       <!-- header bar with shadow, color "primary" sets it to theme color, elevation adds subtle drop shadow, position relative/overflow hidden keeps background graphics inside the bar borders -->
-      <v-app-bar color="primary" elevation="1" class="position-relative overflow-hidden">
+      <v-app-bar elevation="1" class="app-header position-relative overflow-hidden">
 
         <!-- toggles the side navigation menu open or closed, hides this button completely if the user enters the chat room, forces the button to sit on top of background graphics, flips the sidebar open state between true and false on click -->        
          <v-app-bar-nav-icon
@@ -39,7 +39,16 @@
         </router-link>
         
         <!-- user profile drop down menu and account action items in the top right, enforces a minimum width size so text layout never squishes, rounds the corners of the pop up menu box, animations make the window puff outward when opening up -->        
-         <v-menu v-model="isMenuOpen" min-width="220px" rounded="xl" transition="scale-transition">
+         <v-btn
+          icon
+          class="mr-1 position-relative z-index-top"
+          :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+          @click="toggleTheme"
+        >
+          <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
+        </v-btn>
+
+        <v-menu v-model="isMenuOpen" min-width="220px" rounded="xl" transition="scale-transition">
           <!-- defines the trigger element that users click to toggle the menu display window -->
           <template v-slot:activator="{ props }">
             <!-- creates a round clickable icon container structure inside the header navigation bar -->
@@ -101,7 +110,7 @@
         v-model="drawerOpen" 
         :permanent="!mobile"
         :temporary="mobile"
-        style="background-color: #103948 !important;"
+        class="app-sidebar"
         theme="dark"
         elevation="2"
         width="280"
@@ -145,7 +154,7 @@
         </div>
 
         <!-- handles content presentation rules for standard application areas like dashboard screens, displays this fallback container box if the active window is not a chat page, tells the content wrapper to stretch out and occupy the entire width of the display area, adds generous padding buffers along the outer edges to keep elements breathing nicely -->
-        <v-container v-else fluid class="pa-8">
+        <v-container v-else fluid class="pa-8 content-panel">
           <!-- mounts standard dashboard templates like user account settings pages in this location -->
           <RouterView />
         </v-container>
@@ -168,7 +177,7 @@
 // sets up the base url network connection string pointing directly to backend cloud servers
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
-import { useDisplay } from 'vuetify'
+import { useDisplay, useTheme } from 'vuetify'
 import { socket } from '@/socket'
 import { authState, logout } from '@/services/authStore'
 import { apiService, API_BASE_URL } from '@/services/api'
@@ -179,6 +188,19 @@ import { apiService, API_BASE_URL } from '@/services/api'
 const route = useRoute()
 const router = useRouter()
 const isMenuOpen = ref(false)
+
+// Phase-one dark shell: Vuetify handles theme tokens, localStorage remembers
+// the user's choice, and the CSS shell variables in main.scss follow along.
+const theme = useTheme()
+const isDark = ref(theme.global.name.value === 'dark')
+
+function toggleTheme() {
+  const nextTheme = isDark.value ? 'myCustomTheme' : 'dark'
+
+  theme.global.name.value = nextTheme
+  localStorage.setItem('r4r-theme', nextTheme)
+  isDark.value = nextTheme === 'dark'
+}
 
 // extracts the screen evaluation property to check if the device layout represents a phone hardware size
 // defaults the sidebar to stay visible on desktops but hides the layout immediately on mobile viewports

@@ -3,3 +3,47 @@
     font-family: var(--font-mono);
   }
 }
+
+/* Phase-one dark shell: dark app chrome, light content panels. */
+:root {
+  --shell-bg: #F4F6F8;
+  --shell-header: #103948;
+  --shell-sidebar: #103948;
+  --shell-on-dark: #E8F1F0;
+  --shell-panel: #ffffff;
+  --shell-panel-text: #062830;
+}
+
+.v-theme--dark {
+  --shell-bg: #0F171A;
+  --shell-header: #0A1216;
+  --shell-sidebar: #0A1216;
+  --shell-on-dark: #E8F1F0;
+
+  /* Deliberately keep content panels light in phase one. */
+  --shell-panel: #ffffff;
+  --shell-panel-text: #062830;
+}
+
+.app-shell {
+  background-color: var(--shell-bg) !important;
+}
+
+.app-header {
+  background-color: var(--shell-header) !important;
+  color: #ffffff;
+}
+
+.app-sidebar {
+  background-color: var(--shell-sidebar) !important;
+}
+
+.v-theme--dark .app-header,
+.v-theme--dark .app-sidebar {
+  color: var(--shell-on-dark);
+}
+
+.content-panel {
+  background-color: var(--shell-panel);
+  color: var(--shell-panel-text);
+}
