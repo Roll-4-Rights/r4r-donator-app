@@ -344,7 +344,7 @@
         <v-card-actions class="dialog-actions">
           <v-spacer></v-spacer>
           <v-btn variant="text" @click="closeTrackingModal">Cancel</v-btn>
-          <v-btn variant="flat" color="#0A3C46" class="text-white" @click="saveTrackingInfo" :loading="isSavingTracking">Save</v-btn>
+          <v-btn variant="flat" color="#0A3C46" class="dialog-submit-btn text-white" @click="saveTrackingInfo" :loading="isSavingTracking">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -393,7 +393,7 @@
           <v-btn
             variant="flat"
             color="#0A3C46"
-            class="text-white"
+            class="dialog-submit-btn text-white"
             :loading="isSavingReview"
             @click="approveListing"
           >Approve Listing</v-btn>
@@ -506,14 +506,15 @@
 
 <style scoped>
 .donate-page {
-  --ink: #0A3C46;
-  --ink-deep: #062830;
-  --ink-soft: rgba(10, 60, 70, 0.80);
-  --paper: #F5F7F6;
-  --paper-warm: #EFF4F2;
-  --brass: #A9824C;
-  --amber: #BD8A3D;
-  --line: rgba(10, 60, 70, 0.14);
+  /* Same original light values, now routed through shared theme roles. */
+  --ink: var(--form-accent-deep, #0A3C46);
+  --ink-deep: var(--form-text-strong, #062830);
+  --ink-soft: var(--form-ink-soft, rgba(10, 60, 70, 0.80));
+  --paper: var(--form-surface-soft, #F5F7F6);
+  --paper-warm: var(--form-card, #EFF4F2);
+  --brass: var(--form-brass, #A9824C);
+  --amber: var(--form-amber, #BD8A3D);
+  --line: var(--form-border-soft, rgba(10, 60, 70, 0.14));
 }
 
 /* Header */
@@ -526,19 +527,19 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   margin-bottom: 0.5rem;
 }
 .page-title {
   font-size: 2.25rem;
   font-weight: 900;
-  color: #000000;
+  color: var(--form-text);
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem;
 }
 .page-sub {
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   max-width: 70ch;
   margin: 0;
 }
@@ -633,7 +634,7 @@
 .form-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #0B4F6C;
+  color: var(--form-accent);
 }
 /* Section headings + field spacing for the Shipping Details block */
 .section-heading {
@@ -642,7 +643,7 @@
   gap: 8px;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0B4F6C;
+  color: var(--form-accent);
   margin-bottom: 20px;
 }
 .section-divider {
@@ -672,12 +673,12 @@
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
-  color: rgba(0, 0, 0, 0.78);
+  color: var(--form-muted-strong);
 }
 
 /* Kept visible but inert when the no-shipping option is selected */
 .field-block-disabled .field-label {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
 }
 .field-label {
   display: block;
@@ -689,7 +690,7 @@
   margin-bottom: 0.4rem;
 }
 .field-label .req {
-  color: #C0392B;
+  color: var(--form-required);
   margin-left: 2px;
 }
 .price-row {
@@ -700,7 +701,7 @@
 .price-hint {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #8A5A00;
+  color: var(--form-price-hint);
 }
 .mono-input :deep(input) {
   font-family: 'Roboto Mono', monospace;
@@ -713,10 +714,10 @@
   text-align: center;
   cursor: pointer;
   color: var(--ink);
-  background: rgba(10, 60, 70, 0.03);
+  background: var(--form-subtle);
   transition: background 0.15s ease;
 }
-.dropzone:hover { background: rgba(10, 60, 70, 0.06); }
+.dropzone:hover { background: var(--form-subtle-hover); }
 .dropzone-text { font-size: 0.9rem; font-weight: 600; margin-top: 0.25rem; }
 .dropzone-hint { font-size: 0.75rem; color: var(--ink-soft); margin-top: 0.25rem; font-style: italic; }
 .submit-btn {
@@ -736,7 +737,7 @@
 
 /* Ledger card / table */
 .ledger-card {
-  background: #fff;
+  background: var(--form-surface);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 2rem !important;
@@ -777,7 +778,7 @@
 .ledger-table tbody td.text-center { text-align: center; }
 .ledger-table tbody td.text-right { text-align: right; }
 .ledger-table tbody tr:last-child td { border-bottom: none; }
-.ledger-table tbody tr:hover { background: rgba(10, 60, 70, 0.025); }
+.ledger-table tbody tr:hover { background: var(--form-table-hover); }
 .col-lot { width: 70px; color: var(--ink-soft); }
 .col-thumb { width: 64px; }
 .item-thumb {
@@ -792,7 +793,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 60, 70, 0.05);
+  background: var(--form-thumb-bg);
   color: var(--ink-soft);
 }
 .mono { font-family: 'Roboto Mono', monospace; font-weight: 700; }
@@ -804,19 +805,36 @@
 .edit-btn { text-transform: none; font-weight: 700; }
 .review-btn { text-decoration: none; }
 .review-btn:hover { text-decoration: underline; }
-.listing-link { color: #1565C0; font-weight: 700; text-decoration: underline; cursor: pointer; }
-.listing-link:hover { color: #0D47A1; }
+.listing-link { color: var(--form-link); font-weight: 700; text-decoration: underline; cursor: pointer; }
+.listing-link:hover { color: var(--form-link-hover); }
 .listing-muted { color: var(--ink-soft); font-size: 0.8rem; font-style: italic; }
 
-.chip-accepted { background: rgba(46, 125, 50, 0.12) !important; color: #2e7d32 !important; font-weight: 700; }
-.chip-pending { background: rgba(196, 130, 40, 0.12) !important; color: #8A6536 !important; font-weight: 700; }
-.chip-rejected { background: rgba(198, 40, 40, 0.12) !important; color: #c62828 !important; font-weight: 700; }
+.chip-accepted { background: var(--form-chip-success-bg) !important; color: var(--form-chip-success-text) !important; font-weight: 700; }
+.chip-pending { background: var(--form-chip-pending-bg) !important; color: var(--form-chip-pending-text) !important; font-weight: 700; }
+.chip-rejected { background: var(--form-chip-rejected-bg) !important; color: var(--form-chip-rejected-text) !important; font-weight: 700; }
 
 /* Dialog */
 .dialog-card { border-radius: 18px; }
 .dialog-title { font-size: 1.05rem; font-weight: 800; color: var(--ink-deep); }
 .dialog-copy { font-size: 0.9rem; color: var(--ink-soft); }
 .display { display: flex; align-items: center; }
+
+/* Dark-only overrides. Light keeps the original teal buttons and tab text. */
+html.v-theme--dark .donate-page .submit-btn {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
+}
+
+/* Dialogs are teleported outside .donate-page, so they need their own
+   dark-only selector. There is intentionally no light-mode rule here. */
+html.v-theme--dark .dialog-submit-btn {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
+}
+
+html.v-theme--dark .donate-page .ledger-tabs :deep(.v-tab--selected) {
+  color: var(--form-accent-deep) !important;
+}
 
 @media (max-width: 600px) {
   .ledger-strip { flex-direction: column; }

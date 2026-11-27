@@ -142,7 +142,7 @@
           <!-- adds internal spacing buffers and a clean dark horizontal line along the top border edge -->
           <div class="pa-4 border-t-dark">
             <!-- renders a full width high contrast button designed to stand out to users clearly, expands the button width automatically to fill the entire container box dimensions, paints the background layout element a vivid red caution alert theme color, removes gradient graphics or shadows to create a clean modern design look, rounds the corners slightly and thickens the inside label letters, triggers the session clearing script routine immediately when pressed by users -->
-            <v-btn block color="error" variant="flat" class="rounded-lg font-weight-bold" @click="handleSignOut">
+            <v-btn block color="error" variant="flat" class="logout-button rounded-lg font-weight-bold" @click="handleSignOut">
               Logout
             </v-btn>
           </div>
@@ -192,22 +192,23 @@ const route = useRoute()
 const router = useRouter()
 const isMenuOpen = ref(false)
 
-// Phase-one dark shell: Vuetify handles theme tokens, localStorage remembers
-// the user's choice, and the CSS shell variables in main.scss follow along.
+// CSS variables and Vuetify tokens must be switched together, otherwise text
+// and surfaces drift apart. localStorage remembers the user's choice.
 const theme = useTheme()
-const isDark = ref(theme.global.name.value === 'dark')
+const isDark = ref(localStorage.getItem('r4r-theme') === 'dark')
 
-function applyThemeToDocument(themeName) {
-  document.documentElement.classList.toggle('v-theme--dark', themeName === 'dark')
+function applyThemeToDocument(dark) {
+  document.documentElement.classList.toggle('v-theme--dark', dark)
+  theme.change(dark ? 'r4rDark' : 'myCustomTheme')
 }
 
-function toggleTheme() {
-  const nextTheme = isDark.value ? 'myCustomTheme' : 'dark'
+applyThemeToDocument(isDark.value)
 
-  theme.global.name.value = nextTheme
-  applyThemeToDocument(nextTheme)
-  localStorage.setItem('r4r-theme', nextTheme)
-  isDark.value = nextTheme === 'dark'
+function toggleTheme() {
+  isDark.value = !isDark.value
+
+  applyThemeToDocument(isDark.value)
+  localStorage.setItem('r4r-theme', isDark.value ? 'dark' : 'light')
 }
 
 // extracts the screen evaluation property to check if the device layout represents a phone hardware size

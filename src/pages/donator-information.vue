@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-10 px-6" max-width="1200">
+  <v-container class="form-theme py-10 px-6" max-width="1200">
 
     <!-- PAGE HEADER — lives outside the card/form, always visible -->
     <div class="page-header mb-6">
@@ -20,7 +20,7 @@
         elevation="0"
       >
         <v-icon icon="mdi-check-circle" color="green-darken-1" size="40" class="mb-3"></v-icon>
-        <h2 class="text-h5 font-weight-black text-black mb-2">Form submitted</h2>
+        <h2 class="text-h5 font-weight-black confirmation-title mb-2">Form submitted</h2>
         <p class="text-body-2 text-medium-emphasis mb-6">
           Your information has been saved. If you need to correct anything (a typo, add/remove countries, etc.),
           you can resubmit at any time to overwrite your previous answers. We'd appreciate alerting a team member of the changes, thanks!
@@ -28,7 +28,7 @@
         <v-btn
           color="#0B4F6C"
           variant="outlined"
-          class="text-none font-weight-bold rounded-lg px-6"
+          class="resubmit-btn text-none font-weight-bold rounded-lg px-6"
           @click="showForm = true"
         >
           Resubmit form
@@ -161,30 +161,30 @@
                 variant="elevated"
                 density="default"
                 size="small"
-                class="text-none font-weight-bold rounded-lg px-3 py-1"
+                class="preset-primary-btn text-none font-weight-bold rounded-lg px-3 py-1"
               >
                 Worldwide
               </v-btn>
-              <v-btn @click="clearAll()" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+              <v-btn @click="clearAll()" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Clear All
               </v-btn>
             </div>
 
             <div class="d-flex align-center mb-4 flex-wrap preset-btn-row">
               <span class="preset-label">Quick remove:</span>
-              <v-btn @click="excludeGroup(euNations)" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+              <v-btn @click="excludeGroup(euNations)" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Remove EU Countries
               </v-btn>
-              <v-btn @click="excludeGroup(usaRestricted)" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+              <v-btn @click="excludeGroup(usaRestricted)" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Remove USPS-Restricted Countries
               </v-btn>
-              <v-btn @click="excludeGroup(sanctionedCountries)" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+              <v-btn @click="excludeGroup(sanctionedCountries)" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Remove Sanctioned Countries
               </v-btn>
-            <!---  <v-btn @click="excludeGroup(warAffectedRegions)" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+            <!---  <v-btn @click="excludeGroup(warAffectedRegions)" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Remove War-Affected Regions
               </v-btn>  --->
-              <v-btn @click="excludeGroup(remoteTerritories)" color="white" variant="elevated" density="default" size="small" class="text-none font-weight-bold rounded-lg px-3 py-1 text-black">
+              <v-btn @click="excludeGroup(remoteTerritories)" color="white" variant="elevated" density="default" size="small" class="preset-secondary-btn text-none font-weight-bold rounded-lg px-3 py-1 text-black">
                 Remove Remote Territories
               </v-btn>
             </div>
@@ -245,7 +245,7 @@
                 color="#0B4F6C"
                 variant="flat"
                 size="large"
-                class="text-none font-weight-bold rounded-lg px-12 py-2 text-white"
+                class="submit-btn text-none font-weight-bold rounded-lg px-12 py-2 text-white"
                 :loading="isSubmitting"
               >
                 Submit Info
@@ -474,17 +474,20 @@ onMounted(async () => {
   --v-field-border-opacity: 0.15;
 }
 
-
-
-.border-light-outline {
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+html.v-theme--dark .form-card :deep(.v-field__outline) {
+  --v-field-border-opacity: 0.35;
 }
 
-/* Form card — matches the warm paper surface used on the prize form. */
+.border-light-outline {
+  border: 1px solid var(--form-border) !important;
+}
+
+/* Form card — light keeps the warm paper surface; dark swaps in a dark card. */
 .form-card {
-  background: #EFF4F2;
-  border: 1px solid rgba(10, 60, 70, 0.14);
+  background: var(--form-card);
+  border: 1px solid var(--form-border-soft);
   border-radius: 18px;
+  color: var(--form-text);
 }
 
 /* Page header — sits outside the card entirely */
@@ -497,49 +500,48 @@ onMounted(async () => {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   margin-bottom: 0.5rem;
 }
 .page-title {
   font-size: 2.25rem;
   font-weight: 900;
-  color: #000000;
+  color: var(--form-text);
   letter-spacing: -0.02em;
   margin: 0 0 0.5rem;
 }
 .page-sub {
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--form-muted);
   max-width: 70ch;
   margin: 0;
 }
 
-/* Submit-once warning: keep the warm alert, darken only the readable text. */
+/* Submit-once warning: same warm alert in light, dark amber callout in dark. */
 .submit-once-alert {
-  color: #6D3F00;
+  color: var(--form-warning-text);
 }
 
-/* Tonal alerts use currentColor for the wash, so pin it back to orange. */
+/* Tonal alerts use currentColor for the wash, so pin it to the theme role. */
 .submit-once-alert :deep(.v-alert__underlay) {
-  background-color: #FB8C00 !important;
+  background-color: var(--form-warning-wash) !important;
 }
 
 .submit-once-alert :deep(.v-alert__prepend > .v-icon) {
-  color: #A05F00;
+  color: var(--form-warning-icon);
 }
 
-/* Country info: keep the blue info wash, darken only the readable text. */
+/* Country info: same blue wash in light, deep blue callout in dark. */
 .country-info-alert {
-  color: #0D47A1;
+  color: var(--form-info-text);
 }
 
-/* Tonal alerts use currentColor for the wash, so pin it back to blue. */
 .country-info-alert :deep(.v-alert__underlay) {
-  background-color: #2196F3 !important;
+  background-color: var(--form-info-wash) !important;
 }
 
 .country-info-alert :deep(.v-alert__prepend > .v-icon) {
-  color: #1565C0;
+  color: var(--form-info-icon);
 }
 
 /* Section group headings inside the form */
@@ -549,7 +551,7 @@ onMounted(async () => {
   gap: 8px;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0B4F6C;
+  color: var(--form-accent);
   margin-bottom: 20px;
 }
 
@@ -560,7 +562,7 @@ onMounted(async () => {
 
 .section-note {
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
   line-height: 1.6;
   margin-bottom: 16px;
 }
@@ -579,18 +581,18 @@ onMounted(async () => {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
   margin-bottom: 8px;
 }
 .field-label .req {
-  color: #C0392B;
+  color: var(--form-required);
   margin-left: 2px;
 }
 
 .field-note {
   display: block;
   font-size: 0.85rem;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
   margin-bottom: 6px;
 }
 
@@ -603,13 +605,13 @@ onMounted(async () => {
 }
 .basic-info :deep(.v-messages__message) {
   font-size: 0.875rem;
-  color: rgba(0, 0, 0, 0.78);
+  color: var(--form-muted-strong);
 }
 
 .preset-label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
 }
 
 .preset-btn-row {
@@ -622,14 +624,14 @@ onMounted(async () => {
 .country-counter {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #0B4F6C;
+  color: var(--form-accent);
   white-space: nowrap;
 }
 
 .country-box {
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--form-border);
   border-radius: 16px;
-  background-color: #FFFFFF;
+  background-color: var(--form-surface);
   overflow: hidden;
 }
 
@@ -651,18 +653,18 @@ onMounted(async () => {
   text-align: right;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #0B4F6C;
+  color: var(--form-accent);
 }
 
 .country-group-label {
   position: sticky;
   top: -16px;
   z-index: 1;
-  background: #FFFFFF;
+  background: var(--form-surface);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--form-label);
   padding: 6px 4px 4px;
   margin-top: 4px;
 }
@@ -672,23 +674,49 @@ onMounted(async () => {
   transition: background-color 0.12s ease;
 }
 .country-checkbox-col:hover {
-  background-color: rgba(11, 79, 108, 0.06);
+  background-color: var(--form-hover);
 }
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.02);
+  background: var(--scroll-track);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--scroll-thumb);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--scroll-thumb-hover);
+}
+
+/* Dark-only button and confirmation overrides. The light values stay exactly
+   as they were because these selectors only match html.v-theme--dark. */
+html.v-theme--dark .confirmation-title {
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .resubmit-btn {
+  color: var(--form-accent) !important;
+  border-color: var(--form-accent) !important;
+}
+
+html.v-theme--dark .preset-primary-btn {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
+}
+
+html.v-theme--dark .preset-secondary-btn {
+  background-color: #24333A !important;
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .submit-btn {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
 }
 </style>
