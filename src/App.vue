@@ -8,7 +8,20 @@
   >
 
     <!-- checks if the current view is a login or register page -->
-    <RouterView v-if="isAuthPage" />
+    <template v-if="isAuthPage">
+      <RouterView />
+
+      <!-- Public auth pages have no app header, so expose the same saved theme
+           toggle here instead. It reuses the header's isDark state and handler. -->
+      <v-btn
+        icon
+        class="auth-theme-toggle"
+        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        @click="toggleTheme"
+      >
+        <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
+      </v-btn>
+    </template>
 
     <!-- displays the standard app setup if the user passes security checks -->
     <v-layout v-else style="background-color: transparent !important;">
@@ -407,6 +420,25 @@ const handleSignOut = async () => {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 1000;
+}
+
+/* Public auth pages have no app header, so their theme toggle floats above the
+   splash layout instead. It shares the exact same isDark state and handler. */
+.auth-theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2000;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #103948 !important;
+  border: 1px solid rgba(16, 57, 72, 0.12) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.v-theme--dark .auth-theme-toggle {
+  background-color: rgba(16, 25, 29, 0.92) !important;
+  color: #E8F1F0 !important;
+  border-color: #31434B !important;
 }
 
 /* manages structural styling properties for clickable logo branding navigation link blocks */
