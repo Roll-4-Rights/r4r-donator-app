@@ -60,6 +60,20 @@
   --scroll-track: rgba(0, 0, 0, 0.02);
   --scroll-thumb: rgba(0, 0, 0, 0.15);
   --scroll-thumb-hover: rgba(0, 0, 0, 0.25);
+
+  --form-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
+  --form-shadow-strong: 0px 12px 24px rgba(0, 0, 0, 0.06);
+  --form-calendar-shadow: 0px 4px 25px rgba(0, 0, 0, 0.05);
+  --form-calendar-header: #FAFAFA;
+  --form-calendar-border: #EAEAEA;
+  --form-nav-border: #EEEEEE;
+  --form-divider: rgba(0, 0, 0, 0.08);
+  --form-code-bg: #f6f8fa;
+  --form-quote-border: #d0d7de;
+  --form-quote-text: #57606a;
+  --form-answer-bg: #E0E0E0;
+  --form-calendar-nav: #F5F5F5;
+  --form-hr-border: #e0e0e0;
 }
 
 /* Dark values are applied to the document-level class only. Vuetify also gets
@@ -119,6 +133,20 @@ html.v-theme--dark {
   --scroll-track: #10191D;
   --scroll-thumb: #3B5059;
   --scroll-thumb-hover: #58727C;
+
+  --form-shadow: 0px 4px 12px rgba(0, 0, 0, 0.35);
+  --form-shadow-strong: 0px 12px 24px rgba(0, 0, 0, 0.45);
+  --form-calendar-shadow: 0px 4px 25px rgba(0, 0, 0, 0.4);
+  --form-calendar-header: #1B272D;
+  --form-calendar-border: #31434B;
+  --form-nav-border: #31434B;
+  --form-divider: #31434B;
+  --form-code-bg: #162126;
+  --form-quote-border: #31434B;
+  --form-quote-text: #C6D6DA;
+  --form-answer-bg: #1B272D;
+  --form-calendar-nav: #1B272D;
+  --form-hr-border: #31434B;
 }
 
 /* Dark-only overrides. Nothing here matches the default theme. */
@@ -148,4 +176,83 @@ html.v-theme--dark .content-panel .v-card {
 html.v-theme--dark .logout-button {
   background-color: var(--shell-danger) !important;
   color: #ffffff !important;
+}
+
+/* A few pages still use Vuetify's light-only utility classes. Convert them
+   only while the dark class is present so the default theme is untouched. */
+html.v-theme--dark .content-panel .text-black {
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .content-panel .text-grey-darken-3,
+html.v-theme--dark .content-panel .text-grey-darken-4 {
+  color: var(--form-muted) !important;
+}
+
+/* Explicit semantic helpers for page-specific markup. */
+html.v-theme--dark .dark-text,
+html.v-theme--dark .content-panel .dark-text {
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .dark-muted {
+  color: var(--form-muted) !important;
+}
+
+html.v-theme--dark .dark-muted-strong {
+  color: var(--form-muted-strong) !important;
+}
+
+html.v-theme--dark .dark-surface {
+  background-color: var(--form-surface) !important;
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .dark-surface-soft,
+html.v-theme--dark .dark-answer-box {
+  background-color: var(--form-surface-soft) !important;
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .dark-answer-box {
+  background-color: var(--form-answer-bg) !important;
+}
+
+html.v-theme--dark .dark-button {
+  background-color: var(--form-accent-button) !important;
+  color: #ffffff !important;
+}
+
+/* Expansion panels and calendars are not v-cards, so the card override above
+   does not reach their internal surfaces. */
+html.v-theme--dark .content-panel .v-expansion-panel,
+html.v-theme--dark .content-panel .v-expansion-panel-title,
+html.v-theme--dark .content-panel .v-expansion-panel-text {
+  background-color: var(--form-surface) !important;
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .content-panel .v-calendar {
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .content-panel .v-divider {
+  border-color: var(--form-divider) !important;
+}
+
+/* Dialogs are teleported outside .content-panel, so they need their own
+   dark-only counterparts for the same light-only utility classes. */
+html.v-theme--dark .v-overlay__content .text-black {
+  color: var(--form-text) !important;
+}
+
+html.v-theme--dark .v-overlay__content .text-grey-darken-3,
+html.v-theme--dark .v-overlay__content .text-grey-darken-4 {
+  color: var(--form-muted) !important;
+}
+
+html.v-theme--dark .v-overlay__content .v-card {
+  background-color: var(--form-card) !important;
+  color: var(--form-text) !important;
+  border-color: var(--form-border-soft) !important;
 }
