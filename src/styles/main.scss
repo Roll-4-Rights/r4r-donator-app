@@ -14,7 +14,9 @@
   --shell-panel-text: #062830;
 }
 
-.v-theme--dark {
+/* Scope shell values to the document theme, not every component that uses
+   Vuetify's dark theme (the sidebar has always used theme="dark"). */
+html.v-theme--dark {
   --shell-bg: #0F171A;
   --shell-header: #0A1216;
   --shell-sidebar: #0A1216;
@@ -25,25 +27,19 @@
   --shell-panel-text: #062830;
 }
 
-.app-shell {
-  background-color: var(--shell-bg) !important;
+/* Dark-only overrides. Light mode intentionally keeps the original markup and
+   Vuetify styling, so nothing changes unless the user selects dark. */
+html.v-theme--dark,
+html.v-theme--dark body {
+  background-color: var(--shell-bg);
 }
 
-.app-header {
+html.v-theme--dark .app-header {
   background-color: var(--shell-header) !important;
-  color: #ffffff;
+  color: var(--shell-on-dark) !important;
 }
 
-.app-sidebar {
-  background-color: var(--shell-sidebar) !important;
-}
-
-.v-theme--dark .app-header,
-.v-theme--dark .app-sidebar {
-  color: var(--shell-on-dark);
-}
-
-.content-panel {
+html.v-theme--dark .content-panel {
   background-color: var(--shell-panel);
   color: var(--shell-panel-text);
 }

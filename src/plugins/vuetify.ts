@@ -15,11 +15,19 @@ import { createVuetify } from 'vuetify'
 // has never picked a theme. The name "dark" is important: Vuetify applies the
 // .v-theme--dark class that the rest of the app uses as its dark-mode hook.
 const savedTheme = localStorage.getItem('r4r-theme')
+const initialTheme = savedTheme === 'dark' ? 'dark' : 'myCustomTheme'
+
+// Vuetify applies theme classes to individual components, not necessarily to
+// an ancestor of App.vue's plain .app-shell div. Put the class on <html> too so
+// the shell CSS variables can inherit the selected theme everywhere.
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.toggle('v-theme--dark', initialTheme === 'dark')
+}
 
 // https://vuetifyjs.com
 export default createVuetify({
   theme: {
-    defaultTheme: savedTheme === 'dark' ? 'dark' : 'myCustomTheme',
+    defaultTheme: initialTheme,
     themes: {
       myCustomTheme: {
         dark: false,

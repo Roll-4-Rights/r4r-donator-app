@@ -2,7 +2,10 @@
 
 <template>
   <!-- this is the main background layer, with minimum height set at fullscreen, enforced  -->
-  <div class="app-shell min-h-screen">
+  <div
+    class="min-h-screen"
+    :style="isDark ? 'background-color: #0F171A !important;' : 'background-color: #F4F6F8 !important;'"
+  >
 
     <!-- checks if the current view is a login or register page -->
     <RouterView v-if="isAuthPage" />
@@ -11,7 +14,7 @@
     <v-layout v-else style="background-color: transparent !important;">
       
       <!-- header bar with shadow, color "primary" sets it to theme color, elevation adds subtle drop shadow, position relative/overflow hidden keeps background graphics inside the bar borders -->
-      <v-app-bar elevation="1" class="app-header position-relative overflow-hidden">
+      <v-app-bar color="primary" elevation="1" class="app-header position-relative overflow-hidden">
 
         <!-- toggles the side navigation menu open or closed, hides this button completely if the user enters the chat room, forces the button to sit on top of background graphics, flips the sidebar open state between true and false on click -->        
          <v-app-bar-nav-icon
@@ -110,7 +113,7 @@
         v-model="drawerOpen" 
         :permanent="!mobile"
         :temporary="mobile"
-        class="app-sidebar"
+        :style="isDark ? 'background-color: #0A1216 !important;' : 'background-color: #103948 !important;'"
         theme="dark"
         elevation="2"
         width="280"
@@ -154,7 +157,7 @@
         </div>
 
         <!-- handles content presentation rules for standard application areas like dashboard screens, displays this fallback container box if the active window is not a chat page, tells the content wrapper to stretch out and occupy the entire width of the display area, adds generous padding buffers along the outer edges to keep elements breathing nicely -->
-        <v-container v-else fluid class="pa-8 content-panel">
+        <v-container v-else fluid class="pa-8" :class="{ 'content-panel': isDark }">
           <!-- mounts standard dashboard templates like user account settings pages in this location -->
           <RouterView />
         </v-container>
@@ -194,10 +197,15 @@ const isMenuOpen = ref(false)
 const theme = useTheme()
 const isDark = ref(theme.global.name.value === 'dark')
 
+function applyThemeToDocument(themeName) {
+  document.documentElement.classList.toggle('v-theme--dark', themeName === 'dark')
+}
+
 function toggleTheme() {
   const nextTheme = isDark.value ? 'myCustomTheme' : 'dark'
 
   theme.global.name.value = nextTheme
+  applyThemeToDocument(nextTheme)
   localStorage.setItem('r4r-theme', nextTheme)
   isDark.value = nextTheme === 'dark'
 }
